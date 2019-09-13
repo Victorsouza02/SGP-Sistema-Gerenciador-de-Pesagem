@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -29,6 +31,7 @@ import javafx.scene.image.ImageView;
 import javax.swing.JOptionPane;
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 
@@ -73,7 +76,7 @@ public class TelaInicialController implements Initializable {
     @FXML
     private TableColumn<Motorista, String> statuscol;
 
-    public SerialPort serialPort = new SerialPort("COM4");
+    public LerSerial serial;
     public byte[] buffer;
     Thread dateThread;
     boolean isReading = true;
@@ -81,7 +84,8 @@ public class TelaInicialController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            conSerial();
+            //conSerial();
+            serial = getProperties();
             eventsElements();
             formatFields();
             testes();
@@ -103,27 +107,18 @@ public class TelaInicialController implements Initializable {
         }
     }
 
-    //COMUNICAÇÃO SERIAL
-    public void conSerial() throws SerialPortException {
-        serialPort.openPort();
-        serialPort.setParams(9600, 8, 1, 0, false, false);
-    }
-
-    //RETORNA DADOS DA SERIAL
-    public String dataSerial() throws SerialPortException {
-        buffer = serialPort.readBytes(27);
-        return new String(buffer);
-    }
-
     //PEGA DADOS DO ARQUIVO
-    public String getProperties() {
+    public LerSerial getProperties() throws SerialPortException {
         InputStream is;
         Properties prop = new Properties();
-
         try {
             // le o arquivo
-            is = getClass().getResourceAsStream("properties/config.properties");
+            is = getClass().getResourceAsStream("../properties/config.properties");
             prop.load(is);
+            String porta = prop.getProperty("porta");
+            String equipamento = prop.getProperty("equipamento");
+            LerSerial serial = new LerSerial(porta,equipamento);
+            return serial;
             //prop.load(new FileInputStream("./config/config.properties")); PARA JAR
 
         } catch (FileNotFoundException ex) {
@@ -131,10 +126,7 @@ public class TelaInicialController implements Initializable {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-        String port = prop.getProperty("prop.port");
-        return port;
-
+        return null;
     }
 
     //FORMATAÇÃO DOS CAMPOS
@@ -248,30 +240,17 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    public String removeZeros(String linha) {
-        String linha_retorno;
-        if (linha.equals("0000000")) {
-            return "0";
-        }
-        if (linha.substring(0, 1).equals("-")) {
-            linha_retorno = "-" + linha.substring(1, 7).replaceFirst("0*", "");
-        } else {
-            linha_retorno = linha.replaceFirst("0*", "");
-        }
-
-        return linha_retorno;
-    }
-
     private void ReadSerialThread() {
         while (isReading) {
             try {
-                String dados = dataSerial();
-                String estavel_var = (dados.substring(0, 1).equals("0")) ? "Estável" : "Oscilando";
-                String peso_bru_var = dados.substring(2, 9);
-                String tara_var = dados.substring(10, 17);
-                String peso_liq_var = dados.substring(18, 25);
+                Map<String,String> dados = new HashMap<String, String>();
+                dados = serial.selecionarDadosEquipamento();
+                String estavel_var = dados.get("estavel");
+                String peso_bru_var = dados.get("peso_bru");
+                String tara_var = dados.get("tara");
+                String peso_liq_var = dados.get("peso_liq");
                 Platform.runLater(() -> {
-                    peso_bru_id.setText(removeZeros(peso_bru_var));
+                    peso_bru_id.setText(peso_bru_var);
                 });
                 try {
                     Thread.sleep(20);
@@ -310,14 +289,14 @@ public class TelaInicialController implements Initializable {
                 new PropertyValueFactory<>("produto"));
         statuscol.setCellValueFactory(
                 new PropertyValueFactory<>("status"));
-        tabela.setItems(mot.listaDeClientes());
+        tabela.setItems(mot.listaDeMotoristas());
     }
 
     public void refreshTable() {
         Motorista mot = new Motorista();
         tabela.getItems().clear();
         try {
-            tabela.setItems(mot.listaDeClientes());
+            tabela.setItems(mot.listaDeMotoristas());
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {

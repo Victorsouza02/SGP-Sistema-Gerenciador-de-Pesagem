@@ -109,7 +109,7 @@ public class Motorista {
         };
     }
     
-    public ObservableList<Motorista> listaDeClientes() throws ClassNotFoundException, SQLException {
+    public ObservableList<Motorista> listaDeMotoristas() throws ClassNotFoundException, SQLException {
         Acoes acao = new Acoes();
         return FXCollections.observableList(acao.listarMotoristas());
     }

@@ -18,8 +18,8 @@ public class Conexao {
     
     public Conexao() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        //String url = "jdbc:sqlite:./db/teste.db"; jar
-        String url = "jdbc:sqlite:db/teste.db"; 
+        //String url = "jdbc:sqlite:./db/dados.db"; jar
+        String url = "jdbc:sqlite:db/dados.db"; 
         conexao = DriverManager.getConnection(url);
         System.out.println("Conexao OK");
     }
