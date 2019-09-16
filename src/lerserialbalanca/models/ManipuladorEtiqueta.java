@@ -6,36 +6,18 @@
 package lerserialbalanca.models;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 /**
  *
  * @author Desenvolvimento
  */
 public class ManipuladorEtiqueta {
-
-    public static void leitorEtiqueta(String path) throws IOException {
-        BufferedReader buffRead = new BufferedReader(new FileReader(path));
-        String linha = "";
-        while (true) {
-            if (linha != null) {
-                System.out.println(linha);
-            } else {
-                break;
-            }
-            linha = buffRead.readLine();
-        }
-        buffRead.close();
-    }
 
     public static void fazerEtiquetaHtml(String path_txt, String path_html) throws IOException {
         BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(path_txt), StandardCharsets.ISO_8859_1));
@@ -106,14 +88,5 @@ public class ManipuladorEtiqueta {
                 break;
         }
         return linha;
-    }
-
-    public static void limparArquivo(String path) throws IOException {
-        BufferedWriter buffWrite = new BufferedWriter(new FileWriter(path, false));
-        String linha = "";
-        Scanner in = new Scanner(System.in);
-        linha = in.nextLine();
-        buffWrite.write("");
-        buffWrite.close();
     }
 }

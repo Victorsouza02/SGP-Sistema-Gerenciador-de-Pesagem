@@ -75,7 +75,7 @@ public class Motorista {
         this.produto = produto;
     }
 
-    public boolean procurarPlaca(String placa) throws ClassNotFoundException, SQLException {
+    public Motorista procurarPlaca(String placa) throws ClassNotFoundException, SQLException {
         Acoes acao = new Acoes();
         Motorista mot = acao.procurarPlaca(placa);
         if (mot.getNome() != null) {
@@ -84,11 +84,9 @@ public class Motorista {
             setFornecedor(mot.getFornecedor());
             setProduto(mot.getProduto());
             setStatus(mot.getStatus());
-            return true;
-        } else {
-            return false;
+            return mot;
         }
-
+        return mot;
     }
 
     public void cadastrar() throws ClassNotFoundException, SQLException {

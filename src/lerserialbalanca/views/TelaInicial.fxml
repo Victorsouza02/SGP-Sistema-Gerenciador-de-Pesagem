@@ -93,6 +93,16 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </TextField>
+                  <Label layoutX="312.0" layoutY="116.0" text="KG">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="647.0" layoutY="117.0" text="KG">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
             <Pane layoutX="14.0" layoutY="320.0" prefHeight="264.0" prefWidth="1171.0" style="-fx-background-color: #fff;">
@@ -102,11 +112,18 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                     <columns>
+                      <TableColumn fx:id="idcol" text="ID" />
                       <TableColumn fx:id="placacol" text="Placa" />
-                      <TableColumn fx:id="nomecol" text="Nome" />
+                      <TableColumn fx:id="nomecol" text="Motorista" />
                       <TableColumn fx:id="forncol" text="Fornecedor" />
                       <TableColumn fx:id="prodcol" text="Produto" />
-                      <TableColumn fx:id="statuscol" text="Status" />
+                      <TableColumn fx:id="decol" text="Data Entrada" />
+                      <TableColumn fx:id="hecol" text="Hora Entrada" />
+                      <TableColumn fx:id="pecol" text="Peso Entrada(Kg)" />
+                      <TableColumn fx:id="dscol" text="Data Saida" />
+                      <TableColumn fx:id="hscol" text="Hora Saida" />
+                      <TableColumn fx:id="pscol" text="Peso Saida(Kg)" />
+                      <TableColumn fx:id="plcol" text="Peso Liquido(Kg)" />
                     </columns>
                   </TableView>
                   <Button fx:id="confirma" layoutX="1074.0" layoutY="228.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Confirmar" textFill="WHITE">
