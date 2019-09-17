@@ -8,6 +8,7 @@ package lerserialbalanca.models;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -62,15 +63,14 @@ public class Registro {
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
         Date data = new Date();
-        Registro reg = new Registro();
-        reg.setPlaca(placa);
-        reg.setNome(mot.getNome());
-        reg.setProduto(mot.getProduto());
-        reg.setFornecedor(mot.getFornecedor());
-        reg.setDt_entrada(fmtDate.format(data));
-        reg.setH_entrada(fmtTime.format(data));
-        reg.setPs_entrada(ps_entrada);
-        return acao.entradaRegistro(reg);
+        this.setPlaca(placa);
+        this.setNome(mot.getNome());
+        this.setProduto(mot.getProduto());
+        this.setFornecedor(mot.getFornecedor());
+        this.setDt_entrada(fmtDate.format(data));
+        this.setH_entrada(fmtTime.format(data));
+        this.setPs_entrada(ps_entrada);
+        return acao.entradaRegistro(this);
     }
     
     public boolean registrarSaida(String placa, String ps_entrada, String ps_saida) throws ClassNotFoundException, SQLException{
@@ -92,7 +92,7 @@ public class Registro {
         return acao.getUltimoRegistro(placa);
     }
     
-    public ObservableList<Registro> listaDeRegistros() throws ClassNotFoundException, SQLException {
+    public ObservableList<Registro> listaDeRegistros() throws ClassNotFoundException, SQLException, ParseException {
         Acoes acao = new Acoes();
         return FXCollections.observableList(acao.listarRegistros());
     }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package lerserialbalanca;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import lerserialbalanca.models.ManipuladorEtiqueta;
@@ -35,7 +38,8 @@ public class Principal extends Application {
         
     }
    
-    private Stage primaryStage;
+    private static Stage primaryStage;
+    private static Stage secondStage;
 
     @Override
     public void start(Stage primaryStage) throws URISyntaxException {
@@ -48,8 +52,10 @@ public class Principal extends Application {
      */
     public void initRootLayout() throws URISyntaxException {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("views/TelaInicial.fxml"));
-            primaryStage.setTitle("EBM Metrologia");
+            Parent root = FXMLLoader.load(getClass().getResource("views/principal.fxml"));
+            primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
+            primaryStage.getIcons().addAll(new Image("file:/C:/Users/Desenvolvimento/Documents/Java/ebmico.jpg"));
+            //primaryStage.getIcons().addAll(new Image(new FileInputStream("./ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -60,6 +66,32 @@ public class Principal extends Application {
             });
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public static void loadScene(String nameFile, String titlePage) {
+        Parent root;
+        try {
+         if(secondStage == null){   
+            root = FXMLLoader.load(Principal.class.getResource(nameFile));
+            Scene scene = new Scene(root, 600, 400);
+            secondStage = new Stage();
+            secondStage.initModality(Modality.WINDOW_MODAL);
+            secondStage.initOwner(primaryStage);
+            secondStage.setResizable(false);
+            secondStage.setTitle(titlePage);
+            secondStage.setScene(scene);
+            secondStage.show();
+            secondStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent arg0) {
+                    secondStage.close();
+                    secondStage = null;
+                }
+            });
+         }
+        } catch (IOException e) {
+         e.printStackTrace();
         }
     }
     

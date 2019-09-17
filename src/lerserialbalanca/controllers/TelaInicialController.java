@@ -1,10 +1,12 @@
 package lerserialbalanca.controllers;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -20,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -29,10 +32,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javax.swing.JOptionPane;
 import jssc.SerialPortException;
+import lerserialbalanca.Principal;
 import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
+import lerserialbalanca.utils.BrowserLaunch;
 
 /**
  * FXML Controller class
@@ -47,6 +52,8 @@ public class TelaInicialController implements Initializable {
     private Button confirma;
     @FXML
     private Button cancela;
+    @FXML
+    private Button relatorio;
     @FXML
     private ImageView imagem;
     @FXML
@@ -100,7 +107,6 @@ public class TelaInicialController implements Initializable {
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -108,7 +114,7 @@ public class TelaInicialController implements Initializable {
             eventosElementos(); //Eventos dos elementos visuais
             formatarCampos(); //Formatação de campos
             preencherTabela(); //Preenchimento da tabela com dados do banco
-            
+
             //PARA EXECUTAVEL
             //Image img = new Image(new FileInputStream("./pe-display.jpg"));
             //imagem.setImage(img);
@@ -116,18 +122,17 @@ public class TelaInicialController implements Initializable {
             serialThread.start();
             displayThread = new Thread(this::DisplayThread);
             displayThread.start();
-            
-            //ManipuladorEtiqueta man = new ManipuladorEtiqueta();
-            //man.fazerEtiquetaHtml("C:\\Users\\Desenvolvimento\\Documents\\Java\\etiqueta.txt","C:\\Users\\Desenvolvimento\\Documents\\Java\\PRINT.HTML");
 
         } catch (SerialPortException ex) {
-            JOptionPane.showMessageDialog(null, ex.getPortName()+" - "+ex.getExceptionType(),"Erro", 0);
+            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
             System.exit(0);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(),"Erro", 0);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
             System.exit(0);
+        } catch (ParseException ex) {
+            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -139,14 +144,14 @@ public class TelaInicialController implements Initializable {
             // le o arquivo
             is = getClass().getResourceAsStream("../properties/config.properties");
             prop.load(is);
+            //prop.load(new FileInputStream("./config/config.properties"));
             String porta = prop.getProperty("porta");
             String equipamento = prop.getProperty("equipamento");
-            LerSerial serial = new LerSerial(porta,equipamento);
+            LerSerial serial = new LerSerial(porta, equipamento);
             return serial;
-            //prop.load(new FileInputStream("./config/config.properties")); PARA JAR
         } catch (FileNotFoundException ex) {
-             JOptionPane.showMessageDialog(null,"Arquivo .properties não foi encontrado");
-             System.exit(0);
+            JOptionPane.showMessageDialog(null, "Arquivo .properties não foi encontrado");
+            System.exit(0);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -168,6 +173,9 @@ public class TelaInicialController implements Initializable {
         TextFormatter<String> textFormatterProd = new TextFormatter<>(upperCase);
         text_produto.setTextFormatter(textFormatterProd);
         addTextLimiter(text_placa, 7);
+        text_peso_ent.setStyle("-fx-opacity: 1.0;");
+        text_peso_sai.setStyle("-fx-opacity: 1.0;");
+
     }
 
     //EVENTOS DE ELEMENTOS
@@ -186,24 +194,21 @@ public class TelaInicialController implements Initializable {
                         text_produto.setText(mot.getProduto());
                         if (mot.getStatus().equals("E")) {
                             mostrarEntrada = true;
-                            //text_peso_ent.setText(peso_bru_id.getText());
                         }
                         if (mot.getStatus().equals("S")) {
                             mostrarSaida = true;
-                            Registro regis = reg.ultimoRegistro(mot.getPlaca());
-                            text_peso_ent.setText(regis.getPs_entrada());
-                            //text_peso_sai.setText(peso_bru_id.getText());
+                            reg = reg.ultimoRegistro(mot.getPlaca());
+                            text_peso_ent.setText(reg.getPs_entrada());
                         }
                     } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
                         text_motorista.requestFocus();
                         mostrarEntrada = true;
-                        //text_peso_ent.setText(peso_bru_id.getText() + " KG");
                     }
 
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(),"Erro", 0);
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
                     System.exit(0);
                 }
             } else { //SE O NUMERO DE CARACTERES FOR MENOR QUE 7
@@ -232,43 +237,80 @@ public class TelaInicialController implements Initializable {
                     mot.setFornecedor(text_fornecedor.getText());
                     mot.setProduto(text_produto.getText());
                     mot.setStatus(tipo);
-                    
+
                     if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
                         mot.editar();
-                        if(tipo.equals("S")){
+                        if (tipo.equals("S")) {
                             reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
-                        } else if(tipo.equals("E")){
+                            fazerEtiqueta("S", mot.getPlaca());
+                        } else if (tipo.equals("E")) {
                             reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
+                            fazerEtiqueta("E", mot.getPlaca());
                         }
                         atualizarTabela();
                         limparCampos();
                     } else { // SE O MOTORISTA NÃO ESTÁ REGISTRADO
                         mot.cadastrar();
                         reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
+                        System.out.println(reg.getNome());
+                        fazerEtiqueta("E", mot.getPlaca());
                         atualizarTabela();
                         limparCampos();
                     }
 
-                    
-                    
                 }
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(),"Erro", 0);
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
                 System.exit(0);
+            } catch (ParseException ex) {
+                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
-        cancela.setOnMouseClicked((event) ->{ //AO CLICAR NO BOTÃO CANCELAR
+
+        cancela.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
             limparCampos();
             text_placa.requestFocus();
         });
         
+        relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
+            Principal.loadScene("views/relatorio.fxml", "Busca de Relatório");
+        });
+
+        //AO CLICAR DUAS VEZES EM UMA LINHA NA TABELA
+        tabela.setRowFactory(tv -> {
+            TableRow<Registro> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Registro rowData = row.getItem();
+                    ManipuladorEtiqueta man = new ManipuladorEtiqueta();
+                    int option = JOptionPane.showConfirmDialog(null, "Deseja recriar a etiqueta de registro?","Imprimir",JOptionPane.YES_NO_OPTION);
+                    if(option == 0){
+                        try {
+                            man.recriarEtiqueta(rowData.getId());
+                            BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
+                        } catch (IOException ex) {
+                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ParseException ex) {
+                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                     }
+                }
+            });
+            return row;
+        });
+
     }
 
     public boolean validacaoCampos() { //VALIDAÇÃO DE CAMPOS
-        if(text_placa.getText().equals("") || text_placa.getText().length() < 7){
+        if (text_placa.getText().equals("") || text_placa.getText().length() < 7) {
             JOptionPane.showMessageDialog(null, "Campo PLACA vazio ou imcompleto");
             text_placa.requestFocus();
             return false;
@@ -294,7 +336,7 @@ public class TelaInicialController implements Initializable {
     private void ReadSerialThread() { //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
             try {
-                Map<String,String> dados = new HashMap<String, String>();
+                Map<String, String> dados = new HashMap<String, String>();
                 dados = serial.selecionarDadosEquipamento();
                 String estavel_var = dados.get("estavel");
                 String peso_bru_var = dados.get("peso_bru");
@@ -306,11 +348,11 @@ public class TelaInicialController implements Initializable {
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException iex) {
-                    JOptionPane.showMessageDialog(null,"Conexão Serial interrompida","Erro", 0);
+                    JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
                     System.exit(0);
                 }
             } catch (SerialPortException ex) {
-                JOptionPane.showMessageDialog(null, ex.getPortName()+" - "+ex.getExceptionType(),"Erro", 0);
+                JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
                 System.exit(0);
 
             }
@@ -318,27 +360,42 @@ public class TelaInicialController implements Initializable {
 
     }
     
+    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException{
+        ManipuladorEtiqueta man = new ManipuladorEtiqueta();
+        if(tipo.equals("E")){
+            int option = JOptionPane.showConfirmDialog(null, "Deseja imprimir pesagem de entrada?","Imprimir",JOptionPane.YES_NO_OPTION);
+            if(option == 0){
+               man.fazerEtiquetaHtml(placa);
+               BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
+            } 
+        } else if(tipo.equals("S")){
+            man.fazerEtiquetaHtml(placa);
+            BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
+        }
+        
+    }
+
     private void DisplayThread() { //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
             Platform.runLater(() -> {
                 peso_bru_id.setText(peso);
-                if(mostrarEntrada){
+                if (mostrarEntrada) {
                     text_peso_ent.setText(peso);
-                } else if(mostrarSaida){
+                } else if (mostrarSaida) {
                     text_peso_sai.setText(peso);
                 }
-                
+
             });
             try {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
-                JOptionPane.showMessageDialog(null,"Conexão Serial interrompida","Erro", 0);
+                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
                 System.exit(0);
             }
         }
 
     }
-    
+
     //METODO PARA ADICIONAR LIMITE DE TEXTO EM UM CAMPO
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
@@ -351,9 +408,9 @@ public class TelaInicialController implements Initializable {
             }
         });
     }
-    
+
     //PREENCHE A TABELA COM OS DADOS DO BANCO
-    public void preencherTabela() throws ClassNotFoundException, SQLException {
+    public void preencherTabela() throws ClassNotFoundException, SQLException, ParseException {
         Registro reg = new Registro();
         idcol.setCellValueFactory(
                 new PropertyValueFactory<>("id"));
@@ -379,12 +436,12 @@ public class TelaInicialController implements Initializable {
                 new PropertyValueFactory<>("ps_saida"));
         plcol.setCellValueFactory(
                 new PropertyValueFactory<>("ps_liquido"));
-        
+
         tabela.setItems(reg.listaDeRegistros());
     }
 
     //ATUALIZA A TABELA COM NOVOS DADOS
-    public void atualizarTabela() {
+    public void atualizarTabela() throws ParseException {
         Registro reg = new Registro();
         tabela.getItems().clear();
         try {
@@ -392,7 +449,7 @@ public class TelaInicialController implements Initializable {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(),"Erro", 0);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
             System.exit(0);
         }
     }

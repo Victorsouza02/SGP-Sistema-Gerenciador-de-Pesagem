@@ -5,12 +5,15 @@
  */
 package lerserialbalanca.persistence;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
@@ -124,6 +127,9 @@ public class Acoes {
         while(result.next()){
             reg.setId(result.getInt("id"));
             reg.setPlaca(result.getString("placa"));
+            reg.setNome(result.getString("nome"));
+            reg.setProduto(result.getString("produto"));
+            reg.setFornecedor(result.getString("fornecedor"));
             reg.setDt_entrada(result.getString("data_entrada"));
             reg.setH_entrada(result.getString("hora_entrada"));
             reg.setPs_entrada(result.getString("peso_entrada"));
@@ -135,22 +141,57 @@ public class Acoes {
         return reg;
     }
     
-    public List<Registro> listarRegistros() throws ClassNotFoundException, SQLException{
+    public Registro pegarRegistro(int id) throws ClassNotFoundException, SQLException{
+        Conexao conexao = new Conexao();
+        Registro reg = new Registro();
+        PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM registro where id = ?");
+        sql.setInt(1, id);
+        ResultSet result = sql.executeQuery();
+        while(result.next()){
+            reg.setId(result.getInt("id"));
+            reg.setPlaca(result.getString("placa"));
+            reg.setNome(result.getString("nome"));
+            reg.setProduto(result.getString("produto"));
+            reg.setFornecedor(result.getString("fornecedor"));
+            reg.setDt_entrada(result.getString("data_entrada"));
+            reg.setH_entrada(result.getString("hora_entrada"));
+            reg.setPs_entrada(result.getString("peso_entrada"));
+            reg.setDt_saida(result.getString("data_saida"));
+            reg.setH_saida(result.getString("hora_saida"));
+            reg.setPs_saida(result.getString("peso_saida"));
+            reg.setPs_liquido(result.getString("peso_liquido"));
+        }
+        return reg;
+    }
+    
+    public List<Registro> listarRegistros() throws ClassNotFoundException, SQLException, ParseException{
         Conexao conexao = new Conexao();
         PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro");
         ResultSet result = sql.executeQuery();
         List<Registro> registros = new ArrayList<Registro>();
+        SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
+
+        Date data = new Date();
         while(result.next()){
+            data = dateFormatSql.parse(result.getString("data_entrada"));
+            String data_entrada = dateFormatView.format(data);
+            String data_saida = "";
+            if(result.getString("data_saida") != null){
+                data = dateFormatSql.parse(result.getString("data_saida"));
+                data_saida = dateFormatView.format(data);
+            }
+            
             Registro reg = new Registro(
                     result.getInt("id"),
                     result.getString("placa"),
                     result.getString("nome"),
                     result.getString("produto"),
                     result.getString("fornecedor"),
-                    result.getString("data_entrada"),
+                    data_entrada,
                     result.getString("hora_entrada"),
                     result.getString("peso_entrada"),
-                    result.getString("data_saida"),
+                    data_saida,
                     result.getString("hora_saida"),
                     result.getString("peso_saida"),
                     result.getString("peso_liquido")
