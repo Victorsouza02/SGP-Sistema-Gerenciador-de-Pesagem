@@ -120,7 +120,7 @@
                 </ImageView>
                 <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="21.0" layoutY="132.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="81.0" prefWidth="163.0" text="00000" textAlignment="CENTER" textFill="#d3d3d3">
                     <font>
-                        <Font name="Segoe UI Black" size="52.0" />
+                        <Font name="Segoe UI Black" size="37.0" />
                     </font>
                 </Label>
                 <Label fx:id="kg" layoutX="186.0" layoutY="146.0" prefHeight="62.0" prefWidth="65.0" text="Kg" textAlignment="CENTER" textFill="LIGHTGRAY">

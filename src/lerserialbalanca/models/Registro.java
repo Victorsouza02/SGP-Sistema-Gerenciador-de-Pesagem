@@ -14,8 +14,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lerserialbalanca.persistence.Acoes;
@@ -83,7 +85,7 @@ public class Registro {
         reg.setDt_saida(fmtDate.format(data));
         reg.setH_saida(fmtTime.format(data));
         reg.setPs_saida(ps_saida);
-        reg.setPs_liquido(String.valueOf(Integer.parseInt(ps_saida) - Integer.parseInt(ps_entrada)));
+        reg.setPs_liquido(String.valueOf(Float.parseFloat(ps_saida) - Float.parseFloat(ps_entrada)));
         return acao.saidaRegistro(reg);
     }
     
@@ -95,6 +97,12 @@ public class Registro {
     public ObservableList<Registro> listaDeRegistros() throws ClassNotFoundException, SQLException, ParseException {
         Acoes acao = new Acoes();
         return FXCollections.observableList(acao.listarRegistros());
+    }
+    
+    public List<Registro> listaDeRegistros(String data_ini, String data_fim) throws ClassNotFoundException, SQLException, ParseException {
+        Acoes acao = new Acoes();
+        List<Registro> registros = new ArrayList<Registro>();
+        return acao.listarRegistros(data_ini, data_fim);
     }
 
 

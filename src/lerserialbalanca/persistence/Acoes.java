@@ -200,4 +200,44 @@ public class Acoes {
         }
         return registros;
     }
+    
+    public List<Registro> listarRegistros(String data_inicio, String data_fim) throws ClassNotFoundException, SQLException, ParseException{
+        Conexao conexao = new Conexao();
+        PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro where data_entrada BETWEEN ? AND ?");
+        sql.setString(1, data_inicio);
+        sql.setString(2, data_fim);
+
+        ResultSet result = sql.executeQuery();
+        List<Registro> registros = new ArrayList<Registro>();
+        SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = new Date();
+        
+        while(result.next()){
+            data = dateFormatSql.parse(result.getString("data_entrada"));
+            String data_entrada = dateFormatView.format(data);
+            String data_saida = "";
+            if(result.getString("data_saida") != null){
+                data = dateFormatSql.parse(result.getString("data_saida"));
+                data_saida = dateFormatView.format(data);
+            }
+            
+            Registro reg = new Registro(
+                    result.getInt("id"),
+                    result.getString("placa"),
+                    result.getString("nome"),
+                    result.getString("produto"),
+                    result.getString("fornecedor"),
+                    data_entrada,
+                    result.getString("hora_entrada"),
+                    result.getString("peso_entrada"),
+                    data_saida,
+                    result.getString("hora_saida"),
+                    result.getString("peso_saida"),
+                    result.getString("peso_liquido")
+            );
+            registros.add(reg);
+        }
+        return registros;
+    }
 }

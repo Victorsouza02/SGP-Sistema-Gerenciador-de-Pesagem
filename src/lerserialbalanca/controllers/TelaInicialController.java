@@ -133,11 +133,13 @@ public class TelaInicialController implements Initializable {
             System.exit(0);
         } catch (ParseException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     //PEGA DADOS DO ARQUIVO
-    public LerSerial getProperties() throws SerialPortException {
+    public LerSerial getProperties() throws SerialPortException, InterruptedException {
         InputStream is;
         Properties prop = new Properties();
         try {
@@ -333,32 +335,37 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    private void ReadSerialThread() { //THREAD PARA LEITURA DE SERIAL CONTINUA
-        while (isReading) {
-            try {
-                Map<String, String> dados = new HashMap<String, String>();
-                dados = serial.selecionarDadosEquipamento();
-                String estavel_var = dados.get("estavel");
-                String peso_bru_var = dados.get("peso_bru");
-                String tara_var = dados.get("tara");
-                String peso_liq_var = dados.get("peso_liq");
-                Platform.runLater(() -> {
-                    peso = peso_bru_var;
-                });
+    private void ReadSerialThread() { 
+        try {
+            //THREAD PARA LEITURA DE SERIAL CONTINUA
+            Thread.sleep(100);
+            while (isReading) {
                 try {
-                    Thread.sleep(20);
-                } catch (InterruptedException iex) {
-                    JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+                    Map<String, String> dados = new HashMap<String, String>();
+                    dados = serial.selecionarDadosEquipamento();
+                    String estavel_var = dados.get("estavel");
+                    String peso_bru_var = dados.get("peso_bru");
+                    String tara_var = dados.get("tara");
+                    String peso_liq_var = dados.get("peso_liq");
+                    Platform.runLater(() -> {
+                        peso = peso_bru_var;
+                    });
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException iex) {
+                        JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+                        System.exit(0);
+                    }
+                } catch (SerialPortException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
                     System.exit(0);
+                    
                 }
-            } catch (SerialPortException ex) {
-                JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-                System.exit(0);
-
             }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }
+   }
     
     public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException{
         ManipuladorEtiqueta man = new ManipuladorEtiqueta();
@@ -375,7 +382,10 @@ public class TelaInicialController implements Initializable {
         
     }
 
-    private void DisplayThread() { //THREAD PARA LEITURA DE SERIAL CONTINUA
+    private void DisplayThread() { 
+        try {
+        //THREAD PARA LEITURA DE SERIAL CONTINUA
+        Thread.sleep(1000);
         while (isReading) {
             Platform.runLater(() -> {
                 peso_bru_id.setText(peso);
@@ -392,6 +402,9 @@ public class TelaInicialController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
                 System.exit(0);
             }
+        }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
