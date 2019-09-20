@@ -97,8 +97,7 @@ public class Principal extends Application {
     }
     
     /**
-     * Retorna o palco principal.
-     * @return
+     * Retorna o palco principal
      */
     public Stage getPrimaryStage() {
         return primaryStage;

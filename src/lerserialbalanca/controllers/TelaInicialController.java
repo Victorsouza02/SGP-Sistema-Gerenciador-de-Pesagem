@@ -42,6 +42,7 @@ import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.BrowserLaunch;
+import lerserialbalanca.utils.Format;
 
 /**
  * FXML Controller class
@@ -73,7 +74,6 @@ public class TelaInicialController implements Initializable {
     @FXML
     private TextField text_produto;
 
-  
     @FXML
     private TableView<Registro> tabela;
     @FXML
@@ -138,7 +138,7 @@ public class TelaInicialController implements Initializable {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
 
     //PEGA DADOS DO ARQUIVO
@@ -175,7 +175,7 @@ public class TelaInicialController implements Initializable {
         text_fornecedor.setTextFormatter(textFormatterForn);
         TextFormatter<String> textFormatterProd = new TextFormatter<>(upperCase);
         text_produto.setTextFormatter(textFormatterProd);
-        addTextLimiter(text_placa, 7);
+        Format.addTextLimiter(text_placa, 7);
         text_peso_ent.setStyle("-fx-opacity: 1.0;");
         text_peso_sai.setStyle("-fx-opacity: 1.0;");
 
@@ -278,7 +278,7 @@ public class TelaInicialController implements Initializable {
             limparCampos();
             text_placa.requestFocus();
         });
-        
+
         relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
             Principal.loadScene("views/relatorio.fxml", "Busca de Relatório");
         });
@@ -289,8 +289,8 @@ public class TelaInicialController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Registro rowData = row.getItem();
-                    int option = JOptionPane.showConfirmDialog(null, "Deseja recriar a etiqueta de registro?","Imprimir",JOptionPane.YES_NO_OPTION);
-                    if(option == 0){
+                    int option = JOptionPane.showConfirmDialog(null, "Deseja recriar a etiqueta de registro?", "Imprimir", JOptionPane.YES_NO_OPTION);
+                    if (option == 0) {
                         try {
                             ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
                             BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
@@ -303,7 +303,7 @@ public class TelaInicialController implements Initializable {
                         } catch (ParseException ex) {
                             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                     }
+                    }
                 }
             });
             return row;
@@ -335,87 +335,25 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    private void ReadSerialThread() { 
-            //THREAD PARA LEITURA DE SERIAL CONTINUA
-            while (isReading) {
-                try {
-                    Map<String, String> dados = new HashMap<String, String>();
-                    dados = serial.selecionarDadosEquipamento();
-                    String estavel_var = dados.get("estavel");
-                    String peso_bru_var = dados.get("peso_bru");
-                    String tara_var = dados.get("tara");
-                    String peso_liq_var = dados.get("peso_liq");
-                    Platform.runLater(() -> {
-                        peso = peso_bru_var;
-                    });
-                    try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException iex) {
-                        JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
-                        System.exit(0);
-                    }
-                } catch (SerialPortException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-                    System.exit(0);
-                    
-                }
-            }
-        }
-    
-    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException{
-        ManipuladorEtiqueta man = new ManipuladorEtiqueta();
-        if(tipo.equals("E")){
+    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException {
+        if (tipo.equals("E")) {
             Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
             aviso.setTitle("Impressão");
             aviso.setHeaderText("Impressão do Ticket - ENTRADA");
             aviso.setContentText("Deseja fazer a impressão de entrada?");
             ButtonType botaoSim = new ButtonType("Sim");
             ButtonType botaoNao = new ButtonType("Não", ButtonData.CANCEL_CLOSE);
-            aviso.getButtonTypes().setAll(botaoSim,botaoNao);
+            aviso.getButtonTypes().setAll(botaoSim, botaoNao);
             Optional<ButtonType> result = aviso.showAndWait();
-            if (result.get() == botaoSim){
-                man.fazerEtiquetaHtml(placa);
+            if (result.get() == botaoSim) {
+                ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
                 BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
             }
-        } else if(tipo.equals("S")){
-            man.fazerEtiquetaHtml(placa);
+        } else if (tipo.equals("S")) {
+            ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
             BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
         }
-        
-    }
 
-    private void DisplayThread() { 
-        //THREAD PARA LEITURA DE SERIAL CONTINUA
-        while (isReading) {
-            Platform.runLater(() -> {
-                peso_bru_id.setText(peso);
-                if (mostrarEntrada) {
-                    text_peso_ent.setText(peso);
-                } else if (mostrarSaida) {
-                    text_peso_sai.setText(peso);
-                }
-
-            });
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException iex) {
-                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
-            }
-        }
-
-    }
-
-    //METODO PARA ADICIONAR LIMITE DE TEXTO EM UM CAMPO
-    public static void addTextLimiter(final TextField tf, final int maxLength) {
-        tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
-                if (tf.getText().length() > maxLength) {
-                    String s = tf.getText().substring(0, maxLength);
-                    tf.setText(s);
-                }
-            }
-        });
     }
 
     //PREENCHE A TABELA COM OS DADOS DO BANCO
@@ -472,6 +410,53 @@ public class TelaInicialController implements Initializable {
         text_peso_sai.setText("");
         text_fornecedor.setText("");
         text_produto.setText("");
+    }
+
+    
+    private void ReadSerialThread() {
+        //THREAD PARA LEITURA DE SERIAL CONTINUA
+        while (isReading) {
+            try {
+                Map<String, String> dados = new HashMap<String, String>();
+                dados = serial.selecionarDadosEquipamento();
+                String estavel_var = dados.get("estavel");
+                String peso_bru_var = dados.get("peso_bru");
+                String tara_var = dados.get("tara");
+                String peso_liq_var = dados.get("peso_liq");
+                Platform.runLater(() -> {
+                    peso = peso_bru_var;
+                });
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException iex) {
+                    JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+                    System.exit(0);
+                }
+            } catch (SerialPortException ex) {
+                JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
+                System.exit(0);
+
+            }
+        }
+    }
+
+    private void DisplayThread() {
+        //THREAD PARA LEITURA DE SERIAL CONTINUA
+        while (isReading) {
+            Platform.runLater(() -> {
+                peso_bru_id.setText(peso);
+                if (mostrarEntrada) {
+                    text_peso_ent.setText(peso);
+                } else if (mostrarSaida) {
+                    text_peso_sai.setText(peso);
+                }
+            });
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException iex) {
+                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+            }
+        }
     }
 
 }
