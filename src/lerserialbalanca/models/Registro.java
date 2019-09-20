@@ -6,16 +6,10 @@
 package lerserialbalanca.models;
 
 import java.sql.SQLException;
-import java.sql.Time;
-import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -85,7 +79,10 @@ public class Registro {
         reg.setDt_saida(fmtDate.format(data));
         reg.setH_saida(fmtTime.format(data));
         reg.setPs_saida(ps_saida);
-        reg.setPs_liquido(String.valueOf(Float.parseFloat(ps_saida) - Float.parseFloat(ps_entrada)));
+        DecimalFormat df = new DecimalFormat("#.###");
+        Number n = Float.parseFloat(ps_saida) - Float.parseFloat(ps_entrada);
+        Double d = n.doubleValue();
+        reg.setPs_liquido(String.valueOf(df.format(d)));
         return acao.saidaRegistro(reg);
     }
     

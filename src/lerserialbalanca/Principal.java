@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -21,9 +19,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jssc.SerialPortException;
-import lerserialbalanca.models.LerSerial;
-import lerserialbalanca.models.ManipuladorEtiqueta;
+
+
 
 
 /**
@@ -58,8 +55,8 @@ public class Principal extends Application {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("views/principal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
-            primaryStage.getIcons().addAll(new Image("file:/C:/Users/Desenvolvimento/Documents/Java/ebmico.jpg"));
-            //primaryStage.getIcons().addAll(new Image(new FileInputStream("./ebmico.jpg")));
+            primaryStage.getIcons().addAll(new Image("file:/C:/Users/Desenvolvimento/Documents/Java/src/ebmico.jpg"));
+            //primaryStage.getIcons().addAll(new Image(new FileInputStream("./src/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

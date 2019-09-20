@@ -36,8 +36,8 @@ public class BrowserLaunch {
         }  
     }
     
-    public static void open(){
-        String url = new File("").getAbsolutePath()+"\\PRINT.HTML";
+    public static void openPrint(String file){
+        String url = new File("").getAbsolutePath()+"\\src\\"+file+"";
         url = url.replace("\\", "/");
         Desktop desktop = null;  
         desktop = Desktop.getDesktop();  

@@ -48,7 +48,7 @@ public class RelatorioController implements Initializable {
                 Registro reg = new Registro();
                 List<Registro> registros = reg.listaDeRegistros(data1.getValue().toString(), data2.getValue().toString());
                 ManipuladorEtiqueta.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
-                BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/report.html");
+                BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html_report());
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {

@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import lerserialbalanca.persistence.Acoes;
@@ -29,12 +28,13 @@ import lerserialbalanca.persistence.Acoes;
  */
 public class ManipuladorEtiqueta {
     
-    private static String path_txt = "C:\\Users\\Desenvolvimento\\Documents\\Java\\etiqueta.txt";
-    //private static String path_txt = "./etiqueta.txt";
-    private static String path_html = "C:\\Users\\Desenvolvimento\\Documents\\Java\\PRINT.HTML";
-    private static String path_html_report = "C:\\Users\\Desenvolvimento\\Documents\\Java\\report.html";
+    private static String path_txt = "C:/Users/Desenvolvimento/Documents/Java/src/etiqueta.txt";
+    private static String path_html = "C:/Users/Desenvolvimento/Documents/Java/src/PRINT.HTML";
+    private static String path_html_report = "C:/Users/Desenvolvimento/Documents/Java/src/report.html";
+    //private static String path_txt = "./src/etiqueta.txt";
+    //private static String path_html = "./src/PRINT.HTML";
+    //private static String path_html_report = "./src/report.html";
 
-    //private static String path_html = "./PRINT.HTML";
 
 
     public static void fazerEtiquetaHtml(String placa) throws IOException, ClassNotFoundException, SQLException, ParseException {
@@ -66,7 +66,6 @@ public class ManipuladorEtiqueta {
     }
     
     public static void fazerRelatorioHtml(List<Registro> registros,LocalDate inicio, LocalDate fim)throws IOException{
-        Acoes acao = new Acoes();
         String data_ini = inicio.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
         String data_fim = fim.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
         String linha = "";
@@ -88,7 +87,7 @@ public class ManipuladorEtiqueta {
         "<tr><th>ID</th><th>PLACA</th><th>MOTORISTA</th><th>DT ENTRADA</th><th>H ENTRADA</th><th>PESO ENTRADA</th><th>DT SAIDA</th><th>H SAIDA</th><th>PESO SAIDA</th><th>PESO LIQ</th><th>FORNECEDOR</th><th>PRODUTO</th></tr>");
         for(Registro reg : registros){
             buffWrite.append("<tr><td>"+reg.getId()+"</td><td>"+reg.getPlaca()+"</td><td>"+reg.getNome()+"</td><td>"+reg.getDt_entrada()+"</td><td>"+reg.getH_entrada()+"</td><td>"+reg.getPs_entrada()+
-                    " Kg</td><td>"+ ((reg.getDt_saida() == "")? "---" : reg.getDt_saida()) +"</td><td>"+((reg.getH_saida() == null) ? "---" : reg.getH_saida())+"</td><td>"+((reg.getPs_saida() == null)? "---" : reg.getPs_saida())+" Kg</td><td>"+((reg.getPs_liquido() == null)? "---" : reg.getPs_liquido())+" Kg</td><td>"+
+                    " kg</td><td>"+ ((reg.getDt_saida() == "")? "---" : reg.getDt_saida()) +"</td><td>"+((reg.getH_saida() == null) ? "---" : reg.getH_saida())+"</td><td>"+((reg.getPs_saida() == null)? "---" : reg.getPs_saida())+" kg</td><td>"+((reg.getPs_liquido() == null)? "---" : reg.getPs_liquido())+" kg</td><td>"+
                     reg.getFornecedor()+"</td><td>"+reg.getProduto()+"</td></tr>");
         }
         buffWrite.append("</table></body></html>");
@@ -154,7 +153,7 @@ public class ManipuladorEtiqueta {
                 linha = linha.replace(var, reg.getH_entrada());
                 break;
             case "$PS_ENTRADA":
-                linha = linha.replace(var, reg.getPs_entrada()+"KG");
+                linha = linha.replace(var, reg.getPs_entrada()+"kg");
                 break;
             case "$DT_SAIDA":
                 if(reg.getDt_saida() != null){
@@ -169,14 +168,40 @@ public class ManipuladorEtiqueta {
                 linha = linha.replace(var, (reg.getH_saida() == null)? "---" : reg.getH_saida());
                 break;
             case "$PS_SAIDA":
-                linha = linha.replace(var, (reg.getPs_saida() == null)? "---" : reg.getPs_saida()+"KG");
+                linha = linha.replace(var, (reg.getPs_saida() == null)? "---" : reg.getPs_saida()+"kg");
                 break;
             case "$PS_LIQ":
-                linha = linha.replace(var, (reg.getPs_liquido() == null)? "---" : reg.getPs_liquido()+"KG");
+                linha = linha.replace(var, (reg.getPs_liquido() == null)? "---" : reg.getPs_liquido()+"kg");
                 break;
         }
         return linha;
     }
+
+    public static String getPath_txt() {
+        return path_txt;
+    }
+
+    public static void setPath_txt(String path_txt) {
+        ManipuladorEtiqueta.path_txt = path_txt;
+    }
+
+    public static String getPath_html() {
+        return path_html;
+    }
+
+    public static void setPath_html(String path_html) {
+        ManipuladorEtiqueta.path_html = path_html;
+    }
+
+    public static String getPath_html_report() {
+        return path_html_report;
+    }
+
+    public static void setPath_html_report(String path_html_report) {
+        ManipuladorEtiqueta.path_html_report = path_html_report;
+    }
+    
+    
 }
 
     

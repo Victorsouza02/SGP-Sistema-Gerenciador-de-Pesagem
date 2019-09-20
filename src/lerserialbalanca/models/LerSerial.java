@@ -6,13 +6,10 @@
 package lerserialbalanca.models;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -43,6 +40,7 @@ public class LerSerial {
         selecionarConfigEquipamento();
         conSerial();
         serialPort.addEventListener(new SerialPortReader());
+        Thread.sleep(1000);
     }
 
     //COMUNICAÇÃO SERIAL
@@ -55,10 +53,10 @@ public class LerSerial {
     public String dataSerial() throws SerialPortException {
         if(ok == true){
             String dado = serialPort.readString(total_bytes);
-            System.out.println(dado);
+            //System.out.println(dado);
             return dado;
         } else {
-            return "0,0000000,0000000,0000000";
+            return padraoString();
         }     
     }
 
@@ -67,6 +65,15 @@ public class LerSerial {
             case "WT1000N":
                 configWT1000N();
         }
+    }
+    
+    public String padraoString(){
+        String padrao = null;
+        switch(equipamento){
+            case "WT1000N":
+                padrao = "0,0000000,0000000,0000000";
+        }
+        return padrao;
     }
 
     public Map<String, String> selecionarDadosEquipamento() throws SerialPortException {
@@ -88,10 +95,11 @@ public class LerSerial {
     public Map<String, String> dadosWT1000N() throws SerialPortException {
         Map<String, String> dados = new HashMap<String, String>();
         String dado = dataSerial();
+        System.out.println(dado);
         dados.put("estavel", (dado.substring(0, 1).equals("0")) ? "Estável" : "Oscilando");
         String peso_bru = dado.substring(2, 9);
-
-        if (peso_bru.equals("0000000")) {
+        
+        if (peso_bru.equals("000000 ") || peso_bru.equals("0000000")){
             peso_bru = "0";
         } else {
             if (peso_bru.contains("-")) {
@@ -104,7 +112,7 @@ public class LerSerial {
             } else {
                 if (peso_bru.contains(".")) {
                     int pos = peso_bru.indexOf(".");
-                    peso_bru = peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                    peso_bru = (pos == 3) ? peso_bru.replaceFirst(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", ""));
                 } else {
                     peso_bru = peso_bru.replaceFirst("0*", "");
                 }
@@ -127,7 +135,6 @@ public class LerSerial {
                         byte buffer[] = serialPort.readBytes(1);
                         byte b = buffer[0];
                         char c = (char) b;
-                        // System.out.println(c);
                         rxData = rxData + c;
                         if (c == '\n') {
                             ok = true;

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -19,7 +20,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -69,6 +73,7 @@ public class TelaInicialController implements Initializable {
     @FXML
     private TextField text_produto;
 
+  
     @FXML
     private TableView<Registro> tabela;
     @FXML
@@ -100,7 +105,6 @@ public class TelaInicialController implements Initializable {
     public byte[] buffer;
     Thread serialThread;
     Thread displayThread;
-    Thread labelThread;
 
     boolean isReading = true;
     private String peso;
@@ -114,9 +118,8 @@ public class TelaInicialController implements Initializable {
             eventosElementos(); //Eventos dos elementos visuais
             formatarCampos(); //Formatação de campos
             preencherTabela(); //Preenchimento da tabela com dados do banco
-
             //PARA EXECUTAVEL
-            //Image img = new Image(new FileInputStream("./pe-display.jpg"));
+            //Image img = new Image(new FileInputStream("./src/pe-display.jpg"));
             //imagem.setImage(img);
             serialThread = new Thread(this::ReadSerialThread);
             serialThread.start();
@@ -135,17 +138,15 @@ public class TelaInicialController implements Initializable {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
 
     //PEGA DADOS DO ARQUIVO
     public LerSerial getProperties() throws SerialPortException, InterruptedException {
-        InputStream is;
         Properties prop = new Properties();
         try {
             // le o arquivo
-            is = getClass().getResourceAsStream("../properties/config.properties");
-            prop.load(is);
+            prop.load(getClass().getResourceAsStream("../properties/config.properties"));
             //prop.load(new FileInputStream("./config/config.properties"));
             String porta = prop.getProperty("porta");
             String equipamento = prop.getProperty("equipamento");
@@ -288,12 +289,11 @@ public class TelaInicialController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Registro rowData = row.getItem();
-                    ManipuladorEtiqueta man = new ManipuladorEtiqueta();
                     int option = JOptionPane.showConfirmDialog(null, "Deseja recriar a etiqueta de registro?","Imprimir",JOptionPane.YES_NO_OPTION);
                     if(option == 0){
                         try {
-                            man.recriarEtiqueta(rowData.getId());
-                            BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
+                            ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
+                            BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
                         } catch (IOException ex) {
                             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (ClassNotFoundException ex) {
@@ -336,9 +336,7 @@ public class TelaInicialController implements Initializable {
     }
 
     private void ReadSerialThread() { 
-        try {
             //THREAD PARA LEITURA DE SERIAL CONTINUA
-            Thread.sleep(100);
             while (isReading) {
                 try {
                     Map<String, String> dados = new HashMap<String, String>();
@@ -362,30 +360,32 @@ public class TelaInicialController implements Initializable {
                     
                 }
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
-   }
     
     public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException{
         ManipuladorEtiqueta man = new ManipuladorEtiqueta();
         if(tipo.equals("E")){
-            int option = JOptionPane.showConfirmDialog(null, "Deseja imprimir pesagem de entrada?","Imprimir",JOptionPane.YES_NO_OPTION);
-            if(option == 0){
-               man.fazerEtiquetaHtml(placa);
-               BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
-            } 
+            Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
+            aviso.setTitle("Impressão");
+            aviso.setHeaderText("Impressão do Ticket - ENTRADA");
+            aviso.setContentText("Deseja fazer a impressão de entrada?");
+            ButtonType botaoSim = new ButtonType("Sim");
+            ButtonType botaoNao = new ButtonType("Não", ButtonData.CANCEL_CLOSE);
+            aviso.getButtonTypes().setAll(botaoSim,botaoNao);
+            Optional<ButtonType> result = aviso.showAndWait();
+            if (result.get() == botaoSim){
+                man.fazerEtiquetaHtml(placa);
+                BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
+            }
         } else if(tipo.equals("S")){
             man.fazerEtiquetaHtml(placa);
-            BrowserLaunch.openURL("C:/Users/Desenvolvimento/Documents/Java/PRINT.HTML");
+            BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
         }
         
     }
 
     private void DisplayThread() { 
-        try {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
-        Thread.sleep(1000);
         while (isReading) {
             Platform.runLater(() -> {
                 peso_bru_id.setText(peso);
@@ -400,11 +400,7 @@ public class TelaInicialController implements Initializable {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
                 JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
-                System.exit(0);
             }
-        }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
