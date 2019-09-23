@@ -7,29 +7,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.RelatorioController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="230.0" prefWidth="412.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.RelatorioController">
    <children>
-      <DatePicker fx:id="data1" layoutX="155.0" layoutY="147.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="291.0" AnchorPane.leftAnchor="155.0" AnchorPane.rightAnchor="154.0" />
-      <DatePicker fx:id="data2" layoutX="155.0" layoutY="240.0" prefHeight="33.0" prefWidth="291.0" AnchorPane.leftAnchor="155.0" AnchorPane.rightAnchor="154.0" />
-      <Label layoutX="290.0" layoutY="115.0" text="De :" AnchorPane.leftAnchor="157.0" AnchorPane.rightAnchor="152.0">
+      <DatePicker fx:id="data1" layoutX="139.0" layoutY="48.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="179.0" />
+      <DatePicker fx:id="data2" layoutX="139.0" layoutY="99.0" prefHeight="33.0" prefWidth="179.0" />
+      <Label layoutX="95.0" layoutY="55.0" prefHeight="19.0" prefWidth="37.0" text="De :">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label layoutX="156.0" layoutY="217.0" prefHeight="19.0" prefWidth="291.0" text="Ate:" AnchorPane.leftAnchor="156.0" AnchorPane.rightAnchor="153.0">
+      <Label layoutX="95.0" layoutY="106.0" prefHeight="19.0" prefWidth="37.0" text="Ate:">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="157.0" layoutY="43.0" prefHeight="53.0" prefWidth="291.0" text="Obter Relatório" AnchorPane.leftAnchor="157.0" AnchorPane.rightAnchor="152.0" AnchorPane.topAnchor="43.0">
+      <Label alignment="CENTER" prefHeight="40.0" prefWidth="412.0" text="Obter Relatório">
          <font>
-            <Font name="System Bold" size="35.0" />
+            <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Button fx:id="buscar" layoutX="198.0" layoutY="309.0" mnemonicParsing="false" prefHeight="59.0" prefWidth="206.0" text="Buscar" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="198.0" AnchorPane.rightAnchor="196.0">
+      <Button fx:id="buscar" layoutX="125.0" layoutY="157.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="163.0" text="Buscar">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font>
       </Button>
+      <Label fx:id="msg" alignment="CENTER" layoutX="9.0" layoutY="202.0" prefHeight="19.0" prefWidth="394.0" text="Selecione o período desejado">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

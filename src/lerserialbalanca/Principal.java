@@ -75,7 +75,7 @@ public class Principal extends Application {
         try {
          if(secondStage == null){   
             root = FXMLLoader.load(Principal.class.getResource(nameFile));
-            Scene scene = new Scene(root, 600, 400);
+            Scene scene = new Scene(root, 400, 230);
             secondStage = new Stage();
             secondStage.initModality(Modality.WINDOW_MODAL);
             secondStage.initOwner(primaryStage);

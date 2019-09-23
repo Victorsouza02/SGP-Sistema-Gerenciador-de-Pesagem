@@ -47,7 +47,7 @@
                         <Font size="19.0" />
                     </font>
                 </Label>
-                <TextField fx:id="text_placa" layoutX="88.0" layoutY="20.0" prefHeight="33.0" prefWidth="150.0">
+                <TextField fx:id="text_placa" layoutX="88.0" layoutY="20.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-color: #fce89f;">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>
@@ -111,23 +111,28 @@
                 <TableColumn fx:id="plcol" text="Peso Liquido(Kg)" />
             </columns>
         </TableView>
-        <Pane layoutX="799.0" prefHeight="267.0" prefWidth="402.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+        <Pane layoutX="791.0" layoutY="20.0" prefHeight="308.0" prefWidth="490.0" AnchorPane.rightAnchor="-65.0" AnchorPane.topAnchor="20.0">
             <children>
                 <ImageView fx:id="imagem" fitHeight="310.0" fitWidth="463.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="file:/C:/Users/Desenvolvimento/Documents/Java/src/pe-display.jpg" />
                     </image>
                 </ImageView>
-                <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="15.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
+                <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="24.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
                     <font>
-                        <Font name="Segoe UI Black" size="51.0" />
+                        <Font name="Segoe UI Black" size="49.0" />
                     </font>
                 </Label>
-                <Label fx:id="kg" layoutX="218.0" layoutY="173.0" prefHeight="62.0" prefWidth="65.0" text="kg" textAlignment="CENTER" textFill="LIGHTGRAY">
+                <Label fx:id="kg" layoutX="227.0" layoutY="173.0" prefHeight="62.0" prefWidth="65.0" text="kg" textAlignment="CENTER" textFill="LIGHTGRAY">
                     <font>
                         <Font name="Segoe UI Black" size="38.0" />
                     </font>
                 </Label>
+            <Label fx:id="status" alignment="CENTER_RIGHT" layoutX="159.0" layoutY="141.0" prefHeight="21.0" prefWidth="117.0" text="Estável" textAlignment="CENTER" textFill="LIGHTGRAY">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
         <Pane layoutX="14.0" layoutY="299.0" prefHeight="33.0" prefWidth="1176.0" AnchorPane.bottomAnchor="268.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="299.0" />
@@ -146,19 +151,12 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Button>
-      <MenuBar prefHeight="25.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <MenuBar fx:id="menu" prefHeight="25.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Arquivo">
+          <Menu mnemonicParsing="false" text="Geral">
             <items>
-              <MenuItem mnemonicParsing="false" text="Fechar" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Ver Relatório">
-            
-          </Menu>
-          <Menu mnemonicParsing="false" text="Ajuda">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Sobre" />
+              <MenuItem fx:id="menu_relatorio" mnemonicParsing="false" text="Relatório" />
+                  <MenuItem mnemonicParsing="false" text="Fechar" />
             </items>
           </Menu>
         </menus>

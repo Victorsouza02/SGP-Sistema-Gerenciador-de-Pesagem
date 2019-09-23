@@ -95,8 +95,7 @@ public class LerSerial {
     public Map<String, String> dadosWT1000N() throws SerialPortException {
         Map<String, String> dados = new HashMap<String, String>();
         String dado = dataSerial();
-        System.out.println(dado);
-        dados.put("estavel", (dado.substring(0, 1).equals("0")) ? "Estável" : "Oscilando");
+        dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
         String peso_bru = dado.substring(2, 9);
         
         if (peso_bru.equals("000000 ") || peso_bru.equals("0000000")){
@@ -112,7 +111,7 @@ public class LerSerial {
             } else {
                 if (peso_bru.contains(".")) {
                     int pos = peso_bru.indexOf(".");
-                    peso_bru = (pos == 3) ? peso_bru.replaceFirst(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                    peso_bru = (pos <= 3) ? peso_bru.replaceFirst(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", ""));
                 } else {
                     peso_bru = peso_bru.replaceFirst("0*", "");
                 }

@@ -17,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javax.swing.JOptionPane;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.BrowserLaunch;
@@ -34,6 +36,8 @@ public class RelatorioController implements Initializable {
     private DatePicker data1;
     @FXML
     private DatePicker data2;
+    @FXML
+    private Label msg;
     /**
      * Initializes the controller class.
      */
@@ -45,10 +49,16 @@ public class RelatorioController implements Initializable {
     private void eventosElementos() {
         buscar.setOnMouseClicked((event)->{
             try {
-                Registro reg = new Registro();
-                List<Registro> registros = reg.listaDeRegistros(data1.getValue().toString(), data2.getValue().toString());
-                ManipuladorEtiqueta.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
-                BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html_report());
+                if(data1.getValue() == null || data2.getValue() == null){
+                    msg.setStyle("-fx-text-fill: red;");
+                    msg.setText("ERRO : Selecione as datas.");
+                } else {
+                    Registro reg = new Registro();
+                    List<Registro> registros = reg.listaDeRegistros(data1.getValue().toString(), data2.getValue().toString());
+                    ManipuladorEtiqueta.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
+                    BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html_report());
+                }
+                
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {

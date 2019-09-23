@@ -22,7 +22,7 @@ import lerserialbalanca.models.Registro;
  *
  * @author Desenvolvimento
  */
-public class Acoes {
+public class AcoesSQL {
     
     public Motorista procurarPlaca (String placa) throws ClassNotFoundException, SQLException{
         Conexao conexao = new Conexao();

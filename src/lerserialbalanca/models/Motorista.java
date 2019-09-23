@@ -5,7 +5,7 @@
  */
 package lerserialbalanca.models;
 
-import lerserialbalanca.persistence.Acoes;
+import lerserialbalanca.persistence.AcoesSQL;
 import java.sql.SQLException;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -76,7 +76,7 @@ public class Motorista {
     }
 
     public Motorista procurarPlaca(String placa) throws ClassNotFoundException, SQLException {
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         Motorista mot = acao.procurarPlaca(placa);
         if (mot.getNome() != null) {
             setPlaca(mot.getPlaca());
@@ -90,7 +90,7 @@ public class Motorista {
     }
 
     public void cadastrar() throws ClassNotFoundException, SQLException {
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         if (acao.CadastrarMotorista(this)) {
             System.out.println("Motorista cadastrado com sucesso");
         } else {
@@ -99,7 +99,7 @@ public class Motorista {
     }
     
     public void editar() throws ClassNotFoundException, SQLException{
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         if (acao.editarMotorista(this)) {
             System.out.println("Motorista editado com sucesso");
         } else {
@@ -108,7 +108,7 @@ public class Motorista {
     }
     
     public ObservableList<Motorista> listaDeMotoristas() throws ClassNotFoundException, SQLException {
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarMotoristas());
     }
 

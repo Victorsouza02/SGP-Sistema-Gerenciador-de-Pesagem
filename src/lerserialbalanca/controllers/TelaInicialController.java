@@ -25,6 +25,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -50,9 +53,12 @@ import lerserialbalanca.utils.Format;
  * @author Desenvolvimento
  */
 public class TelaInicialController implements Initializable {
-
+    @FXML
+    private MenuItem menu_relatorio;
     @FXML
     private Label peso_bru_id;
+    @FXML
+    private Label status;
     @FXML
     private Button confirma;
     @FXML
@@ -108,6 +114,7 @@ public class TelaInicialController implements Initializable {
 
     boolean isReading = true;
     private String peso;
+    private boolean estavel;
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
@@ -228,6 +235,7 @@ public class TelaInicialController implements Initializable {
         confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CONFIRMA
             try {
                 if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
+                    confirma.setDisable(true);
                     Motorista mot = new Motorista();
                     Registro reg = new Registro();
                     mot = mot.procurarPlaca(text_placa.getText());
@@ -255,12 +263,11 @@ public class TelaInicialController implements Initializable {
                     } else { // SE O MOTORISTA NÃO ESTÁ REGISTRADO
                         mot.cadastrar();
                         reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
-                        System.out.println(reg.getNome());
                         fazerEtiqueta("E", mot.getPlaca());
                         atualizarTabela();
                         limparCampos();
                     }
-
+                    confirma.setDisable(false);
                 }
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
@@ -289,7 +296,7 @@ public class TelaInicialController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Registro rowData = row.getItem();
-                    int option = JOptionPane.showConfirmDialog(null, "Deseja recriar a etiqueta de registro?", "Imprimir", JOptionPane.YES_NO_OPTION);
+                    int option = JOptionPane.showConfirmDialog(null, "Deseja imprimir o registro da placa "+rowData.getPlaca()+"?", "Imprimir", JOptionPane.YES_NO_OPTION);
                     if (option == 0) {
                         try {
                             ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
@@ -308,6 +315,11 @@ public class TelaInicialController implements Initializable {
             });
             return row;
         });
+        
+        menu_relatorio.setOnAction((event)->{
+            Principal.loadScene("views/relatorio.fxml", "Busca de Relatório");
+        });
+        
 
     }
 
@@ -419,12 +431,11 @@ public class TelaInicialController implements Initializable {
             try {
                 Map<String, String> dados = new HashMap<String, String>();
                 dados = serial.selecionarDadosEquipamento();
-                String estavel_var = dados.get("estavel");
+                boolean estavel_var = (dados.get("estavel").equals("Estável"))? true : false;
                 String peso_bru_var = dados.get("peso_bru");
-                String tara_var = dados.get("tara");
-                String peso_liq_var = dados.get("peso_liq");
                 Platform.runLater(() -> {
                     peso = peso_bru_var;
+                    estavel = estavel_var;
                 });
                 try {
                     Thread.sleep(20);
@@ -445,6 +456,13 @@ public class TelaInicialController implements Initializable {
         while (isReading) {
             Platform.runLater(() -> {
                 peso_bru_id.setText(peso);
+                if(estavel){
+                    status.setText("Estável");
+                    status.setStyle("-fx-text-fill: green;");
+                } else {
+                    status.setText("Oscilando");
+                    status.setStyle("-fx-text-fill: red;");
+                }
                 if (mostrarEntrada) {
                     text_peso_ent.setText(peso);
                 } else if (mostrarSaida) {

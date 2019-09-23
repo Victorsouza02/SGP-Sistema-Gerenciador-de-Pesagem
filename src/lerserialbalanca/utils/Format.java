@@ -5,6 +5,7 @@
  */
 package lerserialbalanca.utils;
 
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
@@ -15,7 +16,6 @@ import javafx.scene.control.TextField;
  */
 public class Format {
       //METODO PARA ADICIONAR LIMITE DE TEXTO EM UM CAMPO
-    
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -27,4 +27,6 @@ public class Format {
             }
         });
     }
+    
+
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import lerserialbalanca.persistence.Acoes;
+import lerserialbalanca.persistence.AcoesSQL;
 
 /**
  *
@@ -54,7 +54,7 @@ public class Registro {
     }
     
     public boolean registrarEntrada(String placa, String ps_entrada) throws ClassNotFoundException, SQLException{
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         Motorista mot = acao.procurarPlaca(placa);
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
@@ -70,7 +70,7 @@ public class Registro {
     }
     
     public boolean registrarSaida(String placa, String ps_entrada, String ps_saida) throws ClassNotFoundException, SQLException{
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
         Date data = new Date();
@@ -87,17 +87,17 @@ public class Registro {
     }
     
     public Registro ultimoRegistro(String placa) throws ClassNotFoundException, SQLException{
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         return acao.getUltimoRegistro(placa);
     }
     
     public ObservableList<Registro> listaDeRegistros() throws ClassNotFoundException, SQLException, ParseException {
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarRegistros());
     }
     
     public List<Registro> listaDeRegistros(String data_ini, String data_fim) throws ClassNotFoundException, SQLException, ParseException {
-        Acoes acao = new Acoes();
+        AcoesSQL acao = new AcoesSQL();
         List<Registro> registros = new ArrayList<Registro>();
         return acao.listarRegistros(data_ini, data_fim);
     }
