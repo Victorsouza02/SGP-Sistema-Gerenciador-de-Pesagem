@@ -4,11 +4,13 @@
  * and open the template in the editor.
  */
 package lerserialbalanca;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -19,6 +21,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.swing.JOptionPane;
+import lerserialbalanca.models.PenDrive;
 
 
 
@@ -43,21 +47,28 @@ public class Principal extends Application {
     private static Stage secondStage;
 
     @Override
-    public void start(Stage primaryStage) throws URISyntaxException {
-        this.primaryStage = primaryStage;
-        initRootLayout();
+    public void start(Stage primaryStage) throws URISyntaxException, InterruptedException, IOException, NoSuchAlgorithmException {
+        PenDrive sec = new PenDrive();
+        if(sec.isAutorizado()){
+            this.primaryStage = primaryStage;
+            initRootLayout();
+        } else {
+            JOptionPane.showMessageDialog(null, "Você não está autorizado a executar este programa, verifique seu Pen Drive.", "Não autorizado", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
     
     /**
      * Inicializa o root layout (layout base).
      */
-    public void initRootLayout() throws URISyntaxException {
+    public void initRootLayout() throws URISyntaxException, InterruptedException {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("views/principal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
-            primaryStage.getIcons().addAll(new Image("file:/C:/Users/Desenvolvimento/Documents/Java/src/ebmico.jpg"));
+            primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
             //primaryStage.getIcons().addAll(new Image(new FileInputStream("./src/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
+            Thread.sleep(6000);
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -79,6 +90,7 @@ public class Principal extends Application {
             secondStage = new Stage();
             secondStage.initModality(Modality.WINDOW_MODAL);
             secondStage.initOwner(primaryStage);
+            secondStage.getIcons().add(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
             secondStage.setResizable(false);
             secondStage.setTitle(titlePage);
             secondStage.setScene(scene);

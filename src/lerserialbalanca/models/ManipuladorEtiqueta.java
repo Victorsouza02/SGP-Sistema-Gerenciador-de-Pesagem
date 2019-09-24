@@ -7,12 +7,15 @@ package lerserialbalanca.models;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -35,7 +38,9 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.JobName;
 import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
+import lerserialbalanca.Principal;
 import lerserialbalanca.persistence.AcoesSQL;
+import lerserialbalanca.utils.BrowserLaunch;
 
 /**
  *
@@ -43,19 +48,22 @@ import lerserialbalanca.persistence.AcoesSQL;
  */
 public class ManipuladorEtiqueta {
 
-    private static String path_txt = "C:/Users/Desenvolvimento/Documents/Java/src/etiqueta.txt";
-    private static String path_html = "C:/Users/Desenvolvimento/Documents/Java/src/PRINT.HTML";
-    private static String path_html_report = "C:/Users/Desenvolvimento/Documents/Java/src/report.html";
+    private static String path_txt = new File("").getAbsolutePath()+"\\print\\etiqueta.txt";
+    private static String path_html = new File("").getAbsolutePath()+"\\print\\PRINT.HTML";
+    private static String path_html_report = new File("").getAbsolutePath()+"\\print\\report.html";
     //private static String path_txt = "./src/etiqueta.txt";
     //private static String path_html = "./src/PRINT.HTML";
     //private static String path_html_report = "./src/report.html";
 
-    public static void fazerEtiquetaHtml(String placa) throws IOException, ClassNotFoundException, SQLException, ParseException {
+    public static void fazerEtiquetaHtml(String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, URISyntaxException {
         AcoesSQL acao = new AcoesSQL();
         Registro reg = acao.getUltimoRegistro(placa);
+        //ARQUIVO DE LEITURA
         BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(path_txt), StandardCharsets.ISO_8859_1));
         String linha = "";
+        //ARQUIVO DE ESCRITA
         OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
+        
         buffWrite.write("");
         buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre><center>");
         while (true) {
@@ -76,13 +84,17 @@ public class ManipuladorEtiqueta {
         buffWrite.append("</pre><script>print()</script></body></html>");
         buffRead.close();
         buffWrite.close();
+        BrowserLaunch.openURL(path_html);
     }
 
-    public static void fazerRelatorioHtml(List<Registro> registros, LocalDate inicio, LocalDate fim) throws IOException {
+    public static void fazerRelatorioHtml(List<Registro> registros, LocalDate inicio, LocalDate fim) throws IOException, URISyntaxException {
         String data_ini = inicio.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
         String data_fim = fim.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
         String linha = "";
+        
+        //ARQUIVO PARA ESCRITA
         OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html_report), StandardCharsets.UTF_8);
+        
         buffWrite.write("");
         buffWrite.append("<!DOCTYPE html><html>\n"
                 + "<head>"
@@ -105,16 +117,19 @@ public class ManipuladorEtiqueta {
         }
         buffWrite.append("</table></body></html>");
         buffWrite.close();
+        BrowserLaunch.openURL(path_html_report);
     }
 
-    public static void recriarEtiqueta(int id) throws IOException, ClassNotFoundException, SQLException, ParseException {
+    public static void recriarEtiqueta(int id) throws IOException, ClassNotFoundException, SQLException, ParseException, URISyntaxException {
         AcoesSQL acao = new AcoesSQL();
         Registro reg = acao.pegarRegistro(id);
+        
+        //ARQUIVO DE LEITURA
         BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(path_txt), StandardCharsets.ISO_8859_1));
-        // buffRead = new BufferedReader(new FileReader(path_txt));
         String linha = "";
+        //ARQUIVO DE ESCRITA
         OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
-        //BufferedWriter buffWrite = new BufferedWriter(new FileWriter(path_html,false));
+
         buffWrite.write("");
         buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre><center>");
         while (true) {
@@ -135,6 +150,7 @@ public class ManipuladorEtiqueta {
         buffWrite.append("</pre><script>print()</script></body></html>");
         buffRead.close();
         buffWrite.close();
+        BrowserLaunch.openURL(path_html);
     }
 
     public static String colocarValores(String linha, String var, Registro reg) throws ParseException {

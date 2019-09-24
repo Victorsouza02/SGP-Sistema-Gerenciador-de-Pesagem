@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -16,8 +17,6 @@ import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -25,8 +24,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -125,9 +122,10 @@ public class TelaInicialController implements Initializable {
             eventosElementos(); //Eventos dos elementos visuais
             formatarCampos(); //Formatação de campos
             preencherTabela(); //Preenchimento da tabela com dados do banco
-            //PARA EXECUTAVEL
-            //Image img = new Image(new FileInputStream("./src/pe-display.jpg"));
-            //imagem.setImage(img);
+            //
+            Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
+            imagem.setImage(img);
+            //
             serialThread = new Thread(this::ReadSerialThread);
             serialThread.start();
             displayThread = new Thread(this::DisplayThread);
@@ -153,7 +151,7 @@ public class TelaInicialController implements Initializable {
         Properties prop = new Properties();
         try {
             // le o arquivo
-            prop.load(getClass().getResourceAsStream("../properties/config.properties"));
+            prop.load(getClass().getResourceAsStream("/lerserialbalanca/properties/config.properties"));
             //prop.load(new FileInputStream("./config/config.properties"));
             String porta = prop.getProperty("porta");
             String equipamento = prop.getProperty("equipamento");
@@ -278,6 +276,8 @@ public class TelaInicialController implements Initializable {
                 Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (URISyntaxException ex) {
+                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -308,6 +308,8 @@ public class TelaInicialController implements Initializable {
                         } catch (SQLException ex) {
                             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (ParseException ex) {
+                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (URISyntaxException ex) {
                             Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -347,7 +349,7 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException {
+    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException, URISyntaxException {
         if (tipo.equals("E")) {
             Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
             aviso.setTitle("Impressão");
@@ -359,11 +361,9 @@ public class TelaInicialController implements Initializable {
             Optional<ButtonType> result = aviso.showAndWait();
             if (result.get() == botaoSim) {
                 ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
-                BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
             }
         } else if (tipo.equals("S")) {
             ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
-            BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
         }
 
     }

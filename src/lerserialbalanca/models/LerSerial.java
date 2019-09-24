@@ -30,8 +30,7 @@ public class LerSerial {
     private int stopbit;
     private int parity;
     private int total_bytes;
-    private static String rxData;
-    private static boolean ok;
+    private static boolean ok = false;
 
     public LerSerial(String porta, String equipamento) throws SerialPortException, InterruptedException, IOException {
         setPort(porta);
@@ -40,7 +39,6 @@ public class LerSerial {
         selecionarConfigEquipamento();
         conSerial();
         serialPort.addEventListener(new SerialPortReader());
-        Thread.sleep(1000);
     }
 
     //COMUNICAÇÃO SERIAL
@@ -53,7 +51,6 @@ public class LerSerial {
     public String dataSerial() throws SerialPortException {
         if(ok == true){
             String dado = serialPort.readString(total_bytes);
-            //System.out.println(dado);
             return dado;
         } else {
             return padraoString();
@@ -134,15 +131,10 @@ public class LerSerial {
                         byte buffer[] = serialPort.readBytes(1);
                         byte b = buffer[0];
                         char c = (char) b;
-                        rxData = rxData + c;
                         if (c == '\n') {
                             ok = true;
-                            Thread.sleep(10);
-                            rxData = "";
                         }
                     } catch (SerialPortException ex) {
-                        Logger.getLogger(LerSerial.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InterruptedException ex) {
                         Logger.getLogger(LerSerial.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }

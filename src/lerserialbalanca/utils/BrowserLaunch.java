@@ -8,11 +8,8 @@ package lerserialbalanca.utils;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.swing.JOptionPane;
-import lerserialbalanca.Principal;
 
 /**
  *
@@ -21,6 +18,7 @@ import lerserialbalanca.Principal;
 public class BrowserLaunch {    
     public static void openURL(String url)
     {
+        url = url.replace("\\", "/").replaceFirst("/", "");
         Desktop desktop = null;  
         desktop = Desktop.getDesktop();  
         URI uri = null;  
@@ -52,7 +50,6 @@ public class BrowserLaunch {
         catch(URISyntaxException use) {  
                    use.printStackTrace();  
         }  
-      //Principal.class.getResourceAsStream("../../../PRINT.HTML").toString());  
         
     }
 }

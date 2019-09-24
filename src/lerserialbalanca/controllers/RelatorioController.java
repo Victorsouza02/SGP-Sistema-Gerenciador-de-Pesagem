@@ -6,6 +6,7 @@
 package lerserialbalanca.controllers;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -66,6 +67,8 @@ public class RelatorioController implements Initializable {
             } catch (ParseException ex) {
                 Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
+                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (URISyntaxException ex) {
                 Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
