@@ -53,7 +53,7 @@ public class Registro {
         setPs_liquido(ps_liquido);
     }
     
-    public boolean registrarEntrada(String placa, String ps_entrada) throws ClassNotFoundException, SQLException{
+    public boolean registrarEntrada(String placa, String ps_entrada){
         AcoesSQL acao = new AcoesSQL();
         Motorista mot = acao.procurarPlaca(placa);
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,7 +69,7 @@ public class Registro {
         return acao.entradaRegistro(this);
     }
     
-    public boolean registrarSaida(String placa, String ps_entrada, String ps_saida) throws ClassNotFoundException, SQLException{
+    public boolean registrarSaida(String placa, String ps_entrada, String ps_saida){
         AcoesSQL acao = new AcoesSQL();
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
@@ -86,17 +86,17 @@ public class Registro {
         return acao.saidaRegistro(reg);
     }
     
-    public Registro ultimoRegistro(String placa) throws ClassNotFoundException, SQLException{
+    public Registro ultimoRegistro(String placa){
         AcoesSQL acao = new AcoesSQL();
         return acao.getUltimoRegistro(placa);
     }
     
-    public ObservableList<Registro> listaDeRegistros() throws ClassNotFoundException, SQLException, ParseException {
+    public ObservableList<Registro> listaDeRegistros() {
         AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarRegistros());
     }
     
-    public List<Registro> listaDeRegistros(String data_ini, String data_fim) throws ClassNotFoundException, SQLException, ParseException {
+    public List<Registro> listaDeRegistros(String data_ini, String data_fim) {
         AcoesSQL acao = new AcoesSQL();
         List<Registro> registros = new ArrayList<Registro>();
         return acao.listarRegistros(data_ini, data_fim);

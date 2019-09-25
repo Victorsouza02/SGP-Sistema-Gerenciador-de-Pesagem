@@ -5,11 +5,9 @@
  */
 package lerserialbalanca.models;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -32,29 +30,42 @@ public class LerSerial {
     private int total_bytes;
     private static boolean ok = false;
 
-    public LerSerial(String porta, String equipamento) throws SerialPortException, InterruptedException, IOException {
-        setPort(porta);
-        setEquipamento(equipamento);
-        serialPort = new SerialPort(getPort());
-        selecionarConfigEquipamento();
-        conSerial();
-        serialPort.addEventListener(new SerialPortReader());
+    public LerSerial(String porta, String equipamento){
+        try {
+            setPort(porta);
+            setEquipamento(equipamento);
+            serialPort = new SerialPort(getPort());
+            selecionarConfigEquipamento();
+            conSerial();
+            serialPort.addEventListener(new SerialPortReader());
+        } catch (SerialPortException ex){
+            System.out.println(ex.getMessage());
+        }
     }
 
     //COMUNICAÇÃO SERIAL
-    public void conSerial() throws SerialPortException, InterruptedException {
-        serialPort.openPort();
-        serialPort.setParams(baud, databits, stopbit, parity, false, false);
+    public void conSerial(){
+        try {
+            serialPort.openPort();
+            serialPort.setParams(baud, databits, stopbit, parity, false, false);
+        } catch (SerialPortException ex){
+            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
+            System.exit(0);
+        }
     }
 
     //RETORNA DADOS DA SERIAL
-    public String dataSerial() throws SerialPortException {
-        if(ok == true){
-            String dado = serialPort.readString(total_bytes);
-            return dado;
-        } else {
+    public String dataSerial(){
+        try {
+            if(ok == true){
+                return serialPort.readString(total_bytes);
+            } 
             return padraoString();
-        }     
+        } catch (SerialPortException serEx){
+            System.out.println(serEx.getMessage());
+        } 
+        
+        return padraoString();
     }
 
     public void selecionarConfigEquipamento() {
@@ -73,7 +84,7 @@ public class LerSerial {
         return padrao;
     }
 
-    public Map<String, String> selecionarDadosEquipamento() throws SerialPortException {
+    public Map<String, String> selecionarDadosEquipamento() {
         switch (equipamento) {
             case "WT1000N":
                 return dadosWT1000N();
@@ -89,7 +100,7 @@ public class LerSerial {
         setTotal_bytes(27);
     }
 
-    public Map<String, String> dadosWT1000N() throws SerialPortException {
+    public Map<String, String> dadosWT1000N(){
         Map<String, String> dados = new HashMap<String, String>();
         String dado = dataSerial();
         dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
@@ -135,7 +146,7 @@ public class LerSerial {
                             ok = true;
                         }
                     } catch (SerialPortException ex) {
-                        Logger.getLogger(LerSerial.class.getName()).log(Level.SEVERE, null, ex);
+                        System.out.println(ex.getMessage());
                     }
                 }
             }

@@ -4,14 +4,7 @@
  * and open the template in the editor.
  */
 package lerserialbalanca;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -22,22 +15,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
-import lerserialbalanca.models.PenDrive;
+import lerserialbalanca.models.Autorizacao;
 
 
-
-
-/**
- *
- * @author Desenvolvimento
- */
 public class Principal extends Application {
 
-    /**
-     * @param args the command line arguments
-     */
-    //private String config = getProperties();
-    
     public static void main(String[] args) {
         launch(args);
         
@@ -47,9 +29,9 @@ public class Principal extends Application {
     private static Stage secondStage;
 
     @Override
-    public void start(Stage primaryStage) throws URISyntaxException, InterruptedException, IOException, NoSuchAlgorithmException {
-        PenDrive sec = new PenDrive();
-        if(sec.isAutorizado()){
+    public void start(Stage primaryStage) {
+        Autorizacao pd = new Autorizacao();
+        if(pd.isAutorizado()){
             this.primaryStage = primaryStage;
             initRootLayout();
         } else {
@@ -61,12 +43,11 @@ public class Principal extends Application {
     /**
      * Inicializa o root layout (layout base).
      */
-    public void initRootLayout() throws URISyntaxException, InterruptedException {
+    public void initRootLayout() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("views/principal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
             primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
-            //primaryStage.getIcons().addAll(new Image(new FileInputStream("./src/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
             Thread.sleep(6000);
             primaryStage.show();
@@ -78,6 +59,8 @@ public class Principal extends Application {
             });
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException ex){
+            System.out.println(ex.getMessage());
         }
     }
     

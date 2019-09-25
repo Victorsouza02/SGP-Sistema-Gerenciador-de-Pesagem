@@ -16,12 +16,18 @@ import java.sql.SQLException;
 public class Conexao {
     private static Connection conexao;
     
-    public Conexao() throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        String url = "jdbc:sqlite:./db/dados.db";
-        //String url = "jdbc:sqlite:db/dados.db"; 
-        conexao = DriverManager.getConnection(url);
-        System.out.println("Conexao OK");
+    public Conexao() {
+        try{
+            Class.forName("org.sqlite.JDBC");
+            String url = "jdbc:sqlite:./db/dados.db";
+            //String url = "jdbc:sqlite:db/dados.db"; 
+            conexao = DriverManager.getConnection(url);
+            System.out.println("Conexao Banco OK");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     
     public Connection getConexao(){

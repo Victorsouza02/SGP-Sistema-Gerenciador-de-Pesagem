@@ -117,7 +117,6 @@ public class TelaInicialController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
             serial = getProperties(); // LE O ARQUIVO .properties E RECEBE AS CONFIGURAÇÕES DO USUARIO
             eventosElementos(); //Eventos dos elementos visuais
             formatarCampos(); //Formatação de campos
@@ -130,24 +129,10 @@ public class TelaInicialController implements Initializable {
             serialThread.start();
             displayThread = new Thread(this::DisplayThread);
             displayThread.start();
-
-        } catch (SerialPortException ex) {
-            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-            System.exit(0);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
-            System.exit(0);
-        } catch (ParseException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     //PEGA DADOS DO ARQUIVO
-    public LerSerial getProperties() throws SerialPortException, InterruptedException {
+    public LerSerial getProperties() {
         Properties prop = new Properties();
         try {
             // le o arquivo
@@ -191,7 +176,6 @@ public class TelaInicialController implements Initializable {
         //AO DIGITAR UM CARACTERE NO CAMPO PLACA
         text_placa.setOnKeyReleased((event) -> {
             if (text_placa.getText().length() == 7) { //SE O NUMERO DE CARACTERES FOR IGUAL 7
-                try {
                     Motorista mot = new Motorista();
                     mot = mot.procurarPlaca(text_placa.getText());
                     boolean registrado = mot.getNome() != null;
@@ -212,13 +196,6 @@ public class TelaInicialController implements Initializable {
                         text_motorista.requestFocus();
                         mostrarEntrada = true;
                     }
-
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
-                    System.exit(0);
-                }
             } else { //SE O NUMERO DE CARACTERES FOR MENOR QUE 7
                 mostrarEntrada = false;
                 mostrarSaida = false;
@@ -231,7 +208,6 @@ public class TelaInicialController implements Initializable {
         });
 
         confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CONFIRMA
-            try {
                 if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
                     confirma.setDisable(true);
                     Motorista mot = new Motorista();
@@ -267,18 +243,6 @@ public class TelaInicialController implements Initializable {
                     }
                     confirma.setDisable(false);
                 }
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
-                System.exit(0);
-            } catch (ParseException ex) {
-                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
 
         cancela.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
@@ -298,20 +262,7 @@ public class TelaInicialController implements Initializable {
                     Registro rowData = row.getItem();
                     int option = JOptionPane.showConfirmDialog(null, "Deseja imprimir o registro da placa "+rowData.getPlaca()+"?", "Imprimir", JOptionPane.YES_NO_OPTION);
                     if (option == 0) {
-                        try {
-                            ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
-                            BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html());
-                        } catch (IOException ex) {
-                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SQLException ex) {
-                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (ParseException ex) {
-                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (URISyntaxException ex) {
-                            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
                     }
                 }
             });
@@ -349,7 +300,7 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    public void fazerEtiqueta(String tipo, String placa) throws IOException, ClassNotFoundException, SQLException, ParseException, ParseException, URISyntaxException {
+    public void fazerEtiqueta(String tipo, String placa){
         if (tipo.equals("E")) {
             Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
             aviso.setTitle("Impressão");
@@ -369,7 +320,7 @@ public class TelaInicialController implements Initializable {
     }
 
     //PREENCHE A TABELA COM OS DADOS DO BANCO
-    public void preencherTabela() throws ClassNotFoundException, SQLException, ParseException {
+    public void preencherTabela() {
         Registro reg = new Registro();
         idcol.setCellValueFactory(
                 new PropertyValueFactory<>("id"));
@@ -400,17 +351,10 @@ public class TelaInicialController implements Initializable {
     }
 
     //ATUALIZA A TABELA COM NOVOS DADOS
-    public void atualizarTabela() throws ParseException {
+    public void atualizarTabela() {
         Registro reg = new Registro();
         tabela.getItems().clear();
-        try {
-            tabela.setItems(reg.listaDeRegistros());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", 0);
-            System.exit(0);
-        }
+        tabela.setItems(reg.listaDeRegistros());
     }
 
     public void limparCampos() { //LIMPA TODOS OS CAMPOS DO FORMULÁRIO
@@ -428,7 +372,6 @@ public class TelaInicialController implements Initializable {
     private void ReadSerialThread() {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
-            try {
                 Map<String, String> dados = new HashMap<String, String>();
                 dados = serial.selecionarDadosEquipamento();
                 boolean estavel_var = (dados.get("estavel").equals("Estável"))? true : false;
@@ -442,12 +385,7 @@ public class TelaInicialController implements Initializable {
                 } catch (InterruptedException iex) {
                     JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
                     System.exit(0);
-                }
-            } catch (SerialPortException ex) {
-                JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-                System.exit(0);
-
-            }
+                } 
         }
     }
 
@@ -472,7 +410,7 @@ public class TelaInicialController implements Initializable {
             try {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
-                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+                System.out.println(iex.getMessage());
             }
         }
     }

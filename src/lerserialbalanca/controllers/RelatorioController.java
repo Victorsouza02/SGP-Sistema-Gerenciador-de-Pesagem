@@ -19,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javax.swing.JOptionPane;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.BrowserLaunch;
@@ -49,7 +48,6 @@ public class RelatorioController implements Initializable {
 
     private void eventosElementos() {
         buscar.setOnMouseClicked((event)->{
-            try {
                 if(data1.getValue() == null || data2.getValue() == null){
                     msg.setStyle("-fx-text-fill: red;");
                     msg.setText("ERRO : Selecione as datas.");
@@ -59,18 +57,6 @@ public class RelatorioController implements Initializable {
                     ManipuladorEtiqueta.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
                     BrowserLaunch.openURL(ManipuladorEtiqueta.getPath_html_report());
                 }
-                
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
-                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (URISyntaxException ex) {
-                Logger.getLogger(RelatorioController.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
         
     }
