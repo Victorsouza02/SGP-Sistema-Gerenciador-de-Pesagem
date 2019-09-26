@@ -53,6 +53,14 @@ public class LerSerial {
             System.exit(0);
         }
     }
+    
+    public static void fecharSerial(){
+        try {
+            serialPort.closePort();
+        } catch(SerialPortException ex){
+            ex.printStackTrace();
+        }
+    }
 
     //RETORNA DADOS DA SERIAL
     public String dataSerial(){
@@ -152,6 +160,15 @@ public class LerSerial {
             }
         }
     }
+
+    public static boolean isOk() {
+        return ok;
+    }
+
+    public static void setOk(boolean ok) {
+        LerSerial.ok = ok;
+    }
+
 
     public byte[] getBuffer() {
         return buffer;

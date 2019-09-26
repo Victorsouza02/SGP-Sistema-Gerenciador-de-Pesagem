@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="230.0" prefWidth="400.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.SobreController">
+   <children>
+      <ImageView fx:id="imagem" fitHeight="89.0" fitWidth="90.0" layoutX="157.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Downloads/logoEBM_III.png" />
+         </image>
+      </ImageView>
+      <Label alignment="CENTER" layoutX="20.0" layoutY="125.0" prefHeight="17.0" prefWidth="360.0" text="Desenvolvido por EBM Metrologia">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="20.0" layoutY="151.0" prefHeight="17.0" prefWidth="360.0" text="Todos os direitos reservados - 2019">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="21.0" layoutY="102.0" prefHeight="17.0" prefWidth="360.0" text="Versão 1.00">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="22.0" layoutY="181.0" prefHeight="19.0" prefWidth="353.0" text="Telefone  : (21) 2472 - 5858">
+         <font>
+            <Font name="System Bold Italic" size="13.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

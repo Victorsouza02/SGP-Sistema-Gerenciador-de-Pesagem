@@ -3,11 +3,7 @@ package lerserialbalanca.controllers;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -34,14 +30,14 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javax.swing.JOptionPane;
-import jssc.SerialPortException;
 import lerserialbalanca.Principal;
+import lerserialbalanca.models.Autorizacao;
 import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
-import lerserialbalanca.utils.BrowserLaunch;
 import lerserialbalanca.utils.Format;
 
 /**
@@ -50,8 +46,13 @@ import lerserialbalanca.utils.Format;
  * @author Desenvolvimento
  */
 public class TelaInicialController implements Initializable {
+
     @FXML
     private MenuItem menu_relatorio;
+    @FXML
+    private MenuItem menu_sobre;
+    @FXML
+    private MenuItem menu_config;
     @FXML
     private Label peso_bru_id;
     @FXML
@@ -108,6 +109,7 @@ public class TelaInicialController implements Initializable {
     public byte[] buffer;
     Thread serialThread;
     Thread displayThread;
+    Thread securityThread;
 
     boolean isReading = true;
     private String peso;
@@ -115,20 +117,24 @@ public class TelaInicialController implements Initializable {
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            serial = getProperties(); // LE O ARQUIVO .properties E RECEBE AS CONFIGURAÇÕES DO USUARIO
-            eventosElementos(); //Eventos dos elementos visuais
-            formatarCampos(); //Formatação de campos
-            preencherTabela(); //Preenchimento da tabela com dados do banco
-            //
-            Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
-            imagem.setImage(img);
-            //
-            serialThread = new Thread(this::ReadSerialThread);
-            serialThread.start();
-            displayThread = new Thread(this::DisplayThread);
-            displayThread.start();
+        serial = getProperties(); // LE O ARQUIVO .properties E RECEBE AS CONFIGURAÇÕES DO USUARIO
+        eventosElementos(); //Eventos dos elementos visuais
+        formatarCampos(); //Formatação de campos
+        preencherTabela(); //Preenchimento da tabela com dados do banco
+        //
+        Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
+        imagem.setImage(img);
+        //
+        securityThread = new Thread(this::SecurityThread);
+        securityThread.start();
+        serialThread = new Thread(this::ReadSerialThread);
+        serialThread.start();
+        displayThread = new Thread(this::DisplayThread);
+        displayThread.start();
+        
     }
 
     //PEGA DADOS DO ARQUIVO
@@ -176,26 +182,26 @@ public class TelaInicialController implements Initializable {
         //AO DIGITAR UM CARACTERE NO CAMPO PLACA
         text_placa.setOnKeyReleased((event) -> {
             if (text_placa.getText().length() == 7) { //SE O NUMERO DE CARACTERES FOR IGUAL 7
-                    Motorista mot = new Motorista();
-                    mot = mot.procurarPlaca(text_placa.getText());
-                    boolean registrado = mot.getNome() != null;
-                    if (registrado) { //SE ACHAR MOTORISTA JÁ CADASTRADO COM A PLACA
-                        Registro reg = new Registro();
-                        text_motorista.setText(mot.getNome());
-                        text_fornecedor.setText(mot.getFornecedor());
-                        text_produto.setText(mot.getProduto());
-                        if (mot.getStatus().equals("E")) {
-                            mostrarEntrada = true;
-                        }
-                        if (mot.getStatus().equals("S")) {
-                            mostrarSaida = true;
-                            reg = reg.ultimoRegistro(mot.getPlaca());
-                            text_peso_ent.setText(reg.getPs_entrada());
-                        }
-                    } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
-                        text_motorista.requestFocus();
+                Motorista mot = new Motorista();
+                mot = mot.procurarPlaca(text_placa.getText());
+                boolean registrado = mot.getNome() != null;
+                if (registrado) { //SE ACHAR MOTORISTA JÁ CADASTRADO COM A PLACA
+                    Registro reg = new Registro();
+                    text_motorista.setText(mot.getNome());
+                    text_fornecedor.setText(mot.getFornecedor());
+                    text_produto.setText(mot.getProduto());
+                    if (mot.getStatus().equals("E")) {
                         mostrarEntrada = true;
                     }
+                    if (mot.getStatus().equals("S")) {
+                        mostrarSaida = true;
+                        reg = reg.ultimoRegistro(mot.getPlaca());
+                        text_peso_ent.setText(reg.getPs_entrada());
+                    }
+                } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
+                    text_motorista.requestFocus();
+                    mostrarEntrada = true;
+                }
             } else { //SE O NUMERO DE CARACTERES FOR MENOR QUE 7
                 mostrarEntrada = false;
                 mostrarSaida = false;
@@ -208,41 +214,41 @@ public class TelaInicialController implements Initializable {
         });
 
         confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CONFIRMA
-                if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
-                    confirma.setDisable(true);
-                    Motorista mot = new Motorista();
-                    Registro reg = new Registro();
-                    mot = mot.procurarPlaca(text_placa.getText());
-                    boolean registrado = mot.getNome() != null;
-                    String tipo = (registrado == true) ? mot.getStatus() : "S";
+            if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
+                confirma.setDisable(true);
+                Motorista mot = new Motorista();
+                Registro reg = new Registro();
+                mot = mot.procurarPlaca(text_placa.getText());
+                boolean registrado = mot.getNome() != null;
+                String tipo = (registrado == true) ? mot.getStatus() : "S";
 
-                    mot = new Motorista();
-                    mot.setNome(text_motorista.getText());
-                    mot.setPlaca(text_placa.getText());
-                    mot.setFornecedor(text_fornecedor.getText());
-                    mot.setProduto(text_produto.getText());
-                    mot.setStatus(tipo);
+                mot = new Motorista();
+                mot.setNome(text_motorista.getText());
+                mot.setPlaca(text_placa.getText());
+                mot.setFornecedor(text_fornecedor.getText());
+                mot.setProduto(text_produto.getText());
+                mot.setStatus(tipo);
 
-                    if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
-                        mot.editar();
-                        if (tipo.equals("S")) {
-                            reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
-                            fazerEtiqueta("S", mot.getPlaca());
-                        } else if (tipo.equals("E")) {
-                            reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
-                            fazerEtiqueta("E", mot.getPlaca());
-                        }
-                        atualizarTabela();
-                        limparCampos();
-                    } else { // SE O MOTORISTA NÃO ESTÁ REGISTRADO
-                        mot.cadastrar();
+                if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
+                    mot.editar();
+                    if (tipo.equals("S")) {
+                        reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
+                        fazerEtiqueta("S", mot.getPlaca());
+                    } else if (tipo.equals("E")) {
                         reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
                         fazerEtiqueta("E", mot.getPlaca());
-                        atualizarTabela();
-                        limparCampos();
                     }
-                    confirma.setDisable(false);
+                    atualizarTabela();
+                    limparCampos();
+                } else { // SE O MOTORISTA NÃO ESTÁ REGISTRADO
+                    mot.cadastrar();
+                    reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
+                    fazerEtiqueta("E", mot.getPlaca());
+                    atualizarTabela();
+                    limparCampos();
                 }
+                confirma.setDisable(false);
+            }
         });
 
         cancela.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
@@ -251,7 +257,7 @@ public class TelaInicialController implements Initializable {
         });
 
         relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
-            Principal.loadScene("views/relatorio.fxml", "Busca de Relatório");
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório");
         });
 
         //AO CLICAR DUAS VEZES EM UMA LINHA NA TABELA
@@ -260,19 +266,34 @@ public class TelaInicialController implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Registro rowData = row.getItem();
-                    int option = JOptionPane.showConfirmDialog(null, "Deseja imprimir o registro da placa "+rowData.getPlaca()+"?", "Imprimir", JOptionPane.YES_NO_OPTION);
-                    if (option == 0) {
+                    Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
+                    aviso.initOwner(confirma.getScene().getWindow());
+                    aviso.setTitle("Impressão");
+                    aviso.setHeaderText("Reimprimir registro da placa " + rowData.getPlaca());
+                    aviso.setContentText("Deseja fazer a impressão?");
+                    ButtonType botaoSim = new ButtonType("Sim");
+                    ButtonType botaoNao = new ButtonType("Não", ButtonData.CANCEL_CLOSE);
+                    aviso.getButtonTypes().setAll(botaoSim, botaoNao);
+                    Optional<ButtonType> result = aviso.showAndWait();
+                    if (result.get() == botaoSim) {
                         ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
                     }
                 }
             });
             return row;
         });
-        
-        menu_relatorio.setOnAction((event)->{
-            Principal.loadScene("views/relatorio.fxml", "Busca de Relatório");
+
+        menu_relatorio.setOnAction((event) -> {
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório");
         });
-        
+
+        menu_sobre.setOnAction((event) -> {
+            Principal.loadScene(Principal.sobreScene(), "Sobre o programa");
+        });
+
+        menu_config.setOnAction((event) -> {
+            Principal.loadScene(Principal.configScene(), "Configurações");
+        });
 
     }
 
@@ -300,9 +321,10 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
-    public void fazerEtiqueta(String tipo, String placa){
+    public void fazerEtiqueta(String tipo, String placa) {
         if (tipo.equals("E")) {
             Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
+            aviso.initOwner(confirma.getScene().getWindow());
             aviso.setTitle("Impressão");
             aviso.setHeaderText("Impressão do Ticket - ENTRADA");
             aviso.setContentText("Deseja fazer a impressão de entrada?");
@@ -368,24 +390,23 @@ public class TelaInicialController implements Initializable {
         text_produto.setText("");
     }
 
-    
     private void ReadSerialThread() {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
-                Map<String, String> dados = new HashMap<String, String>();
-                dados = serial.selecionarDadosEquipamento();
-                boolean estavel_var = (dados.get("estavel").equals("Estável"))? true : false;
-                String peso_bru_var = dados.get("peso_bru");
-                Platform.runLater(() -> {
-                    peso = peso_bru_var;
-                    estavel = estavel_var;
-                });
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException iex) {
-                    JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
-                    System.exit(0);
-                } 
+            Map<String, String> dados = new HashMap<String, String>();
+            dados = serial.selecionarDadosEquipamento();
+            boolean estavel_var = (dados.get("estavel").equals("Estável")) ? true : false;
+            String peso_bru_var = dados.get("peso_bru");
+            Platform.runLater(() -> {
+                peso = peso_bru_var;
+                estavel = estavel_var;
+            });
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException iex) {
+                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
+                System.exit(0);
+            }
         }
     }
 
@@ -394,7 +415,7 @@ public class TelaInicialController implements Initializable {
         while (isReading) {
             Platform.runLater(() -> {
                 peso_bru_id.setText(peso);
-                if(estavel){
+                if (estavel) {
                     status.setText("Estável");
                     status.setStyle("-fx-text-fill: green;");
                 } else {
@@ -411,6 +432,33 @@ public class TelaInicialController implements Initializable {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
                 System.out.println(iex.getMessage());
+            }
+        }
+    }
+
+    private void SecurityThread() {
+        int cnt = 0;
+        while (true) {
+            Autorizacao aut = new Autorizacao();
+            aut.pegarSeriais();
+            aut.verificarSerial();
+            if (aut.isAutorizado() == false && cnt == 0) {
+                Platform.runLater(() -> {
+                    Stage stage = (Stage) confirma.getScene().getWindow();
+                    stage.hide();
+                    isReading = false;
+                    Principal.initErrorLayout();     
+                });
+                cnt++;
+            } else if(aut.isAutorizado() == true && cnt != 0){
+                JOptionPane.showMessageDialog(null, "Pen drive detectado! Reinicie o programa.");
+                System.exit(0);
+            }
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

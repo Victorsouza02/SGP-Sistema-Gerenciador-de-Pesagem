@@ -115,7 +115,7 @@
             <children>
                 <ImageView fx:id="imagem" fitHeight="310.0" fitWidth="463.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="file:/C:/Users/Desenvolvimento/Documents/Java/src/pe-display.jpg" />
+                        <Image url="@../../imgs/pe-display.jpg" />
                     </image>
                 </ImageView>
                 <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="24.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
@@ -135,7 +135,6 @@
             </Label>
             </children>
         </Pane>
-        <Pane layoutX="14.0" layoutY="299.0" prefHeight="33.0" prefWidth="1176.0" AnchorPane.bottomAnchor="268.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="299.0" />
         <Button fx:id="confirma" alignment="BOTTOM_RIGHT" layoutX="1112.0" layoutY="561.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Confirmar" textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
             <font>
                 <Font name="System Bold" size="15.0" />
@@ -159,6 +158,16 @@
                   <MenuItem mnemonicParsing="false" text="Fechar" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Configurar">
+               <items>
+                  <MenuItem fx:id="menu_config" mnemonicParsing="false" text="Porta/Equipamento" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Ajuda">
+               <items>
+                  <MenuItem fx:id="menu_sobre" mnemonicParsing="false" text="Sobre" />
+               </items>
+            </Menu>
         </menus>
       </MenuBar>
     </children>

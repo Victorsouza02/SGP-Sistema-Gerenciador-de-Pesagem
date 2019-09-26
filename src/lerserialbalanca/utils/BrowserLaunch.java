@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 public class BrowserLaunch {    
     public static void openURL(String url)
     {
-        url = url.replace("\\", "/").replaceFirst("/", "");
+        url = url.replace("\\", "/");
         Desktop desktop = null;  
         desktop = Desktop.getDesktop();  
         URI uri = null;  
