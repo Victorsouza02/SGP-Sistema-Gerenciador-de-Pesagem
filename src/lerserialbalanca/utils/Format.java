@@ -28,5 +28,15 @@ public class Format {
         });
     }
     
+    public static void onlyNumber(final TextField tf) {
+        tf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    tf.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
 
 }

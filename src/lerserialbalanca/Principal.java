@@ -7,7 +7,10 @@ package lerserialbalanca;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,47 +20,64 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.swing.JOptionPane;
+import jssc.SerialPortException;
 import lerserialbalanca.models.Autorizacao;
 import lerserialbalanca.models.LerSerial;
+import lerserialbalanca.models.Propriedades;
+import lerserialbalanca.models.Threads;
 
 
 public class Principal extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-        
-    }
-   
+    //
     public static Stage primaryStage;
     public static Stage secondStage;
     public static Stage errorStage;
-    private static String peso_bru;
-    private static boolean estavel;
-    private LerSerial serial;
+    //
+    private static String peso_bru = "0";
+    private static boolean estavel = true;
+    private static LerSerial serial;
+    
+    //PROPRIEDADES
+    private static String porta;
+    private static String equipamento;
+    private static String fonte;
+    
+    //THREADS
+    Thread serialThread;
+    Thread securityThread;
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
 
     @Override
     public void start(Stage stage) {
         Autorizacao pd = new Autorizacao();
+        carregarPropriedades();
         if(pd.isAutorizado()){
             this.primaryStage = stage;
             this.errorStage = stage;
             initRootLayout();
+            serial = new LerSerial(porta,equipamento);
+            securityThread = new Thread(protecaoPendrive);
+            securityThread.start();
+            serialThread = new Thread(lerSerial);
+            serialThread.start();
+
         } else {
             this.errorStage = stage;
             initErrorLayout();
         }
     }
     
-    /**
-     * Inicializa o root layout (layout base).
-     */
+    
     public static void initRootLayout() {
         try {
             Parent root = FXMLLoader.load(Principal.class.getResource("views/principal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
             primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
-            Thread.sleep(6000);
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -67,10 +87,9 @@ public class Principal extends Application {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException ex){
-            System.out.println(ex.getMessage());
-        }
+        } 
     }
+    
     
     public static void initErrorLayout(){
         try {
@@ -119,50 +138,12 @@ public class Principal extends Application {
          }
     }
     
-    //PEGA DADOS DO ARQUIVO
-    public LerSerial getProperties() {
-        Properties prop = new Properties();
-        try {
-            // le o arquivo
-            prop.load(getClass().getResourceAsStream("/lerserialbalanca/properties/config.properties"));
-            //prop.load(new FileInputStream("./config/config.properties"));
-            String porta = prop.getProperty("porta");
-            String equipamento = prop.getProperty("equipamento");
-            LerSerial serial = new LerSerial(porta, equipamento);
-            return serial;
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Arquivo .properties não foi encontrado");
-            System.exit(0);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    public void carregarPropriedades(){
+        Propriedades prop = new Propriedades();
+        porta = prop.getPorta();
+        equipamento = prop.getEquipamento();
+        fonte = prop.getFonte();
     }
-    
-    /**
-     * Retorna o palco principal
-     */
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
-    public static String getPeso_bru() {
-        return peso_bru;
-    }
-
-    public static void setPeso_bru(String peso_bru) {
-        Principal.peso_bru = peso_bru;
-    }
-
-    public static boolean isEstavel() {
-        return estavel;
-    }
-
-    public static void setEstavel(boolean estavel) {
-        Principal.estavel = estavel;
-    }
-    
-    
     
     public static Scene sobreScene(){
         Parent root;
@@ -197,7 +178,7 @@ public class Principal extends Application {
         Scene scene = null;
         try {
             root = FXMLLoader.load(Principal.class.getResource("views/config.fxml"));
-            scene = new Scene(root, 400, 230);
+            scene = new Scene(root, 329, 374);
             
         } catch (IOException ex){
             System.out.println(ex.getMessage());
@@ -205,6 +186,77 @@ public class Principal extends Application {
         
         return scene;
     }
+    
+    
+    private static Runnable lerSerial = new Runnable() {
+        public void run() {
+            Threads th = new Threads();
+            th.ReadSerialThread(serial);
+        }
+    };
+    
+    private static Runnable protecaoPendrive = new Runnable() {
+        public void run() {
+            Threads th = new Threads();
+            th.SecurityThread();
+        }
+    };
+    
+    
+    /**
+     * Retorna o palco principal
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public static String getPeso_bru() {
+        return peso_bru;
+    }
+
+    public static void setPeso_bru(String peso_bru) {
+        Principal.peso_bru = peso_bru;
+    }
+
+    public static boolean isEstavel() {
+        return estavel;
+    }
+
+    public static void setEstavel(boolean estavel) {
+        Principal.estavel = estavel;
+    }
+
+    public static String getEquipamento() {
+        return equipamento;
+    }
+
+    public static void setEquipamento(String equipamento) {
+        Principal.equipamento = equipamento;
+    }
+
+    public static String getFonte() {
+        return fonte;
+    }
+
+    public static void setFonte(String fonte) {
+        Principal.fonte = fonte;
+    }
+
+    public static String getPorta() {
+        return porta;
+    }
+
+    public static void setPorta(String porta) {
+        Principal.porta = porta;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 }

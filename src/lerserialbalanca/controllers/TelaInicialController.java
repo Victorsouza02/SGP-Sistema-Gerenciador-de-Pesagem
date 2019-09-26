@@ -1,17 +1,9 @@
 package lerserialbalanca.controllers;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,10 +22,8 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import lerserialbalanca.Principal;
-import lerserialbalanca.models.Autorizacao;
 import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
@@ -107,9 +97,7 @@ public class TelaInicialController implements Initializable {
 
     public LerSerial serial;
     public byte[] buffer;
-    Thread serialThread;
     Thread displayThread;
-    Thread securityThread;
 
     boolean isReading = true;
     private String peso;
@@ -120,7 +108,6 @@ public class TelaInicialController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        serial = getProperties(); // LE O ARQUIVO .properties E RECEBE AS CONFIGURAÇÕES DO USUARIO
         eventosElementos(); //Eventos dos elementos visuais
         formatarCampos(); //Formatação de campos
         preencherTabela(); //Preenchimento da tabela com dados do banco
@@ -128,33 +115,9 @@ public class TelaInicialController implements Initializable {
         Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
         imagem.setImage(img);
         //
-        securityThread = new Thread(this::SecurityThread);
-        securityThread.start();
-        serialThread = new Thread(this::ReadSerialThread);
-        serialThread.start();
         displayThread = new Thread(this::DisplayThread);
         displayThread.start();
         
-    }
-
-    //PEGA DADOS DO ARQUIVO
-    public LerSerial getProperties() {
-        Properties prop = new Properties();
-        try {
-            // le o arquivo
-            prop.load(getClass().getResourceAsStream("/lerserialbalanca/properties/config.properties"));
-            //prop.load(new FileInputStream("./config/config.properties"));
-            String porta = prop.getProperty("porta");
-            String equipamento = prop.getProperty("equipamento");
-            LerSerial serial = new LerSerial(porta, equipamento);
-            return serial;
-        } catch (FileNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Arquivo .properties não foi encontrado");
-            System.exit(0);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
     }
 
     //FORMATAÇÃO DOS CAMPOS
@@ -390,30 +353,12 @@ public class TelaInicialController implements Initializable {
         text_produto.setText("");
     }
 
-    private void ReadSerialThread() {
-        //THREAD PARA LEITURA DE SERIAL CONTINUA
-        while (isReading) {
-            Map<String, String> dados = new HashMap<String, String>();
-            dados = serial.selecionarDadosEquipamento();
-            boolean estavel_var = (dados.get("estavel").equals("Estável")) ? true : false;
-            String peso_bru_var = dados.get("peso_bru");
-            Platform.runLater(() -> {
-                peso = peso_bru_var;
-                estavel = estavel_var;
-            });
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException iex) {
-                JOptionPane.showMessageDialog(null, "Conexão Serial interrompida", "Erro", 0);
-                System.exit(0);
-            }
-        }
-    }
-
     private void DisplayThread() {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
             Platform.runLater(() -> {
+                peso = Principal.getPeso_bru();
+                estavel = Principal.isEstavel();
                 peso_bru_id.setText(peso);
                 if (estavel) {
                     status.setText("Estável");
@@ -436,31 +381,5 @@ public class TelaInicialController implements Initializable {
         }
     }
 
-    private void SecurityThread() {
-        int cnt = 0;
-        while (true) {
-            Autorizacao aut = new Autorizacao();
-            aut.pegarSeriais();
-            aut.verificarSerial();
-            if (aut.isAutorizado() == false && cnt == 0) {
-                Platform.runLater(() -> {
-                    Stage stage = (Stage) confirma.getScene().getWindow();
-                    stage.hide();
-                    isReading = false;
-                    Principal.initErrorLayout();     
-                });
-                cnt++;
-            } else if(aut.isAutorizado() == true && cnt != 0){
-                JOptionPane.showMessageDialog(null, "Pen drive detectado! Reinicie o programa.");
-                System.exit(0);
-            }
-            
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TelaInicialController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
 
 }

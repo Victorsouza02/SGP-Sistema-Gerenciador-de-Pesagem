@@ -5,13 +5,18 @@
  */
 package lerserialbalanca.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import jssc.SerialPortList;
 
 /**
  *
@@ -29,6 +34,8 @@ public class LerSerial {
     private int parity;
     private int total_bytes;
     private static boolean ok = false;
+    public static List<String> portas = new ArrayList<String>();
+    public static List<String> equipamentos = new ArrayList<String>();
 
     public LerSerial(String porta, String equipamento){
         try {
@@ -38,42 +45,72 @@ public class LerSerial {
             selecionarConfigEquipamento();
             conSerial();
             serialPort.addEventListener(new SerialPortReader());
-        } catch (SerialPortException ex){
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    //COMUNICAÇÃO SERIAL
-    public void conSerial(){
-        try {
-            serialPort.openPort();
-            serialPort.setParams(baud, databits, stopbit, parity, false, false);
-        } catch (SerialPortException ex){
-            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-            System.exit(0);
-        }
-    }
-    
-    public static void fecharSerial(){
-        try {
-            serialPort.closePort();
-        } catch(SerialPortException ex){
+            listaPortas();
+            listaEquipamentos();
+        } catch (SerialPortException ex) {
             ex.printStackTrace();
         }
     }
 
-    //RETORNA DADOS DA SERIAL
-    public String dataSerial(){
+    //COMUNICAÇÃO SERIAL
+    public void conSerial() {
         try {
-            if(ok == true){
+            serialPort.openPort();
+            serialPort.setParams(baud, databits, stopbit, parity, false, false);
+        } catch (SerialPortException ex) {
+            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
+            System.exit(0);
+        }
+    }
+
+    public static void fecharSerial() {
+        try {
+            serialPort.closePort();
+        } catch (SerialPortException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void limparLixo() {
+        while (ok == false) {
+            try {
+                byte buffer[] = serialPort.readBytes(1);
+                byte b = buffer[0];
+                char c = (char) b;
+                System.out.print(c);
+                if (c == '\n') {
+                    ok = true;
+                }
+            } catch (SerialPortException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    //RETORNA DADOS DA SERIAL
+    public String dataSerial() {
+        try {
+            if (ok == true) {
                 return serialPort.readString(total_bytes);
-            } 
+            }
             return padraoString();
-        } catch (SerialPortException serEx){
+        } catch (SerialPortException serEx) {
             System.out.println(serEx.getMessage());
-        } 
-        
+        }
+
         return padraoString();
+    }
+    
+    public void listaPortas(){
+        String[] portNames = SerialPortList.getPortNames();
+        for (int i = 0; i < portNames.length; i++) {
+            portas.add(portNames[i]);
+            System.out.println(portNames[i]);
+        }
+    }
+    
+    public void listaEquipamentos() {
+        equipamentos.add("WT1000N");
     }
 
     public void selecionarConfigEquipamento() {
@@ -82,10 +119,10 @@ public class LerSerial {
                 configWT1000N();
         }
     }
-    
-    public String padraoString(){
+
+    public String padraoString() {
         String padrao = null;
-        switch(equipamento){
+        switch (equipamento) {
             case "WT1000N":
                 padrao = "0,0000000,0000000,0000000";
         }
@@ -108,13 +145,13 @@ public class LerSerial {
         setTotal_bytes(27);
     }
 
-    public Map<String, String> dadosWT1000N(){
+    public Map<String, String> dadosWT1000N() {
         Map<String, String> dados = new HashMap<String, String>();
         String dado = dataSerial();
         dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
         String peso_bru = dado.substring(2, 9);
-        
-        if (peso_bru.equals("000000 ") || peso_bru.equals("0000000")){
+
+        if (peso_bru.equals("000000 ") || peso_bru.equals("0000000")) {
             peso_bru = "0";
         } else {
             if (peso_bru.contains("-")) {
@@ -140,12 +177,12 @@ public class LerSerial {
 
         return dados;
     }
-
-    static class SerialPortReader implements SerialPortEventListener {
+    
+     static class SerialPortReader implements SerialPortEventListener {
         @Override
         public void serialEvent(SerialPortEvent event) {
-            if(ok != true){
-                if (event.isRXCHAR() && event.getEventValue() > 0) {
+            if(event.getEventType() > 0){
+                while (ok == false) {
                     try {
                         byte buffer[] = serialPort.readBytes(1);
                         byte b = buffer[0];
@@ -154,12 +191,13 @@ public class LerSerial {
                             ok = true;
                         }
                     } catch (SerialPortException ex) {
-                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
                     }
                 }
             }
         }
     }
+
 
     public static boolean isOk() {
         return ok;
@@ -168,7 +206,6 @@ public class LerSerial {
     public static void setOk(boolean ok) {
         LerSerial.ok = ok;
     }
-
 
     public byte[] getBuffer() {
         return buffer;
@@ -241,5 +278,7 @@ public class LerSerial {
     public void setEquipamento(String equipamento) {
         this.equipamento = equipamento;
     }
+
+ 
 
 }

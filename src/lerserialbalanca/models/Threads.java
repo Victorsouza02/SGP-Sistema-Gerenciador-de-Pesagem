@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 import javax.swing.JOptionPane;
-import jssc.SerialPort;
 import lerserialbalanca.Principal;
 import lerserialbalanca.controllers.TelaInicialController;
 
@@ -22,11 +20,11 @@ import lerserialbalanca.controllers.TelaInicialController;
  */
 public class Threads {
     
+      
     public void ReadSerialThread(LerSerial serial) {
+        Map<String, String> dados = new HashMap<String, String>();
         //THREAD PARA LEITURA DE SERIAL CONTINUA
-        while (serial.isOk()) {
-            Map<String, String> dados = new HashMap<String, String>();
-            Map<String, String> result = new HashMap<String, String>();
+        while (true) {
             dados = serial.selecionarDadosEquipamento();
             boolean estavel_var = (dados.get("estavel").equals("Estável")) ? true : false;
             String peso_bru_var = dados.get("peso_bru");
@@ -44,20 +42,26 @@ public class Threads {
     }
     
     public void SecurityThread() {
-        int cnt = 0;
+        boolean jaParou = false;
+        boolean status = true;
         while (true) {
             Autorizacao aut = new Autorizacao();
             aut.pegarSeriais();
             aut.verificarSerial();
-            if (aut.isAutorizado() == false && cnt == 0) {
+            if (aut.isAutorizado() == false && jaParou == false) {
+                jaParou = true;
+                status = false;
                 Platform.runLater(() -> {
-                    Principal.primaryStage.close();
+                    Principal.closePrimaryStage();
                     Principal.initErrorLayout();     
                 });
-                cnt++;
-            } else if(aut.isAutorizado() == true && cnt != 0){
-                JOptionPane.showMessageDialog(null, "Pen drive detectado! Reinicie o programa.");
-                System.exit(0);
+            } else if(aut.isAutorizado() == true && status == false){
+                jaParou = false;
+                status = true;
+                Platform.runLater(() -> {
+                    Principal.closeErrorStage();
+                    Principal.initRootLayout();
+                });
             }
             
             try {

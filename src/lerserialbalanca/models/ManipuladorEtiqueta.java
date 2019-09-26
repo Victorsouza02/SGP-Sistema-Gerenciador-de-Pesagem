@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
+import lerserialbalanca.Principal;
 import lerserialbalanca.persistence.AcoesSQL;
 import lerserialbalanca.utils.BrowserLaunch;
 
@@ -27,6 +28,7 @@ public class ManipuladorEtiqueta {
     private static String path_txt = new File("").getAbsolutePath() + "\\print\\etiqueta.txt";
     private static String path_html = new File("").getAbsolutePath() + "\\print\\PRINT.HTML";
     private static String path_html_report = new File("").getAbsolutePath() + "\\print\\report.html";
+    private static String fonte = Principal.getFonte();
 
     public static void fazerEtiquetaHtml(String placa) {
         try {
@@ -39,7 +41,7 @@ public class ManipuladorEtiqueta {
             OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
 
             buffWrite.write("");
-            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre><center>");
+            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+fonte+"px'><center>");
             while (true) {
                 if (linha != null) {
                     String[] variaveis = new String[]{"$ID", "$PRODUTO", "$FORNECEDOR", "$MOTORISTA", "$PLACA", "$DT_ENTRADA",
@@ -113,7 +115,7 @@ public class ManipuladorEtiqueta {
             OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
 
             buffWrite.write("");
-            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre><center>");
+            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+fonte+"px'><center>");
             while (true) {
                 if (linha != null) {
                     String[] variaveis = new String[]{"$ID", "$PRODUTO", "$FORNECEDOR", "$MOTORISTA", "$PLACA", "$DT_ENTRADA",
