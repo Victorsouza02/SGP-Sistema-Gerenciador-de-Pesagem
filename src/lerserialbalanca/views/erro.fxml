@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
@@ -10,40 +11,44 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.ErroController">
    <children>
-      <ImageView fx:id="imagem" fitHeight="150.0" fitWidth="200.0" layoutX="140.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../../../Downloads/pendrive.png" />
-         </image>
-      </ImageView>
-      <Label alignment="CENTER" layoutX="5.0" layoutY="207.0" prefHeight="30.0" prefWidth="592.0" text="Erro de Autenticação">
+      <Label alignment="CENTER" layoutX="5.0" layoutY="207.0" prefHeight="30.0" prefWidth="592.0" text="Erro de Autenticação" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="3.0">
          <font>
             <Font name="System Bold Italic" size="20.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="1.0" layoutY="244.0" prefHeight="25.0" prefWidth="600.0" text="Você não tem a chave para executar este programa">
+      <Label alignment="CENTER" layoutX="1.0" layoutY="244.0" prefHeight="25.0" prefWidth="600.0" text="Você não tem a chave para executar este programa" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
          <font>
             <Font name="System Bold Italic" size="16.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="-1.0" layoutY="274.0" prefHeight="25.0" prefWidth="600.0" text="Verifique se o seu pen drive está conectado ou entre em contato conosco.">
+      <Label alignment="CENTER" layoutX="-1.0" layoutY="274.0" prefHeight="25.0" prefWidth="600.0" text="Verifique se o seu pen drive está conectado ou entre em contato conosco." AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
          <font>
             <Font name="System Bold Italic" size="16.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="321.0" layoutY="33.0" prefHeight="150.0" prefWidth="126.0" text="?" textFill="#e41b1b">
-         <font>
-            <Font name="System Bold Italic" size="96.0" />
-         </font>
-      </Label>
-      <Label alignment="CENTER" layoutX="20.0" layoutY="327.0" prefHeight="26.0" prefWidth="560.0" text="EBM Metrologia">
+      <Label alignment="CENTER" layoutX="20.0" layoutY="327.0" prefHeight="26.0" prefWidth="560.0" text="EBM Metrologia" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
          <font>
             <Font name="System Bold Italic" size="17.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="19.0" layoutY="353.0" prefHeight="26.0" prefWidth="560.0" text="Contato : (21) 2472-5858">
+      <Label alignment="CENTER" layoutX="19.0" layoutY="353.0" prefHeight="26.0" prefWidth="560.0" text="Contato : (21) 2472-5858" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
          <font>
             <Font name="System Bold Italic" size="17.0" />
          </font>
       </Label>
+      <StackPane layoutX="66.0" layoutY="20.0" prefHeight="178.0" prefWidth="464.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <ImageView fx:id="imagem" fitHeight="150.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../../../Downloads/pendrive.png" />
+               </image>
+            </ImageView>
+            <Label alignment="CENTER" prefHeight="178.0" prefWidth="192.0" text="?" textFill="#e41b1b">
+               <font>
+                  <Font name="System Bold Italic" size="96.0" />
+               </font>
+            </Label>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

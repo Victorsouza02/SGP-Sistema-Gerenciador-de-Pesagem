@@ -15,7 +15,7 @@
         <URL value="@telainicial.css" />
     </stylesheets>
     <children>
-        <Pane layoutX="13.0" layoutY="7.0" prefHeight="286.0" prefWidth="737.0" style="-fx-background-color: #FFF;" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="30.0">
+        <Pane layoutX="13.0" layoutY="7.0" prefHeight="286.0" prefWidth="737.0" styleClass="form" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="30.0">
             <children>
                 <Label layoutX="25.0" layoutY="22.0" text="Placa :">
                     <font>
@@ -47,12 +47,12 @@
                         <Font size="19.0" />
                     </font>
                 </Label>
-                <TextField fx:id="text_placa" layoutX="88.0" layoutY="20.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-color: #fce89f;">
+                <TextField fx:id="text_placa" layoutX="158.0" layoutY="20.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-color: #fce89f;">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>
                 </TextField>
-                <TextField fx:id="text_motorista" layoutX="121.0" layoutY="67.0" prefHeight="33.0" prefWidth="520.0">
+                <TextField fx:id="text_motorista" layoutX="158.0" layoutY="67.0" prefHeight="33.0" prefWidth="552.0">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>
@@ -67,12 +67,12 @@
                         <Font name="System Bold" size="15.0" />
                     </font>
                 </TextField>
-                <TextField fx:id="text_fornecedor" layoutX="151.0" layoutY="163.0" prefHeight="33.0" prefWidth="490.0">
+                <TextField fx:id="text_fornecedor" layoutX="158.0" layoutY="163.0" prefHeight="33.0" prefWidth="552.0">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>
                 </TextField>
-                <TextField fx:id="text_produto" layoutX="121.0" layoutY="210.0" prefHeight="33.0" prefWidth="520.0">
+                <TextField fx:id="text_produto" layoutX="158.0" layoutY="210.0" prefHeight="33.0" prefWidth="552.0">
                     <font>
                         <Font name="System Bold" size="15.0" />
                     </font>
@@ -87,12 +87,17 @@
                         <Font size="19.0" />
                     </font>
                 </Label>
+            <Label fx:id="entradaSaida" alignment="CENTER_RIGHT" layoutX="529.0" layoutY="21.0" prefHeight="28.0" prefWidth="111.0">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </Label>
             </children>
             <padding>
                 <Insets bottom="20.0" />
             </padding>
         </Pane>
-        <TableView fx:id="tabela" layoutX="12.0" layoutY="341.0" prefHeight="219.0" prefWidth="1177.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="331.0">
+        <TableView fx:id="tabela" layoutX="12.0" layoutY="341.0" prefHeight="219.0" prefWidth="1177.0" style="-fx-background-color: #f3f3f3;" styleClass="tabela" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="331.0">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
@@ -160,7 +165,13 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Configurar">
                <items>
-                  <MenuItem fx:id="menu_config" mnemonicParsing="false" text="Porta/Equipamento" />
+                  <MenuItem fx:id="menu_config" mnemonicParsing="false" text="Configurações Gerais" />
+                  <MenuItem fx:id="menu_impressao" mnemonicParsing="false" text="Impressão" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Pesquisar">
+               <items>
+                  <MenuItem fx:id="menu_pesquisa" mnemonicParsing="false" text="Pesquisar Placa" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Ajuda">

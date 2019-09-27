@@ -41,6 +41,9 @@ public class Principal extends Application {
     private static String porta;
     private static String equipamento;
     private static String fonte;
+    private static String nomeempresa;
+    private static String enderecoempresa;
+    private static String telempresa;
     
     //THREADS
     Thread serialThread;
@@ -74,10 +77,11 @@ public class Principal extends Application {
     
     public static void initRootLayout() {
         try {
-            Parent root = FXMLLoader.load(Principal.class.getResource("views/principal.fxml"));
+            Parent root = FXMLLoader.load(Principal.class.getResource("views/telaprincipal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
             primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
+            primaryStage.setResizable(true);
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -97,7 +101,7 @@ public class Principal extends Application {
             errorStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
             errorStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
             errorStage.setScene(new Scene(root));
-            errorStage.setResizable(false);
+            errorStage.setResizable(true);
             errorStage.show();
             errorStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
@@ -118,13 +122,13 @@ public class Principal extends Application {
         errorStage.close();
     }
     
-    public static void loadScene(Scene scene, String titlePage) {
+    public static void loadScene(Scene scene, String titlePage, boolean resizable) {
          if(secondStage == null){   
             secondStage = new Stage();
             secondStage.initModality(Modality.WINDOW_MODAL);
             secondStage.initOwner(primaryStage);
             secondStage.getIcons().add(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
-            secondStage.setResizable(false);
+            secondStage.setResizable(resizable);
             secondStage.setTitle(titlePage);
             secondStage.setScene(scene);
             secondStage.show();
@@ -143,6 +147,9 @@ public class Principal extends Application {
         porta = prop.getPorta();
         equipamento = prop.getEquipamento();
         fonte = prop.getFonte();
+        nomeempresa = prop.getNomeempresa();
+        enderecoempresa = prop.getEnderecoempresa();
+        telempresa = prop.getTelempresa();
     }
     
     public static Scene sobreScene(){
@@ -186,6 +193,35 @@ public class Principal extends Application {
         
         return scene;
     }
+    
+    public static Scene impressaoScene(){
+        Parent root;
+        Scene scene = null;
+        try {
+            root = FXMLLoader.load(Principal.class.getResource("views/impressao.fxml"));
+            scene = new Scene(root, 432, 489);
+            
+        } catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
+        
+        return scene;
+    }
+    
+    public static Scene pesquisaScene(){
+        Parent root;
+        Scene scene = null;
+        try {
+            root = FXMLLoader.load(Principal.class.getResource("views/pesquisaplaca.fxml"));
+            scene = new Scene(root, 860, 482);
+            
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        
+        return scene;
+    }
+    
     
     
     private static Runnable lerSerial = new Runnable() {
@@ -249,6 +285,32 @@ public class Principal extends Application {
     public static void setPorta(String porta) {
         Principal.porta = porta;
     }
+
+    public static String getNomeempresa() {
+        return nomeempresa;
+    }
+
+    public static void setNomeempresa(String nomeempresa) {
+        Principal.nomeempresa = nomeempresa;
+    }
+
+    public static String getEnderecoempresa() {
+        return enderecoempresa;
+    }
+
+    public static void setEnderecoempresa(String enderecoempresa) {
+        Principal.enderecoempresa = enderecoempresa;
+    }
+
+    public static String getTelempresa() {
+        return telempresa;
+    }
+
+    public static void setTelempresa(String telempresa) {
+        Principal.telempresa = telempresa;
+    }
+    
+    
     
     
     

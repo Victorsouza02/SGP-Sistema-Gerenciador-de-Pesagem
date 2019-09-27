@@ -5,9 +5,7 @@
  */
 package lerserialbalanca.models;
 
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +31,7 @@ public class Registro {
     private String h_entrada;
     private String dt_saida;
     private String h_saida;
+    private static int num_registros;
     
     public Registro(){
     
@@ -94,6 +93,13 @@ public class Registro {
     public ObservableList<Registro> listaDeRegistros() {
         AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarRegistros());
+    }
+    
+    public ObservableList<Registro> listaDeRegistros(String placa) {
+        AcoesSQL acao = new AcoesSQL();
+        List<Registro> registros = acao.listarRegistros(placa);
+        Motorista.setNum_registros(registros.size() + 1);
+        return FXCollections.observableList(registros);
     }
     
     public List<Registro> listaDeRegistros(String data_ini, String data_fim) {
@@ -201,6 +207,16 @@ public class Registro {
     public void setH_saida(String h_saida) {
         this.h_saida = h_saida;
     }
+
+    public static int getNum_registros() {
+        return num_registros;
+    }
+
+    public static void setNum_registros(int num_registros) {
+        Registro.num_registros = num_registros;
+    }
+    
+    
     
     
 }

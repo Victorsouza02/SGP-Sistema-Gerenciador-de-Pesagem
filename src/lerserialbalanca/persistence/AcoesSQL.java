@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
 
@@ -45,6 +47,24 @@ public class AcoesSQL {
             System.out.println(ex.getMessage());
         } 
         return mot;
+    }
+    
+    public int numRegistros (String placa){
+        int num = 0;
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT COUNT(*) as num FROM registro WHERE placa = ?");
+            sql.setString(1, placa);
+            ResultSet result = sql.executeQuery();     
+            if(result.next()){
+                num = result.getInt("num");
+            }
+            sql.close();
+            return num;
+        } catch (SQLException ex){
+            System.out.println(ex.getMessage());
+        } 
+        return num;
     }
     
     public boolean CadastrarMotorista(Motorista mot){
@@ -150,6 +170,12 @@ public class AcoesSQL {
             sql.setString(1, placa);
             ResultSet result = sql.executeQuery();
             while(result.next()){
+                String pl = null;
+                if(result.getString("peso_liquido") != null){
+                    pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                } else {
+                    pl = null;
+                }
                 reg.setId(result.getInt("id"));
                 reg.setPlaca(result.getString("placa"));
                 reg.setNome(result.getString("nome"));
@@ -161,13 +187,46 @@ public class AcoesSQL {
                 reg.setDt_saida(result.getString("data_saida"));
                 reg.setH_saida(result.getString("hora_saida"));
                 reg.setPs_saida(result.getString("peso_saida"));
-                reg.setPs_liquido(result.getString("peso_liquido"));
+                reg.setPs_liquido(pl);
             }
             return reg;
         } catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
         return reg;
+    }
+    
+    public String ultimaAtividade(String placa){
+        Conexao conexao = new Conexao();
+        Registro reg = new Registro();
+        String atividade = "";
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM registro where id = (SELECT id FROM registro where placa = ? order by id desc limit 1)");
+            sql.setString(1, placa);
+            ResultSet result = sql.executeQuery();
+            
+            SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
+            Date data = new Date();
+            
+            while(result.next()){
+                data = dateFormatSql.parse(result.getString("data_entrada"));
+                String data_entrada = dateFormatView.format(data);
+                String data_saida = "";
+                if(result.getString("data_saida") != null){
+                    data = dateFormatSql.parse(result.getString("data_saida"));
+                    data_saida = dateFormatView.format(data);
+                    atividade = data_saida + " " + result.getString("hora_saida");
+                } else {
+                    atividade = data_entrada + " " + result.getString("hora_entrada");
+                }
+            }
+        } catch (SQLException ex){
+            System.out.println(ex.getMessage());
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return atividade;
     }
     
     public Registro pegarRegistro(int id){
@@ -178,6 +237,13 @@ public class AcoesSQL {
             sql.setInt(1, id);
             ResultSet result = sql.executeQuery();
             while(result.next()){
+                String pl = null;
+                if(result.getString("peso_liquido") != null){
+                    pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                } else {
+                    pl = null;
+                }
+                
                 reg.setId(result.getInt("id"));
                 reg.setPlaca(result.getString("placa"));
                 reg.setNome(result.getString("nome"));
@@ -189,7 +255,7 @@ public class AcoesSQL {
                 reg.setDt_saida(result.getString("data_saida"));
                 reg.setH_saida(result.getString("hora_saida"));
                 reg.setPs_saida(result.getString("peso_saida"));
-                reg.setPs_liquido(result.getString("peso_liquido"));
+                reg.setPs_liquido(pl);
             }
             return reg;
         } catch (SQLException ex){
@@ -201,13 +267,14 @@ public class AcoesSQL {
     public List<Registro> listarRegistros(){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
+        String pl = "---";
         try{
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro");
             ResultSet result = sql.executeQuery();
             SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
             SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
             Date data = new Date();
-
+            
             while(result.next()){
                 data = dateFormatSql.parse(result.getString("data_entrada"));
                 String data_entrada = dateFormatView.format(data);
@@ -215,8 +282,12 @@ public class AcoesSQL {
                 if(result.getString("data_saida") != null){
                     data = dateFormatSql.parse(result.getString("data_saida"));
                     data_saida = dateFormatView.format(data);
+                    pl = (result.getString("peso_liquido").contains(",")) ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                }else {
+                    pl = "---";
                 }
 
+                
                 Registro reg = new Registro(
                         result.getInt("id"),
                         result.getString("placa"),
@@ -229,7 +300,7 @@ public class AcoesSQL {
                         data_saida,
                         result.getString("hora_saida"),
                         result.getString("peso_saida"),
-                        result.getString("peso_liquido")
+                        pl
                 );
                 registros.add(reg);
             }
@@ -245,6 +316,7 @@ public class AcoesSQL {
     public List<Registro> listarRegistros(String data_inicio, String data_fim){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
+        String pl = "---";
         try {
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro where data_entrada BETWEEN ? AND ?");
             sql.setString(1, data_inicio);
@@ -262,8 +334,11 @@ public class AcoesSQL {
                 if(result.getString("data_saida") != null){
                     data = dateFormatSql.parse(result.getString("data_saida"));
                     data_saida = dateFormatView.format(data);
+                    pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                }else {
+                    pl = "---";
                 }
-
+                
                 Registro reg = new Registro(
                         result.getInt("id"),
                         result.getString("placa"),
@@ -276,7 +351,56 @@ public class AcoesSQL {
                         data_saida,
                         result.getString("hora_saida"),
                         result.getString("peso_saida"),
-                        result.getString("peso_liquido")
+                        pl
+                );
+                registros.add(reg);
+            }
+            return registros;
+        } catch(SQLException ex){
+            System.out.println(ex.getMessage());
+        } catch (ParseException pEx){
+            System.out.println(pEx.getMessage());
+        } 
+        return registros;
+    }
+    
+    public List<Registro> listarRegistros(String placa){
+        Conexao conexao = new Conexao();
+        List<Registro> registros = new ArrayList<Registro>();
+        String pl = "---";
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro where placa = ?");
+            sql.setString(1, placa);
+            ResultSet result = sql.executeQuery();
+
+            SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
+            Date data = new Date();
+
+            while(result.next()){
+                data = dateFormatSql.parse(result.getString("data_entrada"));
+                String data_entrada = dateFormatView.format(data);
+                String data_saida = "";
+                if(result.getString("data_saida") != null){
+                    data = dateFormatSql.parse(result.getString("data_saida"));
+                    data_saida = dateFormatView.format(data);
+                    pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                }else {
+                    pl = "---";
+                }
+                Registro reg = new Registro(
+                        result.getInt("id"),
+                        result.getString("placa"),
+                        result.getString("nome"),
+                        result.getString("produto"),
+                        result.getString("fornecedor"),
+                        data_entrada,
+                        result.getString("hora_entrada"),
+                        result.getString("peso_entrada"),
+                        data_saida,
+                        result.getString("hora_saida"),
+                        result.getString("peso_saida"),
+                        pl
                 );
                 registros.add(reg);
             }

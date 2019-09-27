@@ -21,6 +21,7 @@ public class Motorista {
     private String status;
     private String fornecedor;
     private String produto;
+    private static int num_registros;
     
     public Motorista(){
     
@@ -74,6 +75,16 @@ public class Motorista {
         this.produto = produto;
     }
 
+    public static int getNum_registros() {
+        return num_registros;
+    }
+
+    public static void setNum_registros(int num_registros) {
+        Motorista.num_registros = num_registros;
+    }
+    
+    
+
     public Motorista procurarPlaca(String placa) {
         AcoesSQL acao = new AcoesSQL();
         Motorista mot = acao.procurarPlaca(placa);
@@ -109,6 +120,16 @@ public class Motorista {
     public ObservableList<Motorista> listaDeMotoristas() {
         AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarMotoristas());
+    }
+    
+    public static int numRegistros(String placa){
+        AcoesSQL acao = new AcoesSQL();
+        return acao.numRegistros(placa);
+    }
+    
+    public static String ultimaAtividade(String placa){
+        AcoesSQL acao = new AcoesSQL();
+        return acao.ultimaAtividade(placa);
     }
 
 }

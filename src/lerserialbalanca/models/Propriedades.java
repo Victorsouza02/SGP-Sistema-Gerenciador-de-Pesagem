@@ -6,7 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Propriedades {
@@ -14,6 +17,9 @@ public class Propriedades {
     private String porta;
     private String equipamento;
     private String fonte;
+    private String nomeempresa;
+    private String enderecoempresa;
+    private String telempresa;
     
     public Propriedades(){
         try {
@@ -27,16 +33,37 @@ public class Propriedades {
     }
     
     public void carregarPropriedades(){
-        setPorta(prop.getProperty("porta"));
-        setEquipamento(prop.getProperty("equipamento"));
-        setFonte(prop.getProperty("tamanhofonte"));
+        try {
+            setPorta(prop.getProperty("porta"));
+            setEquipamento(prop.getProperty("equipamento"));
+            setFonte(prop.getProperty("tamanhofonte"));
+            setNomeempresa(new String(prop.getProperty("nomeempresa").getBytes("ISO-8859-1"), "UTF-8"));
+            setEnderecoempresa(new String(prop.getProperty("enderecoempresa").getBytes("ISO-8859-1"), "UTF-8"));
+            setTelempresa(prop.getProperty("telempresa"));
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public void alterarPropriedades(String porta, String equipamento , String fonte){
+    public void alterarPropriedades(String porta, String equipamento){
         try {
             prop.setProperty("porta", porta);
             prop.setProperty("equipamento", equipamento);
+            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\src\\lerserialbalanca\\properties\\config.properties"), null);
+            //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void alterarPropriedades(String fonte, String nome , String endereco, String tel){
+        try {
             prop.setProperty("tamanhofonte", fonte);
+            prop.setProperty("nomeempresa", nome);
+            prop.setProperty("enderecoempresa", endereco);
+            prop.setProperty("telempresa", tel);
             prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\src\\lerserialbalanca\\properties\\config.properties"), null);
             //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
         } catch (FileNotFoundException ex) {
@@ -69,6 +96,32 @@ public class Propriedades {
     public void setFonte(String fonte) {
         this.fonte = fonte;
     }
+
+    public String getNomeempresa() {
+        return nomeempresa;
+    }
+
+    public void setNomeempresa(String nomeempresa) {
+        this.nomeempresa = nomeempresa;
+    }
+
+    public String getEnderecoempresa() {
+        return enderecoempresa;
+    }
+
+    public void setEnderecoempresa(String enderecoempresa) {
+        this.enderecoempresa = enderecoempresa;
+    }
+
+    public String getTelempresa() {
+        return telempresa;
+    }
+
+    public void setTelempresa(String telempresa) {
+        this.telempresa = telempresa;
+    }
+    
+    
     
     
     

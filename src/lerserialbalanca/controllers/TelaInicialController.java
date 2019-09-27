@@ -44,9 +44,15 @@ public class TelaInicialController implements Initializable {
     @FXML
     private MenuItem menu_config;
     @FXML
+    private MenuItem menu_impressao;
+    @FXML
+    private MenuItem menu_pesquisa;
+    @FXML
     private Label peso_bru_id;
     @FXML
     private Label status;
+    @FXML
+    private Label entradaSaida;
     @FXML
     private Button confirma;
     @FXML
@@ -154,18 +160,22 @@ public class TelaInicialController implements Initializable {
                     text_fornecedor.setText(mot.getFornecedor());
                     text_produto.setText(mot.getProduto());
                     if (mot.getStatus().equals("E")) {
+                        entradaSaida.setText("ENTRADA");
                         mostrarEntrada = true;
                     }
                     if (mot.getStatus().equals("S")) {
+                        entradaSaida.setText("SAÍDA");
                         mostrarSaida = true;
                         reg = reg.ultimoRegistro(mot.getPlaca());
                         text_peso_ent.setText(reg.getPs_entrada());
                     }
                 } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
+                    entradaSaida.setText("ENTRADA");
                     text_motorista.requestFocus();
                     mostrarEntrada = true;
                 }
             } else { //SE O NUMERO DE CARACTERES FOR MENOR QUE 7
+                entradaSaida.setText("");
                 mostrarEntrada = false;
                 mostrarSaida = false;
                 text_motorista.setText("");
@@ -220,7 +230,7 @@ public class TelaInicialController implements Initializable {
         });
 
         relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
-            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório");
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
         });
 
         //AO CLICAR DUAS VEZES EM UMA LINHA NA TABELA
@@ -247,15 +257,23 @@ public class TelaInicialController implements Initializable {
         });
 
         menu_relatorio.setOnAction((event) -> {
-            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório");
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
         });
 
         menu_sobre.setOnAction((event) -> {
-            Principal.loadScene(Principal.sobreScene(), "Sobre o programa");
+            Principal.loadScene(Principal.sobreScene(), "Sobre o programa",false);
         });
 
         menu_config.setOnAction((event) -> {
-            Principal.loadScene(Principal.configScene(), "Configurações");
+            Principal.loadScene(Principal.configScene(), "Configurações Gerais",false);
+        });
+        
+        menu_impressao.setOnAction((event) ->{
+            Principal.loadScene(Principal.impressaoScene(), "Configurações de Impressão",false);
+        });
+        
+        menu_pesquisa.setOnAction((event) -> {
+            Principal.loadScene(Principal.pesquisaScene(), "Pesquisar Placa",false);
         });
 
     }
@@ -345,6 +363,7 @@ public class TelaInicialController implements Initializable {
     public void limparCampos() { //LIMPA TODOS OS CAMPOS DO FORMULÁRIO
         mostrarEntrada = false;
         mostrarSaida = false;
+        entradaSaida.setText("");
         text_placa.setText("");
         text_motorista.setText("");
         text_peso_ent.setText("");

@@ -5,3 +5,22 @@
 .mainFxmlClass {
 
 }
+
+.form {
+    -fx-hgap: 20px;
+    -fx-padding: 40px;
+    -fx-background-color: #f3f3f3;
+    -fx-background-radius: 9 10 10 10;
+    -fx-border-radius: 10px;
+    -fx-border-width: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+.tabela {
+    -fx-padding: 10px;
+    -fx-background-color: #f3f3f3;
+    -fx-background-radius: 9 10 10 10;
+    -fx-border-radius: 10px;
+    -fx-border-width: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}

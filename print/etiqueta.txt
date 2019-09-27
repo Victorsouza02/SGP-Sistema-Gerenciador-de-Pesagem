@@ -1,6 +1,6 @@
-XXXXXXXXXXXXXXXXXXXXXXX - XXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-TEL (XX) 1111-1111/1111
+$NOMEEMPRESA
+$ENDERECOEMPRESA
+$TELEMPRESA
 
 ************************************************
 COMPROVANTE DE PESAGEM Nº: $ID
@@ -8,7 +8,7 @@ COMPROVANTE DE PESAGEM Nº: $ID
 PRODUTO   : $PRODUTO
 FORNECEDOR: $FORNECEDOR
 MOTORISTA : $MOTORISTA
-PLACA     : $PLACA
+PLACA : $PLACA
 
 --------------------ENTRADA---------------------
 DATA: $DT_ENTRADA  HORA: $HH_ENTRADA
@@ -16,7 +16,7 @@ PESO:  $PS_ENTRADA
 
 ---------------------SAIDA----------------------
 DATA: $DT_SAIDA    HORA: $HH_SAIDA
-PESO     : $PS_SAIDA
+PESO : $PS_SAIDA
 PESO LIQ.: $PS_LIQ
 ************************************************
 SGP - Sistema Gerenciador de Pesagem
