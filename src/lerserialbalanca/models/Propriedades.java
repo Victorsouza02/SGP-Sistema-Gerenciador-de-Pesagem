@@ -8,8 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 
 public class Propriedades {
@@ -24,8 +23,7 @@ public class Propriedades {
     public Propriedades(){
         try {
             prop = new Properties();
-            prop.load(getClass().getResourceAsStream("/lerserialbalanca/properties/config.properties"));
-            //prop.load(new FileInputStream(new File("").getAbsolutePath() + "\\config\\config.properties"));
+            prop.load(new FileInputStream(new File("").getAbsolutePath()+"\\config\\config.properties"));
             carregarPropriedades();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -49,7 +47,7 @@ public class Propriedades {
         try {
             prop.setProperty("porta", porta);
             prop.setProperty("equipamento", equipamento);
-            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\src\\lerserialbalanca\\properties\\config.properties"), null);
+            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
             //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -64,7 +62,7 @@ public class Propriedades {
             prop.setProperty("nomeempresa", nome);
             prop.setProperty("enderecoempresa", endereco);
             prop.setProperty("telempresa", tel);
-            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\src\\lerserialbalanca\\properties\\config.properties"), null);
+            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
             //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();

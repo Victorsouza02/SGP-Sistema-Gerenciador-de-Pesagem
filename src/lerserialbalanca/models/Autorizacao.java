@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Autorizacao {
     private final String SERIALUSUARIO = "E82DE5A00873691740D1D06570B7BF4B";
-    private boolean autorizado = false;
+    private boolean autorizado = true;
     private List<String> seriais;
     
     public Autorizacao (){
