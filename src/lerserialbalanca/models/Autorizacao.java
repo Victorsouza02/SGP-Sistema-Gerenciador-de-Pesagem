@@ -32,9 +32,9 @@ public class Autorizacao {
                 seriais.add(serialCrip);
             }
         } catch(IOException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } catch(NoSuchAlgorithmException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     

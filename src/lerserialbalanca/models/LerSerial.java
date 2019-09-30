@@ -95,7 +95,7 @@ public class LerSerial {
             }
             return padraoString();
         } catch (SerialPortException serEx) {
-            System.out.println(serEx.getMessage());
+            serEx.printStackTrace();
         }
 
         return padraoString();
@@ -105,7 +105,7 @@ public class LerSerial {
         String[] portNames = SerialPortList.getPortNames();
         for (int i = 0; i < portNames.length; i++) {
             portas.add(portNames[i]);
-            System.out.println(portNames[i]);
+            //System.out.println(portNames[i]);
         }
     }
     

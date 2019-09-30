@@ -44,7 +44,7 @@ public class AcoesSQL {
             sql.close();
             return mot;
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return mot;
     }
@@ -62,7 +62,7 @@ public class AcoesSQL {
             sql.close();
             return num;
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return num;
     }
@@ -81,7 +81,7 @@ public class AcoesSQL {
             sql.close();
             return (registros == 1);
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return false;
     }
@@ -99,7 +99,7 @@ public class AcoesSQL {
             sql.close();
             return (registros == 1);
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return false;
     }
@@ -116,7 +116,7 @@ public class AcoesSQL {
             }
             return motoristas;
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return motoristas;
     }
@@ -138,7 +138,7 @@ public class AcoesSQL {
             sql.close();
             return (registros == 1);
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return false;
     }
@@ -157,7 +157,7 @@ public class AcoesSQL {
             sql.close();
             return (registros == 1);
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return false;
     }
@@ -191,7 +191,7 @@ public class AcoesSQL {
             }
             return reg;
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
         return reg;
     }
@@ -222,7 +222,7 @@ public class AcoesSQL {
                 }
             }
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
@@ -259,7 +259,7 @@ public class AcoesSQL {
             }
             return reg;
         } catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } 
         return reg;
     }
@@ -267,7 +267,7 @@ public class AcoesSQL {
     public List<Registro> listarRegistros(){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
-        String pl = "---";
+        String pl = " ";
         try{
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro");
             ResultSet result = sql.executeQuery();
@@ -284,7 +284,7 @@ public class AcoesSQL {
                     data_saida = dateFormatView.format(data);
                     pl = (result.getString("peso_liquido").contains(",")) ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
                 }else {
-                    pl = "---";
+                    pl = " ";
                 }
 
                 
@@ -308,7 +308,7 @@ public class AcoesSQL {
         } catch(SQLException sqlEx){
             System.out.println(sqlEx.getMessage());
         } catch(ParseException pEx){
-            System.out.println(pEx.getMessage());
+            pEx.printStackTrace();
         } 
         return registros;
     }
@@ -316,7 +316,7 @@ public class AcoesSQL {
     public List<Registro> listarRegistros(String data_inicio, String data_fim){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
-        String pl = "---";
+        String pl = " ";
         try {
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro where data_entrada BETWEEN ? AND ?");
             sql.setString(1, data_inicio);
@@ -336,7 +336,7 @@ public class AcoesSQL {
                     data_saida = dateFormatView.format(data);
                     pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
                 }else {
-                    pl = "---";
+                    pl = " ";
                 }
                 
                 Registro reg = new Registro(
@@ -357,9 +357,9 @@ public class AcoesSQL {
             }
             return registros;
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } catch (ParseException pEx){
-            System.out.println(pEx.getMessage());
+            pEx.printStackTrace();
         } 
         return registros;
     }
@@ -367,7 +367,7 @@ public class AcoesSQL {
     public List<Registro> listarRegistros(String placa){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
-        String pl = "---";
+        String pl = " ";
         try {
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from registro where placa = ?");
             sql.setString(1, placa);
@@ -386,7 +386,7 @@ public class AcoesSQL {
                     data_saida = dateFormatView.format(data);
                     pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
                 }else {
-                    pl = "---";
+                    pl = " ";
                 }
                 Registro reg = new Registro(
                         result.getInt("id"),
@@ -406,9 +406,9 @@ public class AcoesSQL {
             }
             return registros;
         } catch(SQLException ex){
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         } catch (ParseException pEx){
-            System.out.println(pEx.getMessage());
+            pEx.printStackTrace();
         } 
         return registros;
     }   

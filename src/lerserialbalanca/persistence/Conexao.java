@@ -22,11 +22,11 @@ public class Conexao {
             String url = "jdbc:sqlite:./db/dados.db";
             //String url = "jdbc:sqlite:db/dados.db"; 
             conexao = DriverManager.getConnection(url);
-            System.out.println("Conexao Banco OK");
+           //System.out.println("Conexao Banco OK");
         } catch (SQLException e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         } catch (ClassNotFoundException ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
     

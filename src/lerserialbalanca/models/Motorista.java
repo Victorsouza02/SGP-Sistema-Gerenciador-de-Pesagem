@@ -5,7 +5,6 @@
  */
 package lerserialbalanca.models;
 
-import java.sql.SQLException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lerserialbalanca.persistence.AcoesSQL;
@@ -101,20 +100,13 @@ public class Motorista {
 
     public void cadastrar() {
         AcoesSQL acao = new AcoesSQL();
-        if (acao.CadastrarMotorista(this)) {
-            System.out.println("Motorista cadastrado com sucesso");
-        } else {
-            System.out.println("Erro no cadastro");
-        };
+        acao.CadastrarMotorista(this);
     }
     
     public void editar(){
         AcoesSQL acao = new AcoesSQL();
-        if (acao.editarMotorista(this)) {
-            System.out.println("Motorista editado com sucesso");
-        } else {
-            System.out.println("Erro na edição");
-        };
+        acao.editarMotorista(this);
+
     }
     
     public ObservableList<Motorista> listaDeMotoristas() {

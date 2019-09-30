@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package lerserialbalanca.controllers;
 
 import java.net.URL;
@@ -24,7 +20,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import lerserialbalanca.Principal;
 import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
@@ -81,9 +80,13 @@ public class PesquisaController implements Initializable {
     private TableColumn<Registro, String> pscol;
     @FXML
     private TableColumn<Registro, String> plcol;
+    @FXML
+    private ImageView imagem;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Image img = new Image(Principal.class.getResourceAsStream("/imgs/driver.png"));
+        imagem.setImage(img);
         formatarCampos();
         eventos();
     }

@@ -13,6 +13,7 @@ import java.util.Properties;
 
 public class Propriedades {
     private Properties prop;
+    private final String PROP_URL = new File("").getAbsolutePath()+"\\config\\config.properties";
     private String porta;
     private String equipamento;
     private String fonte;
@@ -23,7 +24,7 @@ public class Propriedades {
     public Propriedades(){
         try {
             prop = new Properties();
-            prop.load(new FileInputStream(new File("").getAbsolutePath()+"\\config\\config.properties"));
+            prop.load(new FileInputStream(PROP_URL));
             carregarPropriedades();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -47,8 +48,7 @@ public class Propriedades {
         try {
             prop.setProperty("porta", porta);
             prop.setProperty("equipamento", equipamento);
-            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
-            //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
+            prop.store(new FileOutputStream(PROP_URL), null);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
@@ -62,8 +62,7 @@ public class Propriedades {
             prop.setProperty("nomeempresa", nome);
             prop.setProperty("enderecoempresa", endereco);
             prop.setProperty("telempresa", tel);
-            prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
-            //prop.store(new FileOutputStream(new File("").getAbsolutePath() + "\\config\\config.properties"), null);
+            prop.store(new FileOutputStream(PROP_URL), null);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
