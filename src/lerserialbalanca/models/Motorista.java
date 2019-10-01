@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+  * CLASSE : Motorista
+  * Função : Armazenar os metodos relacionados ao motorista
  */
 package lerserialbalanca.models;
 
@@ -9,10 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lerserialbalanca.persistence.AcoesSQL;
 
-/**
- *
- * @author Desenvolvimento
- */
+
 public class Motorista {
 
     private String placa;
@@ -34,6 +30,51 @@ public class Motorista {
         setStatus(status);
     }
 
+    public Motorista procurarPlaca(String placa) { //PROCURA PLACA E PEGA OS VALORES
+        AcoesSQL acao = new AcoesSQL();
+        Motorista mot = acao.procurarPlaca(placa);
+        if (mot.getNome() != null) {
+            setPlaca(mot.getPlaca());
+            setNome(mot.getNome());
+            setFornecedor(mot.getFornecedor());
+            setProduto(mot.getProduto());
+            setStatus(mot.getStatus());
+            return mot;
+        }
+        return mot;
+    }
+
+    public void cadastrar() { //CADASTRO
+        AcoesSQL acao = new AcoesSQL();
+        acao.CadastrarMotorista(this);
+    }
+    
+    public void editar(){ //EDIÇÃO
+        AcoesSQL acao = new AcoesSQL();
+        acao.editarMotorista(this);
+
+    }
+    
+    //RETORNA UMA LISTA(OBSERVABLE LIST) DE MOTORISTAS
+    public ObservableList<Motorista> listaDeMotoristas() {
+        AcoesSQL acao = new AcoesSQL();
+        return FXCollections.observableList(acao.listarMotoristas());
+    }
+    
+    //RETORNA O NUMERO DE REGISTROS DESSE MOTORISTA
+    public static int numRegistros(String placa){
+        AcoesSQL acao = new AcoesSQL();
+        return acao.numRegistros(placa);
+    }
+    
+    //RETORNA A DATA E HORA DA ULTIMA ATIVIDADE DESSSE MOTORISTA
+    public static String ultimaAtividade(String placa){
+        AcoesSQL acao = new AcoesSQL();
+        return acao.ultimaAtividade(placa);
+    }
+
+    //GETTERS E SETTERS
+    
     public String getPlaca() {
         return placa;
     }
@@ -81,47 +122,4 @@ public class Motorista {
     public static void setNum_registros(int num_registros) {
         Motorista.num_registros = num_registros;
     }
-    
-    
-
-    public Motorista procurarPlaca(String placa) {
-        AcoesSQL acao = new AcoesSQL();
-        Motorista mot = acao.procurarPlaca(placa);
-        if (mot.getNome() != null) {
-            setPlaca(mot.getPlaca());
-            setNome(mot.getNome());
-            setFornecedor(mot.getFornecedor());
-            setProduto(mot.getProduto());
-            setStatus(mot.getStatus());
-            return mot;
-        }
-        return mot;
-    }
-
-    public void cadastrar() {
-        AcoesSQL acao = new AcoesSQL();
-        acao.CadastrarMotorista(this);
-    }
-    
-    public void editar(){
-        AcoesSQL acao = new AcoesSQL();
-        acao.editarMotorista(this);
-
-    }
-    
-    public ObservableList<Motorista> listaDeMotoristas() {
-        AcoesSQL acao = new AcoesSQL();
-        return FXCollections.observableList(acao.listarMotoristas());
-    }
-    
-    public static int numRegistros(String placa){
-        AcoesSQL acao = new AcoesSQL();
-        return acao.numRegistros(placa);
-    }
-    
-    public static String ultimaAtividade(String placa){
-        AcoesSQL acao = new AcoesSQL();
-        return acao.ultimaAtividade(placa);
-    }
-
 }

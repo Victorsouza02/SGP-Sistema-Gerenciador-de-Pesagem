@@ -11,7 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import lerserialbalanca.Principal;
+import lerserialbalanca.main.Principal;
 
 /**
  * FXML Controller class
@@ -26,7 +26,7 @@ public class SobreController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Image img = new Image(Principal.class.getResourceAsStream("/imgs/logoebm.png"));
+        Image img = new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/logoebm.png"));
         imagem.setImage(img);
     }    
     

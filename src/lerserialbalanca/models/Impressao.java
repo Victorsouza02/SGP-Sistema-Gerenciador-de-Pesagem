@@ -1,3 +1,7 @@
+/*
+ * CLASSE : Impressao
+ * Função : Gerenciar tudo relacionado a impressão de cupom/relatórios.
+*/
 package lerserialbalanca.models;
 
 import java.io.BufferedReader;
@@ -15,38 +19,37 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
-import lerserialbalanca.Principal;
+import lerserialbalanca.main.Principal;
 import lerserialbalanca.persistence.AcoesSQL;
 import lerserialbalanca.utils.BrowserLaunch;
 
-/**
- *
- * @author Desenvolvimento
- */
-public class ManipuladorEtiqueta {
 
-    private static String path_txt = new File("").getAbsolutePath() + "\\print\\etiqueta.txt";
-    private static String path_html = new File("").getAbsolutePath() + "\\print\\PRINT.HTML";
-    private static String path_html_report = new File("").getAbsolutePath() + "\\print\\report.html";
-    private static String fonte = Principal.getFonte();
+public class Impressao {
 
-    public static void fazerEtiquetaHtml(String placa) {
+    private static final String PATH_TXT = new File("").getAbsolutePath() + "\\print\\etiqueta.txt";
+    private static final String PATH_HTML = new File("").getAbsolutePath() + "\\print\\PRINT.HTML";
+    private static final String PATH_HTML_REPORT = new File("").getAbsolutePath() + "\\print\\report.html";
+    private static final String FONTE = Principal.getFonte();
+    private static final String[] substituir = new String[]{"$NOMEEMPRESA","$ENDERECOEMPRESA","$TELEMPRESA","$ID", "$PRODUTO", "$FORNECEDOR", "$MOTORISTA", "$PLACA", "$DT_ENTRADA",
+                        "$HH_ENTRADA", "$PS_ENTRADA", "$DT_SAIDA", "$HH_SAIDA", "$PS_SAIDA", "$PS_LIQ"};
+
+    public static void fazerEtiquetaHtml(String placa) { //FAZER O ETIQUETA/CUPOM EM HTML PARA IMPRESSÃO
         try {
             AcoesSQL acao = new AcoesSQL();
+            //PEGA O ULTIMO REGISTRO DA PLACA NO BANCO DE DADOS
             Registro reg = acao.getUltimoRegistro(placa);
             //ARQUIVO DE LEITURA
-            BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(path_txt), StandardCharsets.ISO_8859_1));
+            BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(PATH_TXT), StandardCharsets.ISO_8859_1));
             String linha = "";
             //ARQUIVO DE ESCRITA
-            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
+            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(PATH_HTML), StandardCharsets.UTF_8);
 
             buffWrite.write("");
-            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+fonte+"px'><center>");
+            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+FONTE+"px'><center>");
             while (true) {
                 if (linha != null) {
-                    String[] variaveis = new String[]{"$NOMEEMPRESA","$ENDERECOEMPRESA","$TELEMPRESA","$ID", "$PRODUTO", "$FORNECEDOR", "$MOTORISTA", "$PLACA", "$DT_ENTRADA",
-                        "$HH_ENTRADA", "$PS_ENTRADA", "$DT_SAIDA", "$HH_SAIDA", "$PS_SAIDA", "$PS_LIQ"};
-                    for (String str : variaveis) {
+                    for (String str : substituir) {
+                        //VERIFICA SE A LINHA TEM A VARIAVEL DE SUBSTITUIÇÃO E COLOCA UM VALOR NO LOCAL
                         if (linha.contains(str)) {
                             linha = colocarValores(linha, str, reg);
                         }
@@ -60,12 +63,13 @@ public class ManipuladorEtiqueta {
             buffWrite.append("</pre><script>print()</script></body></html>");
             buffRead.close();
             buffWrite.close();
-            BrowserLaunch.openURL(path_html);
+            BrowserLaunch.openURL(PATH_HTML);
         } catch (IOException iEx) {
             System.out.println(iEx.getMessage());
         }
     }
 
+    //LISTA OS RELATÓRIOS DO BANCO DE DADOS DE UM PERIODO EM UM ARQUIVO HTML
     public static void fazerRelatorioHtml(List<Registro> registros, LocalDate inicio, LocalDate fim) {
         try {
             String data_ini = inicio.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
@@ -73,7 +77,7 @@ public class ManipuladorEtiqueta {
             String linha = "";
 
             //ARQUIVO PARA ESCRITA
-            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html_report), StandardCharsets.UTF_8);
+            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(PATH_HTML_REPORT), StandardCharsets.UTF_8);
 
             buffWrite.write("");
             buffWrite.append("<!DOCTYPE html><html>\n"
@@ -91,24 +95,26 @@ public class ManipuladorEtiqueta {
                     + "<br><table width=\"100%\">"
                     + "<tr><th>ID</th><th>PLACA</th><th>MOTORISTA</th><th>DT ENTRADA</th><th>H ENTRADA</th><th>PESO ENTRADA</th><th>DT SAIDA</th><th>H SAIDA</th><th>PESO SAIDA</th><th>PESO LIQ</th><th>FORNECEDOR</th><th>PRODUTO</th></tr>");
             for (Registro reg : registros) {
+                //A CADA REGISTRO ENCONTRADO
                 buffWrite.append("<tr><td>" + reg.getId() + "</td><td>" + reg.getPlaca() + "</td><td>" + reg.getNome() + "</td><td>" + reg.getDt_entrada() + "</td><td>" + reg.getH_entrada() + "</td><td>" + reg.getPs_entrada()
                         + " kg</td><td>" + ((reg.getDt_saida() == "") ? "---" : reg.getDt_saida()) + "</td><td>" + ((reg.getH_saida() == null) ? "---" : reg.getH_saida()) + "</td><td>" + ((reg.getPs_saida() == null) ? "---" : reg.getPs_saida()) + " kg</td><td>" + ((reg.getPs_liquido() == null) ? "---" : reg.getPs_liquido()) + " kg</td><td>"
                         + reg.getFornecedor() + "</td><td>" + reg.getProduto() + "</td></tr>");
             }
             buffWrite.append("</table></body></html>");
             buffWrite.close();
-            BrowserLaunch.openURL(path_html_report);
+            BrowserLaunch.openURL(PATH_HTML_REPORT);
         } catch (IOException ex){
             System.out.println(ex.getMessage());
         }
     }
     
+    //LISTA OS RELATÓRIOS DO BANCO DE DADOS DE ACORDO COM A PLACA EM UM ARQUIVO HTML
     public static void fazerRelatorioHtml(List<Registro> registros , String placa) {
         try {
             String linha = "";
 
             //ARQUIVO PARA ESCRITA
-            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html_report), StandardCharsets.UTF_8);
+            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(PATH_HTML_REPORT), StandardCharsets.UTF_8);
 
             buffWrite.write("");
             buffWrite.append("<!DOCTYPE html><html>\n"
@@ -132,30 +138,29 @@ public class ManipuladorEtiqueta {
             }
             buffWrite.append("</table></body></html>");
             buffWrite.close();
-            BrowserLaunch.openURL(path_html_report);
+            BrowserLaunch.openURL(PATH_HTML_REPORT);
         } catch (IOException ex){
             System.out.println(ex.getMessage());
         }
     }
 
+    //RECRIA A IMPRESSÃO DA ETIQUETA/CUPOM
     public static void recriarEtiqueta(int id){
         AcoesSQL acao = new AcoesSQL();
         Registro reg = acao.pegarRegistro(id);
         
         try {
             //ARQUIVO DE LEITURA
-            BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(path_txt), StandardCharsets.ISO_8859_1));
+            BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(PATH_TXT), StandardCharsets.ISO_8859_1));
             String linha = "";
             //ARQUIVO DE ESCRITA
-            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(path_html), StandardCharsets.UTF_8);
+            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(PATH_HTML), StandardCharsets.UTF_8);
 
             buffWrite.write("");
-            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+fonte+"px'><center>");
+            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+FONTE+"px'><center>");
             while (true) {
                 if (linha != null) {
-                    String[] variaveis = new String[]{"$NOMEEMPRESA","$ENDERECOEMPRESA","$TELEMPRESA","$ID", "$PRODUTO", "$FORNECEDOR", "$MOTORISTA", "$PLACA", "$DT_ENTRADA",
-                        "$HH_ENTRADA", "$PS_ENTRADA", "$DT_SAIDA", "$HH_SAIDA", "$PS_SAIDA", "$PS_LIQ"};
-                    for (String str : variaveis) {
+                    for (String str : substituir) {
                         if (linha.contains(str)) {
                             linha = colocarValores(linha, str, reg);
                         }
@@ -169,16 +174,17 @@ public class ManipuladorEtiqueta {
             buffWrite.append("</pre><script>print()</script></body></html>");
             buffRead.close();
             buffWrite.close();
-            BrowserLaunch.openURL(path_html);
+            BrowserLaunch.openURL(PATH_HTML);
         } catch(IOException ex){
             System.out.println(ex.getMessage());
         }
     }
 
+    //TROCA OS VALORES DOS CAMPOS SUBSTITUIVEIS PELOS DADOS DO REGISTRO
     public static String colocarValores(String linha, String var, Registro reg) {
         SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
-        Date data = new Date();
+        Date data = new Date();       
         try {
             switch (var) {
                 case "$NOMEEMPRESA":
@@ -243,28 +249,19 @@ public class ManipuladorEtiqueta {
         return linha;
     }
 
+    //GETTERS
+    
     public static String getPath_txt() {
-        return path_txt;
-    }
-
-    public static void setPath_txt(String path_txt) {
-        ManipuladorEtiqueta.path_txt = path_txt;
+        return PATH_TXT;
     }
 
     public static String getPath_html() {
-        return path_html;
-    }
-
-    public static void setPath_html(String path_html) {
-        ManipuladorEtiqueta.path_html = path_html;
+        return PATH_HTML;
     }
 
     public static String getPath_html_report() {
-        return path_html_report;
+        return PATH_HTML_REPORT;
     }
 
-    public static void setPath_html_report(String path_html_report) {
-        ManipuladorEtiqueta.path_html_report = path_html_report;
-    }
 
 }

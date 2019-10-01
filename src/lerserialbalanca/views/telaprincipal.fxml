@@ -120,7 +120,7 @@
             <children>
                 <ImageView fx:id="imagem" fitHeight="310.0" fitWidth="463.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../../imgs/pe-display.jpg" />
+                        <Image url="@../imgs/pe-display.jpg" />
                     </image>
                 </ImageView>
                 <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="24.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
@@ -172,6 +172,11 @@
             <Menu mnemonicParsing="false" text="Pesquisar">
                <items>
                   <MenuItem fx:id="menu_pesquisa" mnemonicParsing="false" text="Pesquisar Placa" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="PMP">
+               <items>
+                  <MenuItem fx:id="pmp_desconhecido" mnemonicParsing="false" text="PMP Desconhecido" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Ajuda">

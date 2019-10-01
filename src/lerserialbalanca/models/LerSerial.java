@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+   * CLASSE : LerSerial
+   * FUNÇÃO : Tudo relacionado a leitura dos dados seriais e conversão de acordo com o equipamento.
  */
 package lerserialbalanca.models;
 
@@ -9,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -38,15 +35,16 @@ public class LerSerial {
     public static List<String> equipamentos = new ArrayList<String>();
 
     public LerSerial(String porta, String equipamento){
+        // AO INICIAR A CLASSE
         try {
-            setPort(porta);
-            setEquipamento(equipamento);
+            setPort(porta); //PEGAR PORTA
+            setEquipamento(equipamento); //PEGAR EQUIPAMENTO
             serialPort = new SerialPort(getPort());
-            selecionarConfigEquipamento();
-            conSerial();
-            serialPort.addEventListener(new SerialPortReader());
-            listaPortas();
-            listaEquipamentos();
+            selecionarConfigEquipamento(); //SELECIONA CONFIGURACAO DE ACORDO COM EQUIPAMENTO
+            conSerial(); // CONEXÃO SERIAL
+            serialPort.addEventListener(new SerialPortReader()); //ESCUTANDO EVENTOS DA PORTA SERIAL
+            listaPortas(); //ADICIONA PORTAS DISPONIVEIS NA LISTA
+            listaEquipamentos(); //ADICIONA EQUIPAMENTOS COMPATIVEIS NA LISTA
         } catch (SerialPortException ex) {
             ex.printStackTrace();
         }
@@ -63,6 +61,7 @@ public class LerSerial {
         }
     }
 
+    //FECHAR COMUNICAÇÃO SERIAL
     public static void fecharSerial() {
         try {
             serialPort.closePort();
@@ -71,6 +70,7 @@ public class LerSerial {
         }
     }
 
+    //LIMPA INFORMAÇÕES INCORRETAS DA SERIAL
     public void limparLixo() {
         while (ok == false) {
             try {
@@ -101,6 +101,7 @@ public class LerSerial {
         return padraoString();
     }
     
+    //PEGA AS PORTAS DISPONIVEIS E ADICIONA A UMA LISTA DE PORTAS
     public void listaPortas(){
         String[] portNames = SerialPortList.getPortNames();
         for (int i = 0; i < portNames.length; i++) {
@@ -109,10 +110,13 @@ public class LerSerial {
         }
     }
     
+    //PEGA OS EQUIPAMENTOS COMPATIVEIS E ADICIONA A UMA LISTA DE EQUIPAMENTOS
     public void listaEquipamentos() {
         equipamentos.add("WT1000N");
     }
 
+    
+    //SELEÇÃO DE CONFIGURAÇÃO DE EQUIPAMENTO
     public void selecionarConfigEquipamento() {
         switch (equipamento) {
             case "WT1000N":
@@ -120,6 +124,7 @@ public class LerSerial {
         }
     }
 
+    //PADRAO DE STRING PARA CADA EQUIPAMENTO
     public String padraoString() {
         String padrao = null;
         switch (equipamento) {
@@ -128,7 +133,8 @@ public class LerSerial {
         }
         return padrao;
     }
-
+    
+    //SELECIONA O TIPO DE FORMATAÇÃO DE ACORDO COM O EQUIPAMENTO
     public Map<String, String> selecionarDadosEquipamento() {
         switch (equipamento) {
             case "WT1000N":
@@ -136,48 +142,8 @@ public class LerSerial {
         }
         return null;
     }
-
-    public void configWT1000N() {
-        setBaud(9600);
-        setDatabits(8);
-        setStopbit(1);
-        setParity(0);
-        setTotal_bytes(27);
-    }
-
-    public Map<String, String> dadosWT1000N() {
-        Map<String, String> dados = new HashMap<String, String>();
-        String dado = dataSerial();
-        dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
-        String peso_bru = dado.substring(2, 9);
-
-        if (peso_bru.equals("000000 ") || peso_bru.equals("0000000")) {
-            peso_bru = "0";
-        } else {
-            if (peso_bru.contains("-")) {
-                if (peso_bru.contains(".")) {
-                    int pos = peso_bru.indexOf(".");
-                    peso_bru = "-" + peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                } else {
-                    peso_bru = "-" + peso_bru.substring(1, 7).replaceFirst("0*", "");
-                }
-            } else {
-                if (peso_bru.contains(".")) {
-                    int pos = peso_bru.indexOf(".");
-                    peso_bru = (pos <= 3) ? peso_bru.replaceFirst(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso_bru.replace(peso_bru.substring(0, (pos - 1)), peso_bru.substring(0, (pos - 1)).replaceFirst("0*", ""));
-                } else {
-                    peso_bru = peso_bru.replaceFirst("0*", "");
-                }
-            }
-        }
-
-        dados.put("peso_bru", peso_bru);
-        dados.put("tara", dado.substring(10, 17));
-        dados.put("peso_liq", dado.substring(18, 25));
-
-        return dados;
-    }
     
+    //OUVINDO PORTA SERIAL E RETIRANDO DADOS DESNECESSÁRIOS
      static class SerialPortReader implements SerialPortEventListener {
         @Override
         public void serialEvent(SerialPortEvent event) {
@@ -198,7 +164,69 @@ public class LerSerial {
         }
     }
 
+    /********INDICADOR WT1000N*******/
+    public void configWT1000N() {
+        setBaud(9600);
+        setDatabits(8);
+        setStopbit(1);
+        setParity(0);
+        setTotal_bytes(27);
+    }
 
+    public Map<String, String> dadosWT1000N() {
+        Map<String, String> dados = new HashMap<String, String>();
+        String dado = dataSerial();
+        dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
+        String peso_bru = dado.substring(2, 9);
+        String peso_liq = dado.substring(18, 25);
+        
+        List<String> pesos = new ArrayList<String>();
+        pesos.add(peso_bru);
+        pesos.add(peso_liq);
+        int cnt = 0;
+        for(String peso : pesos){
+            if (peso.equals("000000 ") || peso.equals("0000000")) {
+                peso = "0";
+            } else {
+                if (peso.contains("-")) {
+                    if (peso.contains(".")) {
+                        int pos = peso.indexOf(".");
+                        peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
+                    } else {
+                        peso = "-" + peso.substring(1, 7).replaceFirst("0*", "");
+                    }
+                } else {
+                    if (peso.contains(".")) {
+                        int pos = peso.indexOf(".");
+                        peso = (pos <= 3) ? peso.replaceFirst(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                    } else {
+                        peso = peso.replaceFirst("0*", "");
+                    }
+                }
+            }
+            pesos.set(cnt, peso);
+            switch (cnt){
+                case 0 :
+                    peso_bru = peso;
+                    break;
+                case 1 : 
+                    peso_liq = peso;
+                    break; 
+            }
+            cnt++;
+        }
+        
+
+        dados.put("peso_bru", peso_bru);
+        dados.put("tara", dado.substring(10, 17));
+        dados.put("peso_liq", peso_liq);
+        return dados;
+    }
+    /********INDICADOR WT1000N*******/
+    
+    
+
+    // GETTERS/SETTERS
     public static boolean isOk() {
         return ok;
     }

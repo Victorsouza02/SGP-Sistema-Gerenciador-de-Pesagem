@@ -1,4 +1,7 @@
-
+/*
+ * CLASSE : Autorizacao
+ * Função : Pegar as seriais das unidades e verificar autorização do usuário.
+*/
 package lerserialbalanca.models;
 
 import java.io.IOException;
@@ -10,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Autorizacao {
+    //SERIAL DO USUARIO AUTORIZADO
     private final String SERIALUSUARIO = "E82DE5A00873691740D1D06570B7BF4B";
     private boolean autorizado = true;
     private List<String> seriais;
@@ -19,12 +23,13 @@ public class Autorizacao {
         verificarSerial();
     }
     
-    public void pegarSeriais(){
+    public void pegarSeriais(){ //PEGA AS SERIAIS DE TODAS UNIDADES DO COMPUTADOR E ADICIONA EM UMA LISTA
         try {
             StringBuilder sb = new StringBuilder();
             seriais = new ArrayList<String>();
             for(FileStore store : FileSystems.getDefault().getFileStores()){
-                MessageDigest md = MessageDigest.getInstance("MD5");
+                MessageDigest md = MessageDigest.getInstance("MD5"); //CONVERTE PARA MD5
+                //DEVOLVE PARA UMA STRING JA CRIPTOGRAFADA
                 String serialCrip = new String(hexCodes(md.digest(store.getAttribute("volume:vsn").toString().getBytes("UTF-8"))));
                 sb.append(String.format("%-20s serial :%s\n", store, serialCrip));
                 //LISTA OS SERIAIS NO OUTPUT
@@ -38,14 +43,15 @@ public class Autorizacao {
         }
     }
     
-    public void verificarSerial(){
+    public void verificarSerial(){ //VERIFICA SE ALGUMA SERIAL DA LISTA BATE COM A SERIAL DO USUARIO
         for(String serial : seriais){
-            if(serial.equals(SERIALUSUARIO)){
-                autorizado = true;
+            if(serial.equals(SERIALUSUARIO)){ //SE FOR EQUIVALENTE A SERIAL DO USUARIO
+                autorizado = true; //LIBERA ACESSO
             }
         }
     }
     
+    //CONVERTE PARA STRING O MD5
     private static char[] hexCodes(byte[] text) {
         char[] hexOutput = new char[text.length * 2];
         String hexString;

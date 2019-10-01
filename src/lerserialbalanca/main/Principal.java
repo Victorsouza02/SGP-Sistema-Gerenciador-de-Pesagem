@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lerserialbalanca;
+package lerserialbalanca.main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
@@ -28,12 +28,16 @@ import lerserialbalanca.models.Threads;
 
 
 public class Principal extends Application {
-    //
+    // Stages
     public static Stage primaryStage;
     public static Stage secondStage;
     public static Stage errorStage;
-    //
+    
+    // **** Variaveis de uso geral
+    
+    //INFORMAÇÕES DA SERIAL
     private static String peso_bru = "0";
+    private static String peso_liq = "0";
     private static boolean estavel = true;
     private static LerSerial serial;
     
@@ -58,7 +62,8 @@ public class Principal extends Application {
     public void start(Stage stage) {
         Autorizacao pd = new Autorizacao();
         carregarPropriedades();
-        if(pd.isAutorizado()){
+        if(pd.isAutorizado()){ //SE O USUARIO ESTIVER AUTORIZADO
+            //Inicia Stage Principal e as Threads
             this.primaryStage = stage;
             this.errorStage = stage;
             initRootLayout();
@@ -68,18 +73,19 @@ public class Principal extends Application {
             serialThread = new Thread(lerSerial);
             serialThread.start();
 
-        } else {
+        } else { //SE NÃO ESTIVER AUTORIZADO
+            //Inicia Stage de Erro
             this.errorStage = stage;
             initErrorLayout();
         }
     }
     
     
-    public static void initRootLayout() {
+    public static void initRootLayout() { //INICIA TELA PRINCIPAL
         try {
-            Parent root = FXMLLoader.load(Principal.class.getResource("views/telaprincipal.fxml"));
+            Parent root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/telaprincipal.fxml"));
             primaryStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
-            primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
+            primaryStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/ebmico.jpg")));
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(true);
             primaryStage.show();
@@ -95,11 +101,11 @@ public class Principal extends Application {
     }
     
     
-    public static void initErrorLayout(){
+    public static void initErrorLayout(){ //INICIA TELA DE ERRO
         try {
-            Parent root = FXMLLoader.load(Principal.class.getResource("views/erro.fxml"));
+            Parent root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/erro.fxml"));
             errorStage.setTitle("Sistema Gerenciador de Peso - EBM Metrologia");
-            errorStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
+            errorStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/ebmico.jpg")));
             errorStage.setScene(new Scene(root));
             errorStage.setResizable(true);
             errorStage.show();
@@ -114,20 +120,21 @@ public class Principal extends Application {
         }
     }
     
-    public static void closePrimaryStage(){
+    public static void closePrimaryStage(){ //FECHA TELA PRINCIPAL
         primaryStage.close();
     }
     
-    public static void closeErrorStage(){
+    public static void closeErrorStage(){ //FECHA TELA DE ERRO
         errorStage.close();
     }
     
+    //CARREGA SCENE NO STAGE SECUNDÁRIO COMO MODAL
     public static void loadScene(Scene scene, String titlePage, boolean resizable) {
          if(secondStage == null){   
             secondStage = new Stage();
             secondStage.initModality(Modality.WINDOW_MODAL);
             secondStage.initOwner(primaryStage);
-            secondStage.getIcons().add(new Image(Principal.class.getResourceAsStream("/imgs/ebmico.jpg")));
+            secondStage.getIcons().add(new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/ebmico.jpg")));
             secondStage.setResizable(resizable);
             secondStage.setTitle(titlePage);
             secondStage.setScene(scene);
@@ -142,6 +149,7 @@ public class Principal extends Application {
          }
     }
     
+    //CARREGA AS PROPRIEDADES DO USUÁRIO
     public void carregarPropriedades(){
         Propriedades prop = new Propriedades();
         porta = prop.getPorta();
@@ -152,11 +160,12 @@ public class Principal extends Application {
         telempresa = prop.getTelempresa();
     }
     
-    public static Scene sobreScene(){
+    
+    public static Scene sobreScene(){ //SCENE DO MENU SOBRE
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("views/sobre.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/sobre.fxml"));
             scene = new Scene(root, 400, 230);
             
         } catch (IOException ex){
@@ -166,11 +175,11 @@ public class Principal extends Application {
         return scene;
     }
     
-    public static Scene relatorioScene(){
+    public static Scene relatorioScene(){ //SCENE DO MENU RELATÓRIO
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("views/relatorio.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/relatorio.fxml"));
             scene = new Scene(root, 400, 230);
             
         } catch (IOException ex){
@@ -180,11 +189,11 @@ public class Principal extends Application {
         return scene;
     }
 
-    public static Scene configScene(){
+    public static Scene configScene(){ //SCENE DO MENU CONFIGURAÇÕES GERAIS
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("views/config.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/config.fxml"));
             scene = new Scene(root, 329, 374);
             
         } catch (IOException ex){
@@ -194,11 +203,11 @@ public class Principal extends Application {
         return scene;
     }
     
-    public static Scene impressaoScene(){
+    public static Scene impressaoScene(){ //SCENE DO MENU DE CONFIGURAÇÕES DE IMPRESSAO
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("views/impressao.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/impressao.fxml"));
             scene = new Scene(root, 432, 489);
             
         } catch (IOException ex){
@@ -208,12 +217,26 @@ public class Principal extends Application {
         return scene;
     }
     
-    public static Scene pesquisaScene(){
+    public static Scene pesquisaScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("views/pesquisaplaca.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/pesquisaplaca.fxml"));
             scene = new Scene(root, 860, 482);
+            
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        
+        return scene;
+    }
+    
+    public static Scene pmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
+        Parent root;
+        Scene scene = null;
+        try {
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/pmp.fxml"));
+            scene = new Scene(root, 910, 530);
             
         } catch (IOException ex){
             ex.printStackTrace();
@@ -224,14 +247,14 @@ public class Principal extends Application {
     
     
     
-    private static Runnable lerSerial = new Runnable() {
+    private static Runnable lerSerial = new Runnable() { //INICIA THREAD LEITURA SERIAL
         public void run() {
             Threads th = new Threads();
             th.ReadSerialThread(serial);
         }
     };
     
-    private static Runnable protecaoPendrive = new Runnable() {
+    private static Runnable protecaoPendrive = new Runnable() { //INICIA THREAD SEGURANÇA
         public void run() {
             Threads th = new Threads();
             th.SecurityThread();
@@ -309,6 +332,16 @@ public class Principal extends Application {
     public static void setTelempresa(String telempresa) {
         Principal.telempresa = telempresa;
     }
+
+    public static String getPeso_liq() {
+        return peso_liq;
+    }
+
+    public static void setPeso_liq(String peso_liq) {
+        Principal.peso_liq = peso_liq;
+    }
+    
+    
     
     
     

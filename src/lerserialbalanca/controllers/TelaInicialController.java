@@ -1,3 +1,8 @@
+/*
+    * CLASSE : TelaInicialController
+    * FUNÇÃO : Controlar os eventos da Tela Inicial e usar os metodos necessários.
+*/
+
 package lerserialbalanca.controllers;
 
 import java.net.URL;
@@ -23,18 +28,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javax.swing.JOptionPane;
-import lerserialbalanca.Principal;
+import lerserialbalanca.main.Principal;
+import lerserialbalanca.models.Impressao;
 import lerserialbalanca.models.LerSerial;
-import lerserialbalanca.models.ManipuladorEtiqueta;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.Format;
 
-/**
- * FXML Controller class
- *
- * @author Desenvolvimento
- */
 public class TelaInicialController implements Initializable {
 
     @FXML
@@ -47,6 +47,8 @@ public class TelaInicialController implements Initializable {
     private MenuItem menu_impressao;
     @FXML
     private MenuItem menu_pesquisa;
+    @FXML
+    private MenuItem pmp_desconhecido;
     @FXML
     private Label peso_bru_id;
     @FXML
@@ -112,15 +114,17 @@ public class TelaInicialController implements Initializable {
     boolean mostrarSaida = false;
 
     
+    //INICIALIZA O CONTROLLER
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         eventosElementos(); //Eventos dos elementos visuais
         formatarCampos(); //Formatação de campos
         preencherTabela(); //Preenchimento da tabela com dados do banco
-        //
+        
+        //Carrega imagem do display
         Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
         imagem.setImage(img);
-        //
+        //Inicia Thread de atualização no display
         displayThread = new Thread(this::DisplayThread);
         displayThread.start();
         
@@ -156,18 +160,19 @@ public class TelaInicialController implements Initializable {
                 boolean registrado = mot.getNome() != null;
                 if (registrado) { //SE ACHAR MOTORISTA JÁ CADASTRADO COM A PLACA
                     Registro reg = new Registro();
+                    //PREENCHE CAMPOS
                     text_motorista.setText(mot.getNome());
                     text_fornecedor.setText(mot.getFornecedor());
                     text_produto.setText(mot.getProduto());
-                    if (mot.getStatus().equals("E")) {
+                    if (mot.getStatus().equals("E")) { //SE FOR ENTRADA
                         entradaSaida.setText("ENTRADA");
-                        mostrarEntrada = true;
+                        mostrarEntrada = true; //MOSTRA O PESO NO CAMPO DE ENTRADA
                     }
-                    if (mot.getStatus().equals("S")) {
+                    if (mot.getStatus().equals("S")) { //SE FOR SAÍDA
                         entradaSaida.setText("SAÍDA");
-                        mostrarSaida = true;
-                        reg = reg.ultimoRegistro(mot.getPlaca());
-                        text_peso_ent.setText(reg.getPs_entrada());
+                        mostrarSaida = true; //MOSTRA O PESO NO CAMPO DE SAÍDA
+                        reg = reg.ultimoRegistro(mot.getPlaca()); //PEGA O ULTIMO REGISTRO DA PLACA
+                        text_peso_ent.setText(reg.getPs_entrada()); //MOSTRA ULTIMO PESO DE ENTRDA NO CAMPO DE ENTRADA
                     }
                 } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
                     entradaSaida.setText("ENTRADA");
@@ -175,6 +180,7 @@ public class TelaInicialController implements Initializable {
                     mostrarEntrada = true;
                 }
             } else { //SE O NUMERO DE CARACTERES FOR MENOR QUE 7
+                //LIMPA TODOS OS CAMPOS
                 entradaSaida.setText("");
                 mostrarEntrada = false;
                 mostrarSaida = false;
@@ -188,7 +194,7 @@ public class TelaInicialController implements Initializable {
 
         confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CONFIRMA
             if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
-                confirma.setDisable(true);
+                confirma.setDisable(true); //DESATIVA BOTAO CONFIRMAR
                 Motorista mot = new Motorista();
                 Registro reg = new Registro();
                 mot = mot.procurarPlaca(text_placa.getText());
@@ -204,16 +210,16 @@ public class TelaInicialController implements Initializable {
 
                 if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
                     mot.editar();
-                    if (tipo.equals("S")) {
+                    if (tipo.equals("S")) { //SE FOR SAIDA
                         reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
                         fazerEtiqueta("S", mot.getPlaca());
-                    } else if (tipo.equals("E")) {
+                    } else if (tipo.equals("E")) { //SE FOR ENTRADA
                         reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
                         fazerEtiqueta("E", mot.getPlaca());
                     }
-                    atualizarTabela();
-                    limparCampos();
-                } else { // SE O MOTORISTA NÃO ESTÁ REGISTRADO
+                    atualizarTabela(); //ATUALIZA TABELA
+                    limparCampos(); // LIMPA TODOS OS CAMPOS
+                } else {// SE O MOTORISTA NÃO ESTÁ REGISTRADO
                     mot.cadastrar();
                     reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
                     fazerEtiqueta("E", mot.getPlaca());
@@ -224,21 +230,25 @@ public class TelaInicialController implements Initializable {
             }
         });
 
+        
         cancela.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
             limparCampos();
             text_placa.requestFocus();
         });
 
-        relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
+        relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO RELATÓRIO
             Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
         });
+        
 
-        //AO CLICAR DUAS VEZES EM UMA LINHA NA TABELA
+        //EVENTO NA TABELA
         tabela.setRowFactory(tv -> {
             TableRow<Registro> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
+                //AO CLICAR DUAS VEZES EM UMA LINHA NA TABELA
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Registro rowData = row.getItem();
+                    //PERGUNTA SE QUER REIMPRESSÃO DA ETIQUETA
                     Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
                     aviso.initOwner(confirma.getScene().getWindow());
                     aviso.setTitle("Impressão");
@@ -248,32 +258,48 @@ public class TelaInicialController implements Initializable {
                     ButtonType botaoNao = new ButtonType("Não", ButtonData.CANCEL_CLOSE);
                     aviso.getButtonTypes().setAll(botaoSim, botaoNao);
                     Optional<ButtonType> result = aviso.showAndWait();
-                    if (result.get() == botaoSim) {
-                        ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
+                    if (result.get() == botaoSim) { //Se a opção for SIM
+                        Impressao.recriarEtiqueta(rowData.getId()); //Reimprime a etiqueta 
                     }
                 }
             });
             return row;
         });
-
+        
+        //AO CLICAR NO MENU DE RELATÓRIO
         menu_relatorio.setOnAction((event) -> {
+            //Carrega modal de relatório
             Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
         });
-
+        
+        //AO CLICAR NO MENU SOBRE
         menu_sobre.setOnAction((event) -> {
+            //Carrega modal de sobre o programa
             Principal.loadScene(Principal.sobreScene(), "Sobre o programa",false);
         });
-
+        
+        //AO CLICAR NO MENU CONFIGURAÇÕES GERAIS
         menu_config.setOnAction((event) -> {
+            //Carrega modal de configurações gerais
             Principal.loadScene(Principal.configScene(), "Configurações Gerais",false);
         });
         
+        //AO CLICAR NO MENU CONFIGURAÇÕES DE IMPRESSÃO
         menu_impressao.setOnAction((event) ->{
+            //Carrega modal de configurações de impressão
             Principal.loadScene(Principal.impressaoScene(), "Configurações de Impressão",false);
         });
         
+        //AO CLICAR NO MENU DE PESQUISAR PLACA
         menu_pesquisa.setOnAction((event) -> {
+            //Carrega modal de pesquisa de placas
             Principal.loadScene(Principal.pesquisaScene(), "Pesquisar Placa",false);
+        });
+        
+        //AO CLICAR NO MENU PMP DESCONHECIDO
+        pmp_desconhecido.setOnAction((event) -> {
+            //Carrega modal de pmp desconhecido
+            Principal.loadScene(Principal.pmpScene(), "Função - PMP Desconhecido",false);
         });
 
     }
@@ -302,8 +328,10 @@ public class TelaInicialController implements Initializable {
         return true;
     }
 
+    //FAZ ETIQUETA/CUPOM DO MOTORISTA
     public void fazerEtiqueta(String tipo, String placa) {
-        if (tipo.equals("E")) {
+        if (tipo.equals("E")) { //SE FOR ENTRADA
+            //PERGUNTA SE QUER IMPRIMIR A ENTRADA
             Alert aviso = new Alert(Alert.AlertType.CONFIRMATION);
             aviso.initOwner(confirma.getScene().getWindow());
             aviso.setTitle("Impressão");
@@ -313,11 +341,11 @@ public class TelaInicialController implements Initializable {
             ButtonType botaoNao = new ButtonType("Não", ButtonData.CANCEL_CLOSE);
             aviso.getButtonTypes().setAll(botaoSim, botaoNao);
             Optional<ButtonType> result = aviso.showAndWait();
-            if (result.get() == botaoSim) {
-                ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
+            if (result.get() == botaoSim) {//SE APERTAR EM SIM
+                Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSÃO DA ETIQUETA
             }
-        } else if (tipo.equals("S")) {
-            ManipuladorEtiqueta.fazerEtiquetaHtml(placa);
+        } else if (tipo.equals("S")) { //SE FOR SAIDA 
+            Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSAO DA ETIQUETA
         }
 
     }

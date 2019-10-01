@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    * CLASSE : ConfigController
+    * FUNÇÃO : Controlar os eventos da tela de configurações gerais e usar os metodos necessários.
+*/
 package lerserialbalanca.controllers;
 
 import java.net.URL;
@@ -12,17 +11,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import lerserialbalanca.Principal;
+import lerserialbalanca.main.Principal;
 import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.Propriedades;
-import lerserialbalanca.utils.Format;
 
-/**
- * FXML Controller class
- *
- * @author Desenvolvimento
- */
+
 public class ConfigController implements Initializable {
  
     @FXML
@@ -34,9 +27,7 @@ public class ConfigController implements Initializable {
 
     
     
-    /**
-     * Initializes the controller class.
-     */
+    //INICIALIZA O CONTROLLER
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         porta.setValue(Principal.getPorta());
@@ -45,15 +36,17 @@ public class ConfigController implements Initializable {
         eventos();
     } 
     
+    //EVENTOS DOS ELEMENTOS 
     public void eventos(){
-        
-        salvar.setOnMouseClicked((event)->{
+        salvar.setOnMouseClicked((event)->{ //Ao clicar em Salvar
             Propriedades prop = new Propriedades();
+            //Altera as propriedades (Porta e Equipamento)
             prop.alterarPropriedades(porta.getValue().toString(), equipamento.getValue().toString());
-            System.exit(0);
+            System.exit(0); //Encerra o sistema
         });
     }
     
+    //CARREGA COMBOBOX COM DADOS DE PORTAS E EQUIPAMENTOS DISPONIVEIS
     public void carregarComboBox(){
         porta.setItems(FXCollections.observableArrayList(LerSerial.portas));
         equipamento.setItems(FXCollections.observableArrayList(LerSerial.equipamentos));

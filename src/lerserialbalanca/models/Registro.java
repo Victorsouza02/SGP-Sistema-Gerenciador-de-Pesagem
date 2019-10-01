@@ -1,13 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+   * CLASSE : Registro
+   * FUNÇÃO : Gerencia os registros de entrada/saida de motoristas
  */
 package lerserialbalanca.models;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -52,6 +50,7 @@ public class Registro {
         setPs_liquido(ps_liquido);
     }
     
+    //REGISTRA ENTRADA DOS MOTORISTAS
     public boolean registrarEntrada(String placa, String ps_entrada){
         AcoesSQL acao = new AcoesSQL();
         Motorista mot = acao.procurarPlaca(placa);
@@ -68,6 +67,7 @@ public class Registro {
         return acao.entradaRegistro(this);
     }
     
+    //REGISTRA SAIDA DO MOTORISTA
     public boolean registrarSaida(String placa, String ps_entrada, String ps_saida){
         AcoesSQL acao = new AcoesSQL();
         SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -85,16 +85,19 @@ public class Registro {
         return acao.saidaRegistro(reg);
     }
     
+    //RETORNA O ULTIMO REGISTRO DE UMA DETERMINADA PLACA
     public Registro ultimoRegistro(String placa){
         AcoesSQL acao = new AcoesSQL();
         return acao.getUltimoRegistro(placa);
     }
     
+    //RETORNA UMA OBSERVABLE LIST DE REGISTROS
     public ObservableList<Registro> listaDeRegistros() {
         AcoesSQL acao = new AcoesSQL();
         return FXCollections.observableList(acao.listarRegistros());
     }
     
+    //RETORNA UMA OBSERVABLE LIST DE REGISTROS DE UMA DETERMINADA PLACA
     public ObservableList<Registro> listaDeRegistros(String placa) {
         AcoesSQL acao = new AcoesSQL();
         List<Registro> registros = acao.listarRegistros(placa);
@@ -102,13 +105,15 @@ public class Registro {
         return FXCollections.observableList(registros);
     }
     
+    //RETORNA UMA OBSERVABLE LIST DE REGISTROS NUM PERIODO ESPECIFICO
     public List<Registro> listaDeRegistros(String data_ini, String data_fim) {
         AcoesSQL acao = new AcoesSQL();
-        List<Registro> registros = new ArrayList<Registro>();
         return acao.listarRegistros(data_ini, data_fim);
     }
 
 
+    //GETTERS E SETTERS
+    
     public String getNome() {
         return nome;
     }

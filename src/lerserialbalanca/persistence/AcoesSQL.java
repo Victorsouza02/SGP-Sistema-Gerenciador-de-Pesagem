@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+    *CLASSE : AcoesSQL
+    *FUNCÃO : Armazenar metodos de CRUD dos dados
  */
 package lerserialbalanca.persistence;
 
@@ -13,9 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lerserialbalanca.models.Motorista;
+import lerserialbalanca.models.Pecas;
 import lerserialbalanca.models.Registro;
 
 /**
@@ -24,6 +22,7 @@ import lerserialbalanca.models.Registro;
  */
 public class AcoesSQL {
     
+    //Retorna um Motorista de uma determinada placa
     public Motorista procurarPlaca (String placa){
         Conexao conexao = new Conexao();
         Motorista mot = new Motorista();
@@ -49,6 +48,7 @@ public class AcoesSQL {
         return mot;
     }
     
+    //Retorna número de registros de uma placa
     public int numRegistros (String placa){
         int num = 0;
         Conexao conexao = new Conexao();
@@ -67,6 +67,7 @@ public class AcoesSQL {
         return num;
     }
     
+    //Cadastra motorista no banco de dados
     public boolean CadastrarMotorista(Motorista mot){
         Conexao conexao = new Conexao();
         try {
@@ -86,6 +87,7 @@ public class AcoesSQL {
         return false;
     }
     
+    //Edita o motorista no banco de dados
     public boolean editarMotorista(Motorista mot){
         Conexao conexao = new Conexao();
         try {
@@ -104,6 +106,7 @@ public class AcoesSQL {
         return false;
     }
     
+    //Retorna uma lista de Motoristas
     public List<Motorista> listarMotoristas(){
         Conexao conexao = new Conexao();
         List<Motorista> motoristas = new ArrayList<Motorista>();
@@ -121,7 +124,7 @@ public class AcoesSQL {
         return motoristas;
     }
     
-    
+    //Faz uma entrada de registro no banco
     public boolean entradaRegistro(Registro reg){
         Conexao conexao = new Conexao();
         try {
@@ -143,7 +146,7 @@ public class AcoesSQL {
         return false;
     }
     
-    
+    //Faz uma saída de registro no banco(Atualiza o ultimo registro de entrada)
     public boolean saidaRegistro(Registro reg){
         Conexao conexao = new Conexao();
         try {
@@ -162,6 +165,7 @@ public class AcoesSQL {
         return false;
     }
     
+    //Retorna o ultimo registro de uma determinada placa
     public Registro getUltimoRegistro(String placa){
         Conexao conexao = new Conexao();
         Registro reg = new Registro();
@@ -196,6 +200,7 @@ public class AcoesSQL {
         return reg;
     }
     
+    //Retorna a data da ultima atividade de uma placa
     public String ultimaAtividade(String placa){
         Conexao conexao = new Conexao();
         Registro reg = new Registro();
@@ -229,6 +234,7 @@ public class AcoesSQL {
         return atividade;
     }
     
+    //Retorna o Registro de um determinado ID
     public Registro pegarRegistro(int id){
         Conexao conexao = new Conexao();
         Registro reg = new Registro();
@@ -264,6 +270,7 @@ public class AcoesSQL {
         return reg;
     }
     
+    //Retorna uma Lista de Registros
     public List<Registro> listarRegistros(){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
@@ -313,6 +320,7 @@ public class AcoesSQL {
         return registros;
     }
     
+    //Retorna uma Lista de Registros num periodo especifico
     public List<Registro> listarRegistros(String data_inicio, String data_fim){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
@@ -364,6 +372,7 @@ public class AcoesSQL {
         return registros;
     }
     
+    //Retorna uma Lista de Registros de acordo com a placa
     public List<Registro> listarRegistros(String placa){
         Conexao conexao = new Conexao();
         List<Registro> registros = new ArrayList<Registro>();
@@ -411,5 +420,63 @@ public class AcoesSQL {
             pEx.printStackTrace();
         } 
         return registros;
-    }   
+    }
+    
+    public void cadastrarPeca(Pecas pec){
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("INSERT INTO pecas (nome, descricao, pmp, qtd_amostras, grandeza)"
+                    + "VALUES (?, ?, ?, ?, ?)");
+            sql.setString(1, pec.getNome());
+            sql.setString(2, pec.getDescricao());
+            sql.setString(3, pec.getPmp());
+            sql.setString(4, pec.getQtd_amostras());
+            sql.setString(5, pec.getGrandeza());
+            sql.executeUpdate();
+            sql.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        } 
+    }
+    
+    public Pecas procurarPeca(String nome){
+        Conexao conexao = new Conexao();
+        Pecas pec = null;
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from pecas WHERE nome LIKE ?% LIMIT 1");
+            sql.setString(1, nome);
+            ResultSet result = sql.executeQuery();
+            while(result.next()){
+                pec = new Pecas(
+                   result.getString("nome"),
+                   result.getString("descricao"),
+                   result.getString("pmp"),
+                   result.getString("qtd_amostras"),
+                   result.getString("grandeza")
+                );
+            }
+            sql.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return pec;
+    }
+    
+    public List<String> listarNomesPecas(){
+        Conexao conexao = new Conexao();
+        List<String> nomes = new ArrayList<String>();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT nome from pecas");
+            ResultSet result = sql.executeQuery();
+            while(result.next()){
+                nomes.add(result.getString("nome"));
+            }
+            sql.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return nomes;
+    }
+    
+    
 }

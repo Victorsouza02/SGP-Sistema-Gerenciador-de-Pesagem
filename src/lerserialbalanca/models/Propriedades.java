@@ -1,4 +1,7 @@
-
+/*
+   * CLASSE : Propriedades
+   * FUNÇÃO : Ler o arquivo de propriedade e gerenciar os valores
+ */
 package lerserialbalanca.models;
 
 import java.io.File;
@@ -31,6 +34,7 @@ public class Propriedades {
         }
     }
     
+    //PEGA OS VALORES QUE ESTÃO NO ARQUIVO DE PROPRIEDADES
     public void carregarPropriedades(){
         try {
             setPorta(prop.getProperty("porta"));
@@ -44,6 +48,7 @@ public class Propriedades {
         }
     }
     
+    //ALTERA OS VALORES NO ARQUIVO DE PROPRIEDADES(PORTA E EQUIPAMENTO)
     public void alterarPropriedades(String porta, String equipamento){
         try {
             prop.setProperty("porta", porta);
@@ -56,6 +61,7 @@ public class Propriedades {
         }
     }
     
+    //ALTERA OS VALORES NO ARQUIVO DE PROPRIEDADES(NOME EMPRESA, ENDERECO EMPRESA, TEL EMPRESA E FONTE DA IMPRESSAO)
     public void alterarPropriedades(String fonte, String nome , String endereco, String tel){
         try {
             prop.setProperty("tamanhofonte", fonte);
@@ -70,6 +76,8 @@ public class Propriedades {
         }
     }
 
+    //GETTERS E SETTERS
+    
     public String getPorta() {
         return porta;
     }

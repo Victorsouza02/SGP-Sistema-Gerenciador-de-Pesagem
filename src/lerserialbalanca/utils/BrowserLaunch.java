@@ -1,3 +1,7 @@
+/*
+    *CLASSE : BrowserLaunch
+    *FUNCÃO : Metodos para abrir navegador padrão com uma URL
+ */
 package lerserialbalanca.utils;
 
 import java.awt.Desktop;
@@ -8,7 +12,8 @@ import java.net.URISyntaxException;
 
 
 public class BrowserLaunch {
-
+    
+    //ABRE O NAVEGADOR PADRÃO COM A URL ESPECIFICADA
     public static void openURL(String url) {
         String sourceFilePathStr = url;
         File source = new File(sourceFilePathStr);

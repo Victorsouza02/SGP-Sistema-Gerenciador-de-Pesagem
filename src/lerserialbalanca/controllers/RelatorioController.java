@@ -14,7 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import lerserialbalanca.models.ManipuladorEtiqueta;
+import lerserialbalanca.models.Impressao;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.BrowserLaunch;
 
@@ -49,7 +49,7 @@ public class RelatorioController implements Initializable {
                 } else {
                     Registro reg = new Registro();
                     List<Registro> registros = reg.listaDeRegistros(data1.getValue().toString(), data2.getValue().toString());
-                    ManipuladorEtiqueta.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
+                    Impressao.fazerRelatorioHtml(registros,data1.getValue(),data2.getValue());
                 }
         });
         

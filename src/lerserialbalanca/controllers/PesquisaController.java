@@ -23,8 +23,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import lerserialbalanca.Principal;
-import lerserialbalanca.models.ManipuladorEtiqueta;
+import lerserialbalanca.main.Principal;
+import lerserialbalanca.models.Impressao;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
 import lerserialbalanca.utils.Format;
@@ -154,7 +154,7 @@ public class PesquisaController implements Initializable {
                     aviso.getButtonTypes().setAll(botaoSim, botaoNao);
                     Optional<ButtonType> result = aviso.showAndWait();
                     if (result.get() == botaoSim) {
-                        ManipuladorEtiqueta.recriarEtiqueta(rowData.getId());
+                        Impressao.recriarEtiqueta(rowData.getId());
                     }
                 }
             });
@@ -164,7 +164,7 @@ public class PesquisaController implements Initializable {
         imprimir.setOnAction((event)->{
             Registro reg = new Registro();
             List<Registro> registros = reg.listaDeRegistros(placa.getText());
-            ManipuladorEtiqueta.fazerRelatorioHtml(registros,placa.getText());
+            Impressao.fazerRelatorioHtml(registros,placa.getText());
         });
     }
     //PREENCHE A TABELA COM OS DADOS DO BANCO
