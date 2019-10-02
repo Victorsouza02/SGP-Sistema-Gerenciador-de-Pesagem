@@ -109,7 +109,7 @@ public class TelaInicialController implements Initializable {
 
     boolean isReading = true;
     private String peso;
-    private boolean estavel;
+    private int estabilidade;
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
@@ -122,7 +122,7 @@ public class TelaInicialController implements Initializable {
         preencherTabela(); //Preenchimento da tabela com dados do banco
         
         //Carrega imagem do display
-        Image img = new Image(Principal.class.getResourceAsStream("/imgs/pe-display.jpg"));
+        Image img = new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/pe-display.jpg"));
         imagem.setImage(img);
         //Inicia Thread de atualização no display
         displayThread = new Thread(this::DisplayThread);
@@ -405,14 +405,17 @@ public class TelaInicialController implements Initializable {
         while (isReading) {
             Platform.runLater(() -> {
                 peso = Principal.getPeso_bru();
-                estavel = Principal.isEstavel();
+                estabilidade = Principal.getEstavel();
                 peso_bru_id.setText(peso);
-                if (estavel) {
+                if (estabilidade == 0) {
                     status.setText("Estável");
                     status.setStyle("-fx-text-fill: green;");
-                } else {
+                } else if(estabilidade == 1) {
                     status.setText("Oscilando");
                     status.setStyle("-fx-text-fill: red;");
+                } else if(estabilidade == 2){
+                    status.setText("Sobrecarga");
+                    status.setStyle("-fx-text-fill: yellow;");
                 }
                 if (mostrarEntrada) {
                     text_peso_ent.setText(peso);

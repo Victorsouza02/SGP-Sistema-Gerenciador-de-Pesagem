@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="968.0" style="-fx-background-color: #d3d3d3;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="lerserialbalanca.controllers.PmpconhecidoController">
+   <children>
+      <ImageView fitHeight="161.0" fitWidth="320.0" layoutX="87.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/Display.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="156.0" fitWidth="320.0" layoutX="570.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/Display.png" />
+         </image>
+      </ImageView>
+      <Pane layoutX="60.0" layoutY="195.0" prefHeight="252.0" prefWidth="849.0" style="-fx-background-color: #f3f3f3;">
+         <children>
+            <Label layoutX="268.0" layoutY="24.0" text="Insira o PMP manualmente :">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField layoutX="452.0" layoutY="22.0" />
+            <Label layoutX="342.0" layoutY="65.0" text="ou busque o código da peça">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="329.0" layoutY="111.0" text="Código">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <TextField layoutX="380.0" layoutY="107.0" prefHeight="25.0" prefWidth="84.0" />
+            <Button layoutX="610.0" layoutY="22.0" mnemonicParsing="false" text="OK" />
+            <Button layoutX="486.0" layoutY="107.0" mnemonicParsing="false" text="Buscar" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

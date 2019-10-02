@@ -8,19 +8,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="908.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.PMPController">
+<AnchorPane id="AnchorPane" prefHeight="480.0" prefWidth="968.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lerserialbalanca.controllers.PMPController">
    <children>
-      <ImageView fitHeight="146.0" fitWidth="269.0" layoutX="21.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="146.0" fitWidth="300.0" layoutX="21.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../imgs/Display.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="131.0" fitWidth="269.0" layoutX="333.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="146.0" fitWidth="301.0" layoutX="349.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../imgs/Display.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="131.0" fitWidth="269.0" layoutX="632.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="152.0" fitWidth="301.0" layoutX="675.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../imgs/Display.png" />
          </image>
@@ -30,75 +30,75 @@
             <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="332.0" layoutY="24.0" prefHeight="17.0" prefWidth="244.0" text="Qtd de Peças">
+      <Label alignment="CENTER" layoutX="366.0" layoutY="24.0" prefHeight="17.0" prefWidth="244.0" text="Qtd de Peças">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="632.0" layoutY="24.0" prefHeight="17.0" prefWidth="244.0" text="PMP">
+      <Label alignment="CENTER" layoutX="690.0" layoutY="24.0" prefHeight="17.0" prefWidth="244.0" text="PMP">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-      <Pane layoutX="81.0" layoutY="228.0" prefHeight="182.0" prefWidth="746.0" style="-fx-background-color: #f3f3f3;">
+      <Pane layoutX="78.0" layoutY="228.0" prefHeight="180.0" prefWidth="749.0" style="-fx-background-color: #f3f3f3;">
          <children>
-            <Label layoutX="37.0" layoutY="24.0" text="Nome da Peça :">
+            <Label layoutX="112.0" layoutY="33.0" text="Nome da Peça :">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="37.0" layoutY="76.0" text="Descrição da Peça :">
+            <Label layoutX="112.0" layoutY="85.0" text="Descrição da Peça :">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="37.0" layoutY="125.0" text="Quantidade de Amostras :">
+            <Label layoutX="112.0" layoutY="134.0" text="Quantidade de Amostras :">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <TextField fx:id="nome" layoutX="184.0" layoutY="18.0" prefHeight="32.0" prefWidth="379.0" />
-            <TextField fx:id="descricao" layoutX="184.0" layoutY="71.0" prefHeight="32.0" prefWidth="379.0" />
-            <TextField fx:id="qtd_amostras" layoutX="217.0" layoutY="121.0" prefHeight="32.0" prefWidth="59.0" />
+            <TextField fx:id="nome" layoutX="259.0" layoutY="27.0" prefHeight="32.0" prefWidth="379.0" />
+            <TextField fx:id="descricao" layoutX="259.0" layoutY="80.0" prefHeight="32.0" prefWidth="379.0" />
+            <TextField fx:id="qtd_amostras" layoutX="292.0" layoutY="130.0" prefHeight="32.0" prefWidth="59.0" />
          </children>
       </Pane>
-      <Label fx:id="peso_liq" alignment="CENTER_RIGHT" layoutX="59.0" layoutY="83.0" prefHeight="51.0" prefWidth="154.0" text="0" textFill="LIGHTGRAY">
+      <Label fx:id="peso_liq" alignment="CENTER_RIGHT" layoutX="42.0" layoutY="90.0" prefHeight="51.0" prefWidth="204.0" text="0" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="35.0" />
          </font>
       </Label>
-      <Label fx:id="label_gran_peso" layoutX="220.0" layoutY="97.0" text="kg" textFill="LIGHTGRAY">
+      <Label fx:id="label_gran_peso" layoutX="253.0" layoutY="104.0" text="kg" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="21.0" />
          </font>
       </Label>
-      <Label fx:id="qtd_pecas" alignment="CENTER" layoutX="381.0" layoutY="83.0" prefHeight="51.0" prefWidth="161.0" text="0" textFill="LIGHTGRAY">
+      <Label fx:id="qtd_pecas" alignment="CENTER" layoutX="381.0" layoutY="94.0" prefHeight="51.0" prefWidth="215.0" text="0" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="35.0" />
          </font>
       </Label>
-      <Label fx:id="label_gran_pmp" layoutX="832.0" layoutY="97.0" text="kg" textFill="LIGHTGRAY">
+      <Label fx:id="label_gran_pmp" layoutX="905.0" layoutY="104.0" text="kg" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="21.0" />
          </font>
       </Label>
-      <Label fx:id="pmp" alignment="CENTER_RIGHT" layoutX="681.0" layoutY="83.0" prefHeight="51.0" prefWidth="144.0" text="0" textFill="LIGHTGRAY">
+      <Label fx:id="pmp" alignment="CENTER_RIGHT" layoutX="695.0" layoutY="90.0" prefHeight="51.0" prefWidth="204.0" text="0" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="35.0" />
          </font>
       </Label>
-      <Label fx:id="estabilidade" alignment="CENTER_RIGHT" layoutX="159.0" layoutY="62.0" prefHeight="21.0" prefWidth="97.0" text="Estavel" textFill="LIGHTGRAY">
+      <Label fx:id="estabilidade" alignment="CENTER_RIGHT" layoutX="175.0" layoutY="66.0" prefHeight="21.0" prefWidth="110.0" text="Estavel" textFill="LIGHTGRAY">
          <font>
             <Font name="Segoe UI Black" size="15.0" />
          </font>
       </Label>
-      <Label layoutX="380.0" layoutY="198.0" text="Grandeza :">
+      <Label layoutX="385.0" layoutY="198.0" text="Grandeza :">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="grandeza" layoutX="470.0" layoutY="196.0" prefHeight="25.0" prefWidth="71.0" />
-      <Button fx:id="salvar" layoutX="391.0" layoutY="435.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="127.0" style="-fx-background-color: green;" text="Salvar Peça" textFill="WHITE">
+      <ComboBox fx:id="grandeza" layoutX="475.0" layoutY="196.0" prefHeight="25.0" prefWidth="71.0" />
+      <Button fx:id="salvar" layoutX="391.0" layoutY="422.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="127.0" style="-fx-background-color: green;" text="Salvar Peça" textFill="WHITE">
          <font>
             <Font size="15.0" />
          </font>

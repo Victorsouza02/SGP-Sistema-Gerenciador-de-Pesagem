@@ -38,7 +38,7 @@ public class Principal extends Application {
     //INFORMAÇÕES DA SERIAL
     private static String peso_bru = "0";
     private static String peso_liq = "0";
-    private static boolean estavel = true;
+    private static int estavel = 0;
     private static LerSerial serial;
     
     //PROPRIEDADES
@@ -236,7 +236,7 @@ public class Principal extends Application {
         Scene scene = null;
         try {
             root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/pmp.fxml"));
-            scene = new Scene(root, 910, 530);
+            scene = new Scene(root, 968, 490);
             
         } catch (IOException ex){
             ex.printStackTrace();
@@ -277,11 +277,11 @@ public class Principal extends Application {
         Principal.peso_bru = peso_bru;
     }
 
-    public static boolean isEstavel() {
+    public static int getEstavel() {
         return estavel;
     }
 
-    public static void setEstavel(boolean estavel) {
+    public static void setEstavel(int estavel) {
         Principal.estavel = estavel;
     }
 
@@ -340,6 +340,10 @@ public class Principal extends Application {
     public static void setPeso_liq(String peso_liq) {
         Principal.peso_liq = peso_liq;
     }
+
+
+    
+    
     
     
     
