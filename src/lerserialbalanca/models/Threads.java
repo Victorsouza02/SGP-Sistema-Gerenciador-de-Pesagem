@@ -22,26 +22,13 @@ public class Threads {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (true) {
             dados = serial.selecionarDadosEquipamento();
-            //0 - Estavel    1 - Oscilando   2 - Sobrecarga
-            int code_estavel = 0;
-            switch (dados.get("estavel")){
-                case "Estável":
-                    code_estavel = 0;
-                    break;
-                case "Oscilando":
-                    code_estavel = 1;
-                    break;
-                case "Sobrecarga":
-                    code_estavel = 2;
-                    break;
-            }
-            int estavel_var = code_estavel;
+            String codEstabilidade= dados.get("estavel");
             String peso_bru_var = dados.get("peso_bru");
             String peso_liq_var = dados.get("peso_liq");
             Platform.runLater(() -> {
                 Principal.setPeso_liq(peso_liq_var);
                 Principal.setPeso_bru(peso_bru_var);
-                Principal.setEstavel(estavel_var);
+                Principal.setCodEstabilidade(codEstabilidade);
             });
             try {
                 Thread.sleep(20);

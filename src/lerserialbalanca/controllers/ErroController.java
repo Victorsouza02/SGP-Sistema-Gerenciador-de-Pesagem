@@ -20,7 +20,7 @@ public class ErroController implements Initializable {
     //INICIALIZA O CONTROLLER
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Image img = new Image(Principal.class.getResourceAsStream("/imgs/pendrive.png"));
+        Image img = new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/pendrive.png"));
         imagem.setImage(img);
     }    
     

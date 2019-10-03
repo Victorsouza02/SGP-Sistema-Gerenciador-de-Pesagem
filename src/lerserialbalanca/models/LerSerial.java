@@ -5,7 +5,6 @@
 package lerserialbalanca.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -14,6 +13,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import lerserialbalanca.utils.Formatacao;
 
 /**
  *
@@ -91,7 +91,7 @@ public class LerSerial {
     }
 
     //RETORNA DADOS DA SERIAL
-    public String dataSerial() {
+    public String receberDadosSerial() {
         if (ok == true) {
             return lerLinha();
         }
@@ -143,16 +143,15 @@ public class LerSerial {
     public Map<String, String> selecionarDadosEquipamento() {
         switch (equipamento) {
             case "WT1000N":
-                return dadosWT1000N();
+                return Formatacao.formatarDadosWT1000N(receberDadosSerial());
             case "3101C":
-                return dados3101C();
+                return Formatacao.formatarDados3101C("PL:-1,4180 T:-2,9233");
         }
         return null;
     }
 
     //OUVINDO PORTA SERIAL E RETIRANDO DADOS DESNECESSÁRIOS
     static class SerialPortReader implements SerialPortEventListener {
-
         @Override
         public void serialEvent(SerialPortEvent event) {
             if (event.getEventType() > 0) {
@@ -172,180 +171,24 @@ public class LerSerial {
         }
     }
 
-    /**
-     * ******INDICADOR ALFA 3101C****
-     */
+    /*********CONFIGURAÇÃO DE COMUNICAÇÃO ALFA 3101C*****/
     public void config3101C() {
         setBaud(9600);
         setDatabits(8);
         setStopbit(1);
         setParity(0);
     }
-
-    public Map<String, String> dados3101C() {
-        Map<String, String> dados = new HashMap<String, String>();
-        String dado = dataSerial();
-        String peso_bru = "";
-        String peso_liq = "";
-        String tara = "";
-        boolean sobrecarga = dado.contains("S<BRE");
-        boolean temVirgula = dado.contains(",");
-        boolean comTara = dado.substring(0, 2).equals("PL");
-
-        if (temVirgula) {
-            peso_bru = dado.substring(3, 10).replaceAll(",", ".");
-            peso_liq = dado.substring(3, 10).replaceAll(",", ".");
-            tara = dado.substring(13, 20).replaceAll(",", ".");
-        } else if (!temVirgula && !sobrecarga) {
-            peso_bru = dado.substring(3, 9);
-            peso_liq = dado.substring(3, 9);
-            tara = dado.substring(13, 18);
-        }
-
-        System.out.println(dado);
-
-        if (!sobrecarga) { //SE NÃO ESTIVER COM SOBRECARGA
-            dados.put("estavel", !dado.contains("*") ? "Estável" : "Oscilando");
-            List<String> pesos = new ArrayList<String>();
-            pesos.add(peso_bru);
-            pesos.add(peso_liq);
-            pesos.add(tara);
-            int cnt = 0;
-            for (String peso : pesos) {
-                if (peso.equals(" 00000")) {
-                    peso = "0";
-                } else {
-                    if (peso.contains("-")) {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else {
-                            peso = "-" + peso.substring(1, 7).replaceFirst("0*", ""); //OK
-                        }
-                    } else {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = (pos <= 2) ? peso.replaceFirst(peso.substring(1, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else {
-                            peso = peso.substring(1, 5).replaceFirst("0*", ""); //OK
-                        }
-                    }
-                }
-                pesos.set(cnt, peso);
-                switch (cnt) {
-                    case 0:
-                        peso_bru = peso;
-                        break;
-                    case 1:
-                        peso_liq = peso;
-                        break;
-                    case 2:
-                        tara = peso;
-                        break;
-                }
-                cnt++;
-            }
-
-            if (comTara) {
-                if (temVirgula) {
-                    Float pb = Float.parseFloat(peso_liq) + Float.parseFloat(tara);
-                    dados.put("peso_bru", String.valueOf(pb));
-                } else {
-                    int pb = Integer.parseInt(peso_liq) + Integer.parseInt(tara);
-                    dados.put("peso_bru", String.valueOf(pb));
-                }
-            } else {
-                dados.put("peso_bru", peso_bru);
-            }
-            dados.put("peso_liq", peso_liq);
-            dados.put("tara", tara);
-        } else { //SE ESTIVER COM SOBRECARGA
-            dados.put("estavel", "Sobrecarga");
-            dados.put("peso_bru", "0");
-            dados.put("peso_liq", "0");
-            dados.put("tara", "0");
-        }
-
-        System.out.println("Peso Bruto: " + dados.get("peso_bru") + "/  Peso Liquido : " + dados.get("peso_liq") + "/  Tara : " + dados.get("tara"));
-
-        return dados;
-    }
-
-    /**
-     * ******INDICADOR ALFA 3101C****
-     */
-    /**
-     * ******INDICADOR WT1000N******
-     */
+    /********************************************/
+    
+    /*********CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT1000N*******/
     public void configWT1000N() {
         setBaud(9600);
         setDatabits(8);
         setStopbit(1);
         setParity(0);
     }
+    /**********************************************/
 
-    public Map<String, String> dadosWT1000N() {
-        Map<String, String> dados = new HashMap<String, String>();
-        String dado = dataSerial();
-        boolean sobrecarga = dado.contains("OL");
-
-        if (!sobrecarga) {
-            String peso_bru = dado.substring(2, 9);
-            String peso_liq = dado.substring(18, 25);
-            
-            List<String> pesos = new ArrayList<String>();
-            pesos.add(peso_bru);
-            pesos.add(peso_liq);
-            int cnt = 0;
-            for (String peso : pesos) {
-                if (peso.equals("000000 ") || peso.equals("0000000")) {
-                    peso = "0";
-                } else {
-                    if (peso.contains("-")) {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else {
-                            peso = "-" + peso.substring(1, 7).replaceFirst("0*", "");
-                        }
-                    } else {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = (pos <= 3) ? peso.replaceFirst(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", ""));
-                        } else {
-                            peso = peso.replaceFirst("0*", "");
-                        }
-                    }
-                }
-                pesos.set(cnt, peso);
-                switch (cnt) {
-                    case 0:
-                        peso_bru = peso;
-                        break;
-                    case 1:
-                        peso_liq = peso;
-                        break;
-                }
-                cnt++;
-            }
-            dados.put("estavel", dado.substring(0, 1).equals("0") ? "Estável" : "Oscilando");
-            dados.put("peso_bru", peso_bru);
-            dados.put("tara", dado.substring(10, 17));
-            dados.put("peso_liq", peso_liq);
-        } else {
-            dados.put("estavel", "Sobrecarga");
-            dados.put("peso_bru", "0");
-            dados.put("tara", "0");
-            dados.put("peso_liq", "0");
-        }
-
-        
-        return dados;
-    }
-
-    /**
-     * ******INDICADOR WT1000N******
-     */
     // GETTERS/SETTERS
     public static boolean isOk() {
         return ok;

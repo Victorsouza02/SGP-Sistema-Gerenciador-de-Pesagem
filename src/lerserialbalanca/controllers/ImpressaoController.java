@@ -12,7 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import lerserialbalanca.main.Principal;
 import lerserialbalanca.models.Propriedades;
-import lerserialbalanca.utils.Format;
+import lerserialbalanca.utils.Formatacao;
 
 
 public class ImpressaoController implements Initializable {
@@ -39,8 +39,8 @@ public class ImpressaoController implements Initializable {
     }    
     
     public void eventos(){
-        Format.onlyNumber(tamfonte); //SOMENTE NUMEROS NO CAMPO FONTE
-        Format.addTextLimiter(tamfonte, 2); //NO MAXIMO 2 DIGITOS NO CAMPO FONTE
+        Formatacao.onlyNumber(tamfonte); //SOMENTE NUMEROS NO CAMPO FONTE
+        Formatacao.addTextLimiter(tamfonte, 2); //NO MAXIMO 2 DIGITOS NO CAMPO FONTE
         salvar.setOnMouseClicked((event) ->{ //Ao clicar em salvar
             Propriedades prop = new Propriedades();
             //Altera Proprierdades(Tamanho da Fonte, Nome Empresa, Endereço Empresa e Telefone Empesa)

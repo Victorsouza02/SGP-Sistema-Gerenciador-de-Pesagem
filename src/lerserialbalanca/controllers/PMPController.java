@@ -22,7 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import lerserialbalanca.main.Principal;
 import lerserialbalanca.models.Pecas;
-import lerserialbalanca.utils.Format;
+import lerserialbalanca.utils.Formatacao;
 
 
 
@@ -38,7 +38,7 @@ public class PMPController implements Initializable {
      */
     
     private String peso_liquido;
-    private int estavel;
+    private String codEstabilidade;
     private boolean calcularPmp = false;
     private boolean calcularPecas = false;
     private BigDecimal pmp_decimal;
@@ -80,8 +80,8 @@ public class PMPController implements Initializable {
     }
 
     private void formatacao(){
-        Format.onlyNumber(qtd_amostras);
-        Format.addTextLimiter(qtd_amostras, 4);
+        Formatacao.onlyNumber(qtd_amostras);
+        Formatacao.addTextLimiter(qtd_amostras, 4);
     }
     private void eventos(){
          //AO DIGITAR UM CARACTERE NO CAMPO QUANTIDADE DE AMOSTRAS
@@ -121,19 +121,9 @@ public class PMPController implements Initializable {
             Platform.runLater(() -> {
                 //PEGA O PESO LIQUIDO/ESTABILIDADE E ADICIONA AO DISPLAY
                 peso_liquido = Principal.getPeso_liq();
-                estavel = Principal.getEstavel();
                 peso_liq.setText(peso_liquido);
-                if (estavel == 0) {
-                    estabilidade.setText("Estável");
-                    estabilidade.setStyle("-fx-text-fill: green;");
-                } else if(estavel == 1) {
-                    estabilidade.setText("Oscilando");
-                    estabilidade.setStyle("-fx-text-fill: red;");
-                } else if(estavel == 2) {
-                    estabilidade.setText("Sobrecarga");
-                    estabilidade.setStyle("-fx-text-fill: yellow;");
-                }
-                
+                codEstabilidade = Principal.getCodEstabilidade();
+                Formatacao.estabilizacaoDisplay(estabilidade, codEstabilidade);
                 //SE TIVER QUE CALCULAR O PMP
                 if(calcularPmp == true){
                     //FAZ O CALCULO E COLOCA NO DISPLAY

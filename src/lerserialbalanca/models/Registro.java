@@ -4,7 +4,7 @@
  */
 package lerserialbalanca.models;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -78,10 +78,14 @@ public class Registro {
         reg.setDt_saida(fmtDate.format(data));
         reg.setH_saida(fmtTime.format(data));
         reg.setPs_saida(ps_saida);
-        DecimalFormat df = new DecimalFormat("#.###");
-        Number n = Float.parseFloat(ps_saida) - Float.parseFloat(ps_entrada);
-        Double d = n.doubleValue();
-        reg.setPs_liquido(String.valueOf(df.format(d)));
+        String peso_liq = "";
+        if(ps_saida.contains(".") || ps_entrada.contains(".")){
+            BigDecimal b = new BigDecimal(ps_saida).subtract(new BigDecimal(ps_entrada));
+            peso_liq = b.toString();
+        }else {
+            peso_liq = String.valueOf(Integer.parseInt(ps_saida) - Integer.parseInt(ps_entrada));
+        }
+        reg.setPs_liquido(peso_liq);
         return acao.saidaRegistro(reg);
     }
     

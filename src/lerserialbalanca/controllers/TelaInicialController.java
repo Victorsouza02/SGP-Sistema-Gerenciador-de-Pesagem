@@ -33,7 +33,7 @@ import lerserialbalanca.models.Impressao;
 import lerserialbalanca.models.LerSerial;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
-import lerserialbalanca.utils.Format;
+import lerserialbalanca.utils.Formatacao;
 
 public class TelaInicialController implements Initializable {
 
@@ -109,7 +109,7 @@ public class TelaInicialController implements Initializable {
 
     boolean isReading = true;
     private String peso;
-    private int estabilidade;
+    private String codEstabilidade;
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
@@ -144,7 +144,7 @@ public class TelaInicialController implements Initializable {
         text_fornecedor.setTextFormatter(textFormatterForn);
         TextFormatter<String> textFormatterProd = new TextFormatter<>(upperCase);
         text_produto.setTextFormatter(textFormatterProd);
-        Format.addTextLimiter(text_placa, 7);
+        Formatacao.addTextLimiter(text_placa, 7);
         text_peso_ent.setStyle("-fx-opacity: 1.0;");
         text_peso_sai.setStyle("-fx-opacity: 1.0;");
 
@@ -192,7 +192,7 @@ public class TelaInicialController implements Initializable {
             }
         });
 
-        confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CONFIRMA
+        confirma.setOnMouseClicked((event) -> { //AO CLICAR NO BOTAO CONFIRMA
             if (validacaoCampos()) { //SE PASSAR PELA VALIDAÇÃO DE CAMPOS
                 confirma.setDisable(true); //DESATIVA BOTAO CONFIRMAR
                 Motorista mot = new Motorista();
@@ -405,18 +405,9 @@ public class TelaInicialController implements Initializable {
         while (isReading) {
             Platform.runLater(() -> {
                 peso = Principal.getPeso_bru();
-                estabilidade = Principal.getEstavel();
+                codEstabilidade = Principal.getCodEstabilidade();
                 peso_bru_id.setText(peso);
-                if (estabilidade == 0) {
-                    status.setText("Estável");
-                    status.setStyle("-fx-text-fill: green;");
-                } else if(estabilidade == 1) {
-                    status.setText("Oscilando");
-                    status.setStyle("-fx-text-fill: red;");
-                } else if(estabilidade == 2){
-                    status.setText("Sobrecarga");
-                    status.setStyle("-fx-text-fill: yellow;");
-                }
+                Formatacao.estabilizacaoDisplay(status, codEstabilidade);
                 if (mostrarEntrada) {
                     text_peso_ent.setText(peso);
                 } else if (mostrarSaida) {

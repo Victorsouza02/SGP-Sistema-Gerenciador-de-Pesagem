@@ -27,7 +27,7 @@ import lerserialbalanca.main.Principal;
 import lerserialbalanca.models.Impressao;
 import lerserialbalanca.models.Motorista;
 import lerserialbalanca.models.Registro;
-import lerserialbalanca.utils.Format;
+import lerserialbalanca.utils.Formatacao;
 
 /**
  * FXML Controller class
@@ -85,7 +85,7 @@ public class PesquisaController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Image img = new Image(Principal.class.getResourceAsStream("/imgs/driver.png"));
+        Image img = new Image(Principal.class.getResourceAsStream("/lerserialbalanca/imgs/driver.png"));
         imagem.setImage(img);
         formatarCampos();
         eventos();
@@ -105,7 +105,7 @@ public class PesquisaController implements Initializable {
         };
         TextFormatter<String> textFormatterPlaca = new TextFormatter<>(upperCase);
         placa.setTextFormatter(textFormatterPlaca);
-        Format.addTextLimiter(placa, 7);
+        Formatacao.addTextLimiter(placa, 7);
     }
     
     public void eventos(){

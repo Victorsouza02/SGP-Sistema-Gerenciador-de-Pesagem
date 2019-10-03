@@ -6,6 +6,7 @@
 package lerserialbalanca.main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +39,7 @@ public class Principal extends Application {
     //INFORMAÇÕES DA SERIAL
     private static String peso_bru = "0";
     private static String peso_liq = "0";
-    private static int estavel = 0;
+    private static String codEstabilidade = "E";
     private static LerSerial serial;
     
     //PROPRIEDADES
@@ -277,13 +278,15 @@ public class Principal extends Application {
         Principal.peso_bru = peso_bru;
     }
 
-    public static int getEstavel() {
-        return estavel;
+    public static String getCodEstabilidade() {
+        return codEstabilidade;
     }
 
-    public static void setEstavel(int estavel) {
-        Principal.estavel = estavel;
+    public static void setCodEstabilidade(String codEstabilidade) {
+        Principal.codEstabilidade = codEstabilidade;
     }
+
+    
 
     public static String getEquipamento() {
         return equipamento;
