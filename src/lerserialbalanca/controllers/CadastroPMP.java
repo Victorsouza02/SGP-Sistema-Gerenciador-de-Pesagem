@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lerserialbalanca.controllers;
 
 import java.math.BigDecimal;
@@ -24,19 +19,8 @@ import lerserialbalanca.main.Principal;
 import lerserialbalanca.models.Pecas;
 import lerserialbalanca.utils.Formatacao;
 
-
-
-/**
- * FXML Controller class
- *
- * @author Desenvolvimento
- */
-public class PMPController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
-    
+public class CadastroPMP implements Initializable {
+  
     private String peso_liquido;
     private String codEstabilidade;
     private boolean calcularPmp = false;
@@ -77,6 +61,7 @@ public class PMPController implements Initializable {
         displayThread.start();
         grandeza.setValue("kg");
         carregarComboBox();
+        Principal.ativoThreadPmp = true;
     }
 
     private void formatacao(){
@@ -97,11 +82,6 @@ public class PMPController implements Initializable {
             }
         });
 
-        nome.setOnKeyReleased((event)->{
-            Pecas pec = new Pecas();
-        });
-        
-        
         salvar.setOnMouseClicked((event) ->{
             Pecas pec = new Pecas(nome.getText(), descricao.getText(), getPmp_decimal().toString(), qtd_amostras.getText(), grandeza.getValue().toString());
             pec.salvarPeca();
@@ -116,8 +96,8 @@ public class PMPController implements Initializable {
     }
     
     private void DisplayThread() {
-        //THREAD PARA LEITURA DE SERIAL CONTINUA
-        while (true) {
+        //THREAD PARA LEITURA DE PESO LIQUIDO E CALCULO DE PMP
+        while (Principal.ativoThreadPmp) {
             Platform.runLater(() -> {
                 //PEGA O PESO LIQUIDO/ESTABILIDADE E ADICIONA AO DISPLAY
                 peso_liquido = Principal.getPeso_liq();
@@ -132,24 +112,21 @@ public class PMPController implements Initializable {
                     calcularPmp = false; //DESATIVA CALCULO DE PMP
                     calcularPecas = true; //ATIVA CALCULO DE PEÇAS
                 }
-                
                 //SE TIVER QUE CALCULAR A QUANTIDADE DE PEÇAS
                 if(calcularPecas == true){
                     //FAZ O CALCULO DE PEÇAS E ADICIONA AO DISPLAY
                     String qtd_pecas_var = calculoPecas(peso_liquido, pmp.getText());
                     qtd_pecas.setText(qtd_pecas_var);
-                }
-                
+                }        
                 //Coloca as grandezas selecionadas no Label
                 label_gran_peso.setText(grandeza.getValue().toString());
                 label_gran_pmp.setText(grandeza.getValue().toString());
 
-                
             });
             try {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
-                System.out.println(iex.getMessage());
+                iex.printStackTrace();
             }
         }
     }
@@ -166,11 +143,8 @@ public class PMPController implements Initializable {
     
     private String calculoPmp(String peso_liq, String qtd_amostras){
         if(!qtd_amostras.equals("0")){
-            
-            System.out.println("//"+peso_liq+"//"+peso_liq.length());
             BigDecimal num = new BigDecimal(peso_liq).divide(new BigDecimal(qtd_amostras+".00"), 4, RoundingMode.HALF_EVEN);
             setPmp_decimal(num);
-            System.out.println(num + " " + num.setScale(3,RoundingMode.HALF_EVEN));
             return num.setScale(3, RoundingMode.HALF_EVEN).toString().replaceAll(",", ".");
         }
         return "0";
@@ -180,12 +154,11 @@ public class PMPController implements Initializable {
         if(pmp.equals("0")){
             return "0";
         }
-        System.out.println(peso_liq);
         BigDecimal num = new BigDecimal(peso_liq).divide(pmp_decimal,30,RoundingMode.HALF_EVEN);
         num = num.setScale(0,RoundingMode.HALF_EVEN);
-        //System.out.println("Decimal :"+num + " " + "Inteiro : "+num.intValue());
         return String.valueOf(num.intValue());
     }
+    
 
     public BigDecimal getPmp_decimal() {
         return pmp_decimal;

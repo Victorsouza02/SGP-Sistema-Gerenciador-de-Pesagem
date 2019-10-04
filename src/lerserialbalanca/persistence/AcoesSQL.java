@@ -439,12 +439,12 @@ public class AcoesSQL {
         } 
     }
     
-    public Pecas procurarPeca(String nome){
+    public Pecas procurarPeca(int cod){
         Conexao conexao = new Conexao();
         Pecas pec = null;
         try {
-            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from pecas WHERE nome LIKE ?% LIMIT 1");
-            sql.setString(1, nome);
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * from pecas WHERE cod = ?");
+            sql.setInt(1, cod);
             ResultSet result = sql.executeQuery();
             while(result.next()){
                 pec = new Pecas(

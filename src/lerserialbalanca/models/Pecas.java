@@ -47,9 +47,9 @@ public class Pecas {
         
     }
     
-    public Pecas procurarPeca(String nome){
+    public Pecas procurarPeca(int cod){
         AcoesSQL acao = new AcoesSQL();
-        return acao.procurarPeca(nome);
+        return acao.procurarPeca(cod);
     }
     
     public static List<String> listarNomesPecas(){

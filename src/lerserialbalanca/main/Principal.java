@@ -53,6 +53,7 @@ public class Principal extends Application {
     //THREADS
     Thread serialThread;
     Thread securityThread;
+    public static boolean ativoThreadPmp = false;
     
     public static void main(String[] args) {
         launch(args);
@@ -140,9 +141,13 @@ public class Principal extends Application {
             secondStage.setTitle(titlePage);
             secondStage.setScene(scene);
             secondStage.show();
+
             secondStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent arg0) {
+                    if(ativoThreadPmp){
+                        ativoThreadPmp = false;
+                    }
                     secondStage.close();
                     secondStage = null;
                 }
@@ -232,11 +237,25 @@ public class Principal extends Application {
         return scene;
     }
     
-    public static Scene pmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
+    public static Scene cadastrarPmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
         Parent root;
         Scene scene = null;
         try {
-            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/pmp.fxml"));
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/cadastropmp.fxml"));
+            scene = new Scene(root, 968, 490);
+            
+        } catch (IOException ex){
+            ex.printStackTrace();
+        }
+        
+        return scene;
+    }
+    
+    public static Scene contadorPmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
+        Parent root;
+        Scene scene = null;
+        try {
+            root = FXMLLoader.load(Principal.class.getResource("/lerserialbalanca/views/pmpconhecido.fxml"));
             scene = new Scene(root, 968, 490);
             
         } catch (IOException ex){

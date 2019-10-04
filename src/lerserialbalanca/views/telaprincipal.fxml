@@ -176,7 +176,8 @@
             </Menu>
             <Menu mnemonicParsing="false" text="PMP">
                <items>
-                  <MenuItem fx:id="pmp_desconhecido" mnemonicParsing="false" text="PMP Desconhecido" />
+                  <MenuItem fx:id="pmp_desconhecido" mnemonicParsing="false" text="Calcular PMP" />
+                  <MenuItem fx:id="contagem_pmp" mnemonicParsing="false" text="Contagem de Peças" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Ajuda">
