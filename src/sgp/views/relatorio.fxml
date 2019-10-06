@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="230.0" prefWidth="412.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.RelatorioController">
+   <children>
+      <Pane layoutX="10.0" layoutY="6.0" prefHeight="214.0" prefWidth="392.0" style="-fx-background-color: #F3F3F3; -fx-background-radius: 9 10 10 10;">
+         <children>
+            <DatePicker fx:id="data1" layoutX="122.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="179.0" />
+            <DatePicker fx:id="data2" layoutX="122.0" layoutY="91.0" prefHeight="26.0" prefWidth="179.0" />
+            <Label layoutX="85.0" layoutY="95.0" prefHeight="19.0" prefWidth="37.0" text="De :">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="85.0" layoutY="43.0" prefHeight="19.0" prefWidth="37.0" text="Ate:">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="33.0" prefHeight="40.0" prefWidth="319.0" text="Obter Relatório">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <Button fx:id="buscar" layoutX="119.0" layoutY="156.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="163.0" text="Buscar">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label fx:id="msg" alignment="CENTER" layoutX="28.0" layoutY="131.0" prefHeight="19.0" prefWidth="337.0" text="Selecione o período desejado">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

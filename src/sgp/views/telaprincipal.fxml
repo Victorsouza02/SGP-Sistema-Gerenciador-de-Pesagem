@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: #d3d3d3;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.TelaInicialController">
+    <stylesheets>
+        <URL value="@telainicial.css" />
+    </stylesheets>
+    <children>
+        <Pane layoutX="13.0" layoutY="7.0" prefHeight="286.0" prefWidth="737.0" styleClass="form" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="30.0">
+            <children>
+                <Label layoutX="25.0" layoutY="22.0" text="Placa :">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="24.0" layoutY="69.0" prefHeight="28.0" prefWidth="111.0" text="Motorista:">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="24.0" layoutY="115.0" prefHeight="28.0" prefWidth="127.0" text="Peso Entrada :">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="375.0" layoutY="115.0" prefHeight="28.0" prefWidth="127.0" text="Peso Saída :">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="24.0" layoutY="165.0" prefHeight="28.0" prefWidth="127.0" text="Fornecedor  :">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="24.0" layoutY="212.0" prefHeight="28.0" prefWidth="127.0" text="Produto :">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="text_placa" layoutX="158.0" layoutY="20.0" prefHeight="33.0" prefWidth="150.0" style="-fx-background-color: #fce89f;">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="text_motorista" layoutX="158.0" layoutY="67.0" prefHeight="33.0" prefWidth="552.0">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="text_peso_ent" disable="true" editable="false" layoutX="158.0" layoutY="113.0" prefHeight="33.0" prefWidth="150.0" style="color: #000;">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="text_peso_sai" disable="true" editable="false" layoutX="490.0" layoutY="113.0" prefHeight="33.0" prefWidth="150.0">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="text_fornecedor" layoutX="158.0" layoutY="163.0" prefHeight="33.0" prefWidth="552.0">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <TextField fx:id="text_produto" layoutX="158.0" layoutY="210.0" prefHeight="33.0" prefWidth="552.0">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </TextField>
+                <Label layoutX="312.0" layoutY="116.0" text="kg">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+                <Label layoutX="647.0" layoutY="117.0" text="kg">
+                    <font>
+                        <Font size="19.0" />
+                    </font>
+                </Label>
+            <Label fx:id="entradaSaida" alignment="CENTER_RIGHT" layoutX="529.0" layoutY="21.0" prefHeight="28.0" prefWidth="111.0">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+            </Label>
+            </children>
+            <padding>
+                <Insets bottom="20.0" />
+            </padding>
+        </Pane>
+        <TableView fx:id="tabela" layoutX="12.0" layoutY="341.0" prefHeight="219.0" prefWidth="1177.0" style="-fx-background-color: #f3f3f3;" styleClass="tabela" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="331.0">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <columns>
+                <TableColumn fx:id="idcol" text="ID" />
+                <TableColumn fx:id="placacol" text="Placa" />
+                <TableColumn fx:id="nomecol" text="Motorista" />
+                <TableColumn fx:id="forncol" text="Fornecedor" />
+                <TableColumn fx:id="prodcol" text="Produto" />
+                <TableColumn fx:id="decol" text="Data Entrada" />
+                <TableColumn fx:id="hecol" text="Hora Entrada" />
+                <TableColumn fx:id="pecol" text="Peso Entrada(Kg)" />
+                <TableColumn fx:id="dscol" text="Data Saida" />
+                <TableColumn fx:id="hscol" text="Hora Saida" />
+                <TableColumn fx:id="pscol" text="Peso Saida(Kg)" />
+                <TableColumn fx:id="plcol" text="Peso Liquido(Kg)" />
+            </columns>
+        </TableView>
+        <Pane layoutX="791.0" layoutY="20.0" prefHeight="308.0" prefWidth="490.0" AnchorPane.rightAnchor="-65.0" AnchorPane.topAnchor="20.0">
+            <children>
+                <ImageView fx:id="imagem" fitHeight="310.0" fitWidth="463.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../imgs/pe-display.jpg" />
+                    </image>
+                </ImageView>
+                <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="24.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
+                    <font>
+                        <Font name="Segoe UI Black" size="49.0" />
+                    </font>
+                </Label>
+                <Label fx:id="kg" layoutX="227.0" layoutY="173.0" prefHeight="62.0" prefWidth="65.0" text="kg" textAlignment="CENTER" textFill="LIGHTGRAY">
+                    <font>
+                        <Font name="Segoe UI Black" size="38.0" />
+                    </font>
+                </Label>
+            <Label fx:id="status" alignment="CENTER_RIGHT" layoutX="159.0" layoutY="141.0" prefHeight="21.0" prefWidth="117.0" text="Estável" textAlignment="CENTER" textFill="LIGHTGRAY">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            </children>
+        </Pane>
+        <Button fx:id="confirma" alignment="BOTTOM_RIGHT" layoutX="1112.0" layoutY="561.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Confirmar" textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
+            <font>
+                <Font name="System Bold" size="15.0" />
+            </font>
+        </Button>
+        <Button fx:id="cancela" alignment="BOTTOM_RIGHT" layoutX="999.0" layoutY="561.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Cancelar" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="120.0">
+            <font>
+                <Font name="System Bold" size="15.0" />
+            </font>
+        </Button>
+      <Button fx:id="relatorio" alignment="BOTTOM_RIGHT" layoutX="14.0" layoutY="555.0" mnemonicParsing="false" style="-fx-background-color: gray;" text="Relatório" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <MenuBar fx:id="menu" prefHeight="25.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Geral">
+            <items>
+              <MenuItem fx:id="menu_relatorio" mnemonicParsing="false" text="Relatório" />
+                  <MenuItem mnemonicParsing="false" text="Fechar" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Configurar">
+               <items>
+                  <MenuItem fx:id="menu_config" mnemonicParsing="false" text="Configurações Gerais" />
+                  <MenuItem fx:id="menu_impressao" mnemonicParsing="false" text="Impressão" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Pesquisar">
+               <items>
+                  <MenuItem fx:id="menu_pesquisa" mnemonicParsing="false" text="Pesquisar Placa" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="PMP">
+               <items>
+                  <MenuItem fx:id="pmp_desconhecido" mnemonicParsing="false" text="Calcular PMP" />
+                  <MenuItem fx:id="contagem_pmp" mnemonicParsing="false" text="Contagem de Peças" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Ajuda">
+               <items>
+                  <MenuItem fx:id="menu_sobre" mnemonicParsing="false" text="Sobre" />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+    </children>
+</AnchorPane>
