@@ -211,35 +211,6 @@ public class Principal extends Application {
         return scene;
     }
     
-    public static Scene cadastrarPmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
-        Parent root;
-        Scene scene = null;
-        try {
-            root = FXMLLoader.load(Principal.class.getResource("/sgp/views/cadastropmp.fxml"));
-            scene = new Scene(root, 968, 490);
-            
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
-        
-        return scene;
-    }
-    
-    public static Scene contadorPmpScene(){ //SCENE DO MENU DE PESQUISA DE PLACA
-        Parent root;
-        Scene scene = null;
-        try {
-            root = FXMLLoader.load(Principal.class.getResource("/sgp/views/pmpconhecido.fxml"));
-            scene = new Scene(root, 968, 490);
-            
-        } catch (IOException ex){
-            ex.printStackTrace();
-        }
-        
-        return scene;
-    }
-    
-    
     
     private static Runnable lerSerial = new Runnable() { //INICIA THREAD LEITURA SERIAL
         public void run() {

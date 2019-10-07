@@ -143,7 +143,7 @@ public class LerSerial {
             case "WT1000N":
                 return Formatacao.formatarDadosWT1000N(receberDadosSerial());
             case "3101C":
-                return Formatacao.formatarDados3101C("PL: 4,0120 T: 9,1002");
+                return Formatacao.formatarDados3101C(receberDadosSerial());
         }
         return null;
     }

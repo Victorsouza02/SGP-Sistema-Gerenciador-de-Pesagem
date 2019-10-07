@@ -47,10 +47,7 @@ public class TelaInicialController implements Initializable {
     private MenuItem menu_impressao;
     @FXML
     private MenuItem menu_pesquisa;
-    @FXML
-    private MenuItem pmp_desconhecido;
-    @FXML
-    private MenuItem contagem_pmp;
+
     @FXML
     private Label peso_bru_id;
     @FXML
@@ -296,18 +293,6 @@ public class TelaInicialController implements Initializable {
         menu_pesquisa.setOnAction((event) -> {
             //Carrega modal de pesquisa de placas
             Principal.loadScene(Principal.pesquisaScene(), "Pesquisar Placa",false);
-        });
-        
-        //AO CLICAR NO MENU PMP DESCONHECIDO
-        pmp_desconhecido.setOnAction((event) -> {
-            //Carrega modal de pmp desconhecido
-            Principal.loadScene(Principal.cadastrarPmpScene(), "Função - PMP Desconhecido",false);
-        });
-        
-        //AO CLICAR NO MENU PMP DESCONHECIDO
-        contagem_pmp.setOnAction((event) -> {
-            //Carrega modal de pmp desconhecido
-            Principal.loadScene(Principal.contadorPmpScene(), "Função - Contagem de Peças",false);
         });
 
     }
