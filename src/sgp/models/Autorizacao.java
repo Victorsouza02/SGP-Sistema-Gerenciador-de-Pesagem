@@ -14,8 +14,8 @@ import java.util.List;
 
 public class Autorizacao {
     //SERIAL DO USUARIO AUTORIZADO
-    private final String SERIALUSUARIO = "E82DE5A00873691740D1D06570B7BF4B";
-    private boolean autorizado = true;
+    private final String SERIALUSUARIO = Propriedades.getAutorizacao();
+    private boolean autorizado = false;
     private List<String> seriais;
     
     public Autorizacao (){
@@ -31,9 +31,6 @@ public class Autorizacao {
                 MessageDigest md = MessageDigest.getInstance("MD5"); //CONVERTE PARA MD5
                 //DEVOLVE PARA UMA STRING JA CRIPTOGRAFADA
                 String serialCrip = new String(hexCodes(md.digest(store.getAttribute("volume:vsn").toString().getBytes("UTF-8"))));
-                sb.append(String.format("%-20s serial :%s\n", store, serialCrip));
-                //LISTA OS SERIAIS NO OUTPUT
-                //System.out.println(sb);
                 seriais.add(serialCrip);
             }
         } catch(IOException ex){

@@ -2,22 +2,22 @@ $NOMEEMPRESA
 $ENDERECOEMPRESA
 $TELEMPRESA
 
-************************************************
-COMPROVANTE DE PESAGEM Nº: $ID
-************************************************
+**********************************************
+COMPROVANTE DE PESAGEM : $ID
+**********************************************
 PRODUTO   : $PRODUTO
 FORNECEDOR: $FORNECEDOR
 MOTORISTA : $MOTORISTA
 PLACA : $PLACA
 
---------------------ENTRADA---------------------
+-------------------ENTRADA--------------------
 DATA: $DT_ENTRADA  HORA: $HH_ENTRADA
 PESO:  $PS_ENTRADA
 
----------------------SAIDA----------------------
+--------------------SAIDA---------------------
 DATA: $DT_SAIDA    HORA: $HH_SAIDA
 PESO : $PS_SAIDA
 PESO LIQ.: $PS_LIQ
-************************************************
+**********************************************
 SGP - Sistema Gerenciador de Pesagem
 EBM Metrologia

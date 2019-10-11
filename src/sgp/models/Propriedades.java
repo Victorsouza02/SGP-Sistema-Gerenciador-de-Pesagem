@@ -25,6 +25,8 @@ public class Propriedades {
     private static String nomeempresa;
     private static String enderecoempresa;
     private static String telempresa;
+    private static String autorizacao;
+    private static String altura;
     
     public Propriedades(){
         try {
@@ -45,6 +47,8 @@ public class Propriedades {
             setNomeempresa(new String(prop.getProperty("nomeempresa").getBytes("ISO-8859-1"), "UTF-8"));
             setEnderecoempresa(new String(prop.getProperty("enderecoempresa").getBytes("ISO-8859-1"), "UTF-8"));
             setTelempresa(prop.getProperty("telempresa"));
+            setAutorizacao(prop.getProperty("chave"));
+            setAltura(prop.getProperty("altura"));
         } catch (UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
@@ -64,12 +68,13 @@ public class Propriedades {
     }
     
     //ALTERA OS VALORES NO ARQUIVO DE PROPRIEDADES(NOME EMPRESA, ENDERECO EMPRESA, TEL EMPRESA E FONTE DA IMPRESSAO)
-    public void alterarPropriedades(String fonte, String nome , String endereco, String tel){
+    public void alterarPropriedades(String fonte, String nome , String endereco, String tel, String altura){
         try {
             prop.setProperty("tamanhofonte", fonte);
             prop.setProperty("nomeempresa", nome);
             prop.setProperty("enderecoempresa", endereco);
             prop.setProperty("telempresa", tel);
+            prop.setProperty("altura", altura);
             prop.store(new FileOutputStream(PROP_URL), null);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -127,7 +132,22 @@ public class Propriedades {
     private static void setTelempresa(String tel) {
         telempresa = tel;
     }
-    
+
+    public static String getAutorizacao() {
+        return autorizacao;
+    }
+
+    public static void setAutorizacao(String autorizacao) {
+        Propriedades.autorizacao = autorizacao;
+    }
+
+    public static String getAltura() {
+        return altura;
+    }
+
+    public static void setAltura(String altura) {
+        Propriedades.altura = altura;
+    }
     
     
     

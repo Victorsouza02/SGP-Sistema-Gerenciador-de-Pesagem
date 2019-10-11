@@ -229,7 +229,6 @@ public class TelaInicialController implements Initializable {
             }
         });
 
-        
         cancela.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO CANCELAR
             limparCampos();
             text_placa.requestFocus();

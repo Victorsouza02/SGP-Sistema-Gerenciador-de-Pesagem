@@ -60,6 +60,9 @@ public class Impressao {
                 }
                 linha = buffRead.readLine();
             }
+            for(int i = 1; i <= Integer.parseInt(Propriedades.getAltura()); i++){
+                        buffWrite.append("&nbsp"+"<br>");
+            }
             buffWrite.append("</pre><script>print()</script></body></html>");
             buffRead.close();
             buffWrite.close();
@@ -170,6 +173,9 @@ public class Impressao {
                     break;
                 }
                 linha = buffRead.readLine();
+            }
+            for(int i = 1; i <= Integer.parseInt(Propriedades.getAltura()); i++){
+                        buffWrite.append("&nbsp"+"<br>");
             }
             buffWrite.append("</pre><script>print()</script></body></html>");
             buffRead.close();

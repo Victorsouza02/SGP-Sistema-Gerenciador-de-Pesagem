@@ -25,6 +25,8 @@ public class ConfigImpressaoController implements Initializable {
     @FXML
     private TextField tamfonte;
     @FXML
+    private TextField altura;
+    @FXML
     private Button salvar;
     
     //INICIALIZA O CONTROLLER
@@ -34,16 +36,19 @@ public class ConfigImpressaoController implements Initializable {
         enderecoempresa.setText(Propriedades.getEnderecoempresa());
         telempresa.setText(Propriedades.getTelempresa());
         tamfonte.setText(Propriedades.getFonte());
+        altura.setText(Propriedades.getAltura());
         eventos();
     }    
     
     public void eventos(){
         Formatacao.onlyNumber(tamfonte); //SOMENTE NUMEROS NO CAMPO FONTE
         Formatacao.addTextLimiter(tamfonte, 2); //NO MAXIMO 2 DIGITOS NO CAMPO FONTE
+        Formatacao.onlyNumber(altura); //SOMENTE NUMEROS NO CAMPO ALTURA
+        Formatacao.addTextLimiter(altura, 2); //NO MAXIMO 2 DIGITOS NO CAMPO ALTURA
         salvar.setOnMouseClicked((event) ->{ //Ao clicar em salvar
             Propriedades prop = new Propriedades();
-            //Altera Proprierdades(Tamanho da Fonte, Nome Empresa, Endereço Empresa e Telefone Empesa)
-            prop.alterarPropriedades(tamfonte.getText(), nomeempresa.getText(), enderecoempresa.getText(), telempresa.getText());
+            //Altera Proprierdades(Tamanho da Fonte, Altura/Espaçamento Cupom,  Nome Empresa, Endereço Empresa e Telefone Empesa)
+            prop.alterarPropriedades(tamfonte.getText(), nomeempresa.getText(), enderecoempresa.getText(), telempresa.getText(),altura.getText());
             System.exit(0);
         });
     }

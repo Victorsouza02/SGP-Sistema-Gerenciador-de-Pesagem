@@ -46,8 +46,8 @@ public class Principal extends Application {
 
     @Override
     public void start(Stage stage) {
-        Autorizacao pd = new Autorizacao();
         new Propriedades();
+        Autorizacao pd = new Autorizacao();
         if(pd.isAutorizado()){ //SE O USUARIO ESTIVER AUTORIZADO
             //Inicia Stage Principal e as Threads
             this.primaryStage = stage;
