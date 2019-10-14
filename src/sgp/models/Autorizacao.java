@@ -11,11 +11,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import sgp.config.ConfiguracaoGlobal;
 
 public class Autorizacao {
     //SERIAL DO USUARIO AUTORIZADO
     private final String SERIALUSUARIO = Propriedades.getAutorizacao();
-    private boolean autorizado = false;
+    private boolean autorizado = (ConfiguracaoGlobal.isPROTECAO()) ? false : true;
     private List<String> seriais;
     
     public Autorizacao (){

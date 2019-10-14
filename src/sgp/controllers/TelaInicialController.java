@@ -28,6 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javax.swing.JOptionPane;
+import sgp.config.ConfiguracaoGlobal;
 import sgp.main.Principal;
 import sgp.models.Impressao;
 import sgp.models.LerSerial;
@@ -121,7 +122,7 @@ public class TelaInicialController implements Initializable {
         preencherTabela(); //Preenchimento da tabela com dados do banco
         
         //Carrega imagem do display
-        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/pe-display.jpg"));
+        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/"+ConfiguracaoGlobal.getDISPLAY_PRINCIPAL_IMG()));
         imagem.setImage(img);
         //Inicia Thread de atualização no display
         displayThread = new Thread(this::DisplayThread);
