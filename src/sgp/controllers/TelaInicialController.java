@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,8 +28,11 @@ import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import javax.swing.JOptionPane;
 import sgp.config.ConfiguracaoGlobal;
+import sgp.config.VariaveisGlobais;
 import sgp.main.Principal;
 import sgp.models.Impressao;
 import sgp.models.LerSerial;
@@ -49,6 +53,10 @@ public class TelaInicialController implements Initializable {
     @FXML
     private MenuItem menu_pesquisa;
 
+    @FXML
+    private Pane painel_erro;
+    @FXML
+    private Label msg_erro;
     @FXML
     private Label peso_bru_id;
     @FXML
@@ -106,7 +114,7 @@ public class TelaInicialController implements Initializable {
     public LerSerial serial;
     public byte[] buffer;
     Thread displayThread;
-
+    Thread verificarErrosThread;   
     boolean isReading = true;
     private String peso;
     private String codEstabilidade;
@@ -120,14 +128,22 @@ public class TelaInicialController implements Initializable {
         eventosElementos(); //Eventos dos elementos visuais
         formatarCampos(); //Formatação de campos
         preencherTabela(); //Preenchimento da tabela com dados do banco
-        
-        //Carrega imagem do display
-        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/"+ConfiguracaoGlobal.getDISPLAY_PRINCIPAL_IMG()));
-        imagem.setImage(img);
+        atribuirValores();
         //Inicia Thread de atualização no display
         displayThread = new Thread(this::DisplayThread);
         displayThread.start();
+        //
+        verificarErrosThread = new Thread(this::verificarErrosThread);
+        verificarErrosThread.start();
         
+    }
+    
+    //ATRIBUIÇÃO DE VALORES
+    private void atribuirValores(){
+        painel_erro.setVisible(false);
+        //Carrega imagem do display
+        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/"+ConfiguracaoGlobal.getDISPLAY_PRINCIPAL_IMG()));
+        imagem.setImage(img);
     }
 
     //FORMATAÇÃO DOS CAMPOS
@@ -411,6 +427,43 @@ public class TelaInicialController implements Initializable {
                 Thread.sleep(20);
             } catch (InterruptedException iex) {
                 System.out.println(iex.getMessage());
+            }
+        }
+    }
+    
+    private void verificarErrosThread() {
+        boolean exibiuPainel = false;
+        while (true) {
+            if(VariaveisGlobais.isErroDetectado()){
+                if(!exibiuPainel){
+                    painel_erro.setVisible(true);
+                    FadeTransition ft = new FadeTransition(Duration.millis(2000), painel_erro);
+                    ft.setFromValue(0);
+                    ft.setToValue(1);
+                    ft.play();
+                    exibiuPainel = true;
+                }
+                Platform.runLater(() -> {
+                    confirma.setDisable(true);
+                    cancela.setDisable(true);
+                    text_placa.setDisable(true);
+                    msg_erro.setText(VariaveisGlobais.getMensagem());
+                });
+            } else {
+                painel_erro.setVisible(false);
+                confirma.setDisable(false);
+                cancela.setDisable(false);
+                text_placa.setDisable(false);
+                exibiuPainel = false;
+            }
+            try {
+                if(exibiuPainel){
+                    Thread.sleep(1000);
+                } else {
+                    Thread.sleep(20);
+                }
+            } catch (InterruptedException iex) {
+                iex.printStackTrace();
             }
         }
     }

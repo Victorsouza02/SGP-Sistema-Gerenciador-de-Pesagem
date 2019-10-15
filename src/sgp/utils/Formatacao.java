@@ -13,12 +13,14 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import sgp.config.VariaveisGlobais;
 
 /**
  *
  * @author Desenvolvimento
  */
 public class Formatacao {
+
     //METODO PARA ADICIONAR LIMITE DE TEXTO EM UM CAMPO
     public static void addTextLimiter(final TextField tf, final int maxLength) {
         tf.textProperty().addListener(new ChangeListener<String>() {
@@ -42,7 +44,7 @@ public class Formatacao {
             }
         });
     }
-    
+
     //MUDA O STATUS DE ESTABILIDADE DO DISPLAY DE ACORDO COM O CODIGO DE ESTABILIDADE
     public static void estabilizacaoDisplay(Label labelEstabilizacao, String codEstabilidade) {
         switch (codEstabilidade) {
@@ -62,10 +64,13 @@ public class Formatacao {
                 labelEstabilizacao.setText("Saturado");
                 labelEstabilizacao.setStyle("-fx-text-fill: #fc5e14;");
                 break;
+            case "ERR":
+                labelEstabilizacao.setText("Erro - Format");
+                labelEstabilizacao.setStyle("-fx-text-fill: #8434e0;");
+                break;    
         }
     }
 
-    
     //Formatação e tratamento dos dados do indicador ALFA 3101C
     public static Map<String, String> formatarDados3101C(String dado) {
         Map<String, String> dados = new HashMap<String, String>();
@@ -76,113 +81,123 @@ public class Formatacao {
         String tara = "";
 
         boolean sobrecarga = dado.contains("S<BRE");
-        boolean saturado = dado.contains("SATURA");    
+        boolean saturado = dado.contains("SATURA");
         boolean temVirgula = dado.contains(",");
         boolean comTara = false;
         int casasDecimais = 0;
 
-        //ALOCAÇÃO DE VALORES
-        if (temVirgula && !sobrecarga && !saturado) { //SE TIVER VIRGULA NOS DADOS
-            peso_bru = dado.substring(3, 10).replaceAll(",", "."); // PARTE ( 00,000) 
-            peso_liq = dado.substring(3, 10).replaceAll(",", "."); // PARTE ( 00,000) 
-            tara = dado.substring(13, 20).replaceAll(",", "."); // PARTE ( 00,000) 
-            casasDecimais = (6 - tara.indexOf(".")); // CONTA QUANTAS CASAS DECIMAIS
-        } else if (!temVirgula && !sobrecarga && !saturado) { //SE NAO TIVER VIRGULA OU SOBRECARGA
-            peso_bru = dado.substring(3, 9); // PARTE ( 00000) 
-            peso_liq = dado.substring(3, 9); // PARTE ( 00000) 
-            tara = dado.substring(12, 18); // PARTE ( 00000) 
-        }
+        try {
+            //ALOCAÇÃO DE VALORES
+            if (temVirgula && !sobrecarga && !saturado) { //SE TIVER VIRGULA NOS DADOS
+                peso_bru = dado.substring(3, 10).replaceAll(",", "."); // PARTE ( 00,000) 
+                peso_liq = dado.substring(3, 10).replaceAll(",", "."); // PARTE ( 00,000) 
+                tara = dado.substring(13, 20).replaceAll(",", "."); // PARTE ( 00,000) 
+                casasDecimais = (6 - tara.indexOf(".")); // CONTA QUANTAS CASAS DECIMAIS
+            } else if (!temVirgula && !sobrecarga && !saturado) { //SE NAO TIVER VIRGULA OU SOBRECARGA
+                peso_bru = dado.substring(3, 9); // PARTE ( 00000) 
+                peso_liq = dado.substring(3, 9); // PARTE ( 00000) 
+                tara = dado.substring(12, 18); // PARTE ( 00000) 
+            }
 
-        //
-        if (!sobrecarga && !saturado) { //SE NÃO ESTIVER COM SOBRECARGA
-            List<String> pesos = new ArrayList<String>();
-            pesos.add(peso_bru);
-            pesos.add(peso_liq);
-            pesos.add(tara);
-            int cnt = 0;
-            for (String peso : pesos) { //PARA CADA TIPO DE PESO FORMATAR
-                if (peso.equals(" 00000")) { //SE OS DIGITOS FOREM TODOS ZERO
-                    peso = "0";
-                } else {
-                    if (peso.contains("-")) { //SE TIVER SINAL NEGATIVO
-                        if (peso.contains(".")) { // SE TIVER PONTO DECIMAL
-                            int pos = peso.indexOf(".");
-                            //RETIRA OS ZEROS A ESQUERDA DA PARTE INTEIRA E MANTÉM O SINAL NEGATIVO
-                            peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else { //SE NÃO TIVER PONTO DECIMAL
-                            //RETIRA OS ZEROS A ESQUERDA E MANTEM O SINAL NEGATIVO
-                            peso = "-" + peso.substring(1, 6).replaceFirst("0*", ""); //OK
-                        }
-                    } else { //SE TIVER SINAL POSITIVO
-                        if (peso.contains(".")) { //SE TIVER PONTO DECIMAL
-                            int pos = peso.indexOf(".");
-                            //RETIRA ZEROS A ESQUERDA DA PARTE INTEIRA
-                            peso = (pos <= 2) ? peso.replaceFirst(peso.substring(1, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(1, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else { //SE NÃO TIVER PONTO DECIMAL
-                            try {//TENTE REALIZAR ESSA SUBSTITUIÇÃO
-                                //RETIRA ZEROS A ESQUERDA
-                                peso = peso.substring(1, 6).replaceFirst("0*", ""); //OK
-                            } catch (Exception ex) { //SE HOUVER PROBLEMA USE ESSA
-                                //RETIRA ZEROS A ESQUERDA
-                                peso = peso.substring(1, 5).replaceFirst("0*", ""); //OK
+            //
+            if (!sobrecarga && !saturado) { //SE NÃO ESTIVER COM SOBRECARGA
+                List<String> pesos = new ArrayList<String>();
+                pesos.add(peso_bru);
+                pesos.add(peso_liq);
+                pesos.add(tara);
+                int cnt = 0;
+                for (String peso : pesos) { //PARA CADA TIPO DE PESO FORMATAR
+                    if (peso.equals(" 00000")) { //SE OS DIGITOS FOREM TODOS ZERO
+                        peso = "0";
+                    } else {
+                        if (peso.contains("-")) { //SE TIVER SINAL NEGATIVO
+                            if (peso.contains(".")) { // SE TIVER PONTO DECIMAL
+                                int pos = peso.indexOf(".");
+                                //RETIRA OS ZEROS A ESQUERDA DA PARTE INTEIRA E MANTÉM O SINAL NEGATIVO
+                                peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
+                            } else { //SE NÃO TIVER PONTO DECIMAL
+                                //RETIRA OS ZEROS A ESQUERDA E MANTEM O SINAL NEGATIVO
+                                peso = "-" + peso.substring(1, 6).replaceFirst("0*", ""); //OK
+                            }
+                        } else { //SE TIVER SINAL POSITIVO
+                            if (peso.contains(".")) { //SE TIVER PONTO DECIMAL
+                                int pos = peso.indexOf(".");
+                                //RETIRA ZEROS A ESQUERDA DA PARTE INTEIRA
+                                peso = (pos <= 2) ? peso.replaceFirst(peso.substring(1, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(1, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
+                            } else { //SE NÃO TIVER PONTO DECIMAL
+                                try {//TENTE REALIZAR ESSA SUBSTITUIÇÃO
+                                    //RETIRA ZEROS A ESQUERDA
+                                    peso = peso.substring(1, 6).replaceFirst("0*", ""); //OK
+                                } catch (Exception ex) { //SE HOUVER PROBLEMA USE ESSA
+                                    //RETIRA ZEROS A ESQUERDA
+                                    peso = peso.substring(1, 5).replaceFirst("0*", ""); //OK
+                                }
                             }
                         }
                     }
-                }
-                
-                //RETIRA ESPAÇOS EM BRANCO DO PESO
-                if (peso.contains(" ")) {
-                    peso = peso.replace(" ", "");
-                };
-                
-                //ATUALIZA O VALOR NA LISTA DE PESOS
-                pesos.set(cnt, peso);
-                
-                //PEGA O VALOR DE ACORDO COM A CONTAGEM E ATRIBUI A VARIAVEL CORRETA
-                switch (cnt) {
-                    case 0:
-                        peso_bru = peso;
-                        break;
-                    case 1:
-                        peso_liq = peso;
-                        break;
-                    case 2:
-                        //IDENTIFICA SE TEM TARA(SE TARA TIVER ALGUM VALOR)
-                        if (Double.parseDouble(peso) != 0.0) {
-                            comTara = true;
-                        }
-                        tara = peso;
-                        break;
-                }
-                cnt++;
-            }
 
-            if (comTara) { //SE FOR DETECTADO QUE EXISTE TARA
-                if (temVirgula) { //SE A TARA TIVER PONTO DECIMAL
-                    //FAZ O CALCULO DO PESO LIQUIDO COM TARA PARA RESULTAR PESO BRUTO (COM PONTO)
-                    Float pb = Float.parseFloat(peso_liq) + Float.parseFloat(tara);
-                    dados.put("peso_bru", formatoDecimal(casasDecimais, pb));
-                } else { // SE NÃO TIVER PONTO DECIMAL
-                    //FAZ O CALCULO DO PESO LIQUIDO COM TARA PARA RESULTAR PESO BRUTO (SEM PONTO)
-                    int pb = Integer.parseInt(peso_liq) + Integer.parseInt(tara);
-                    dados.put("peso_bru", String.valueOf(pb));
+                    //RETIRA ESPAÇOS EM BRANCO DO PESO
+                    if (peso.contains(" ")) {
+                        peso = peso.replace(" ", "");
+                    };
+
+                    //ATUALIZA O VALOR NA LISTA DE PESOS
+                    pesos.set(cnt, peso);
+
+                    //PEGA O VALOR DE ACORDO COM A CONTAGEM E ATRIBUI A VARIAVEL CORRETA
+                    switch (cnt) {
+                        case 0:
+                            peso_bru = peso;
+                            break;
+                        case 1:
+                            peso_liq = peso;
+                            break;
+                        case 2:
+                            //IDENTIFICA SE TEM TARA(SE TARA TIVER ALGUM VALOR)
+                            if (Double.parseDouble(peso) != 0.0) {
+                                comTara = true;
+                            }
+                            tara = peso;
+                            break;
+                    }
+                    cnt++;
                 }
-            } else { //SE NÃO TIVER TARA
-                dados.put("peso_bru", peso_bru);
+
+                if (comTara) { //SE FOR DETECTADO QUE EXISTE TARA
+                    if (temVirgula) { //SE A TARA TIVER PONTO DECIMAL
+                        //FAZ O CALCULO DO PESO LIQUIDO COM TARA PARA RESULTAR PESO BRUTO (COM PONTO)
+                        Float pb = Float.parseFloat(peso_liq) + Float.parseFloat(tara);
+                        dados.put("peso_bru", formatoDecimal(casasDecimais, pb));
+                    } else { // SE NÃO TIVER PONTO DECIMAL
+                        //FAZ O CALCULO DO PESO LIQUIDO COM TARA PARA RESULTAR PESO BRUTO (SEM PONTO)
+                        int pb = Integer.parseInt(peso_liq) + Integer.parseInt(tara);
+                        dados.put("peso_bru", String.valueOf(pb));
+                    }
+                } else { //SE NÃO TIVER TARA
+                    dados.put("peso_bru", peso_bru);
+                }
+                dados.put("estavel", !dado.contains("*") ? "E" : "O");
+                dados.put("peso_liq", peso_liq);
+                dados.put("tara", tara);
+            } else if (sobrecarga) { //SE ESTIVER COM SOBRECARGA
+                dados.put("estavel", "SOB");
+                dados.put("peso_bru", "0");
+                dados.put("peso_liq", "0");
+                dados.put("tara", "0");
+            } else if (saturado) { //SE ESTIVER SATURADO
+                dados.put("estavel", "SAT");
+                dados.put("peso_bru", "0");
+                dados.put("peso_liq", "0");
+                dados.put("tara", "0");
             }
-            dados.put("estavel", !dado.contains("*") ? "E" : "O");
-            dados.put("peso_liq", peso_liq);
-            dados.put("tara", tara);
-        } else if (sobrecarga){ //SE ESTIVER COM SOBRECARGA
-            dados.put("estavel", "SOB");
+            VariaveisGlobais.setErroDetectado(false);
+        } catch (Exception ex) {
+            dados.put("estavel", "ERR");
             dados.put("peso_bru", "0");
             dados.put("peso_liq", "0");
             dados.put("tara", "0");
-        } else if (saturado){ //SE ESTIVER SATURADO
-            dados.put("estavel", "SAT");
-            dados.put("peso_bru", "0");
-            dados.put("peso_liq", "0");
-            dados.put("tara", "0");
+            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setMensagem("Erro de formatação, verifique se selecionou o equipamento correto.");
         }
 
         System.out.println("Peso Bruto: " + dados.get("peso_bru") + "/  Peso Liquido : " + dados.get("peso_liq") + "/  Tara : " + dados.get("tara"));
@@ -190,62 +205,75 @@ public class Formatacao {
         return dados;
     }
 
-    
     //Formatação e tratamento dos dados do indicador WT1000N
     public static Map<String, String> formatarDadosWT1000N(String dado) {
         Map<String, String> dados = new HashMap<String, String>();
         boolean sobrecarga = dado.contains("OL");
 
-        if (!sobrecarga) {
-            String peso_bru = dado.substring(2, 9);
-            String peso_liq = dado.substring(18, 25);
-
-            List<String> pesos = new ArrayList<String>();
-            pesos.add(peso_bru);
-            pesos.add(peso_liq);
-            int cnt = 0;
-            for (String peso : pesos) {
-                if (peso.equals("000000 ") || peso.equals("0000000")) {
-                    peso = "0";
-                } else {
-                    if (peso.contains("-")) {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
-                        } else {
-                            peso = "-" + peso.substring(1, 7).replaceFirst("0*", "");
-                        }
+        try {
+            if (!sobrecarga) {
+                String peso_bru = dado.substring(2, 9);
+                String peso_liq = dado.substring(18, 25);
+                String tara = dado.substring(10, 17);
+                List<String> pesos = new ArrayList<String>();
+                pesos.add(peso_bru);
+                pesos.add(peso_liq);
+                pesos.add(tara);
+                int cnt = 0;
+                for (String peso : pesos) {
+                    if (peso.equals("000000 ") || peso.equals("0000000")) {
+                        peso = "0";
                     } else {
-                        if (peso.contains(".")) {
-                            int pos = peso.indexOf(".");
-                            peso = (pos <= 3) ? peso.replaceFirst(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                        if (peso.contains("-")) {
+                            if (peso.contains(".")) {
+                                int pos = peso.indexOf(".");
+                                peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
+                            } else {
+                                peso = "-" + peso.substring(1, 7).replaceFirst("0*", "");
+                            }
                         } else {
-                            peso = peso.replaceFirst("0*", "");
+                            if (peso.contains(".")) {
+                                int pos = peso.indexOf(".");
+                                peso = (pos <= 3) ? peso.replaceFirst(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                            } else {
+                                peso = peso.replaceFirst("0*", "");
+                            }
                         }
                     }
+                    pesos.set(cnt, peso);
+                    switch (cnt) {
+                        case 0:
+                            peso_bru = peso;
+                            break;
+                        case 1:
+                            peso_liq = peso;
+                            break;
+                        case 2:
+                            tara = peso;
+                            break;    
+                    }
+                    cnt++;
                 }
-                pesos.set(cnt, peso);
-                switch (cnt) {
-                    case 0:
-                        peso_bru = peso;
-                        break;
-                    case 1:
-                        peso_liq = peso;
-                        break;
-                }
-                cnt++;
+                dados.put("estavel", dado.substring(0, 1).equals("0") ? "E" : "O");
+                dados.put("peso_bru", peso_bru);
+                dados.put("tara", tara);
+                dados.put("peso_liq", peso_liq);
+            } else {
+                dados.put("estavel", "SOB");
+                dados.put("peso_bru", "0");
+                dados.put("tara", "0");
+                dados.put("peso_liq", "0");
             }
-            dados.put("estavel", dado.substring(0, 1).equals("0") ? "E" : "O");
-            dados.put("peso_bru", peso_bru);
-            dados.put("tara", dado.substring(10, 17));
-            dados.put("peso_liq", peso_liq);
-        } else {
-            dados.put("estavel", "SOB");
+            VariaveisGlobais.setErroDetectado(false);
+        } catch (Exception e){
+            dados.put("estavel", "ERR");
             dados.put("peso_bru", "0");
-            dados.put("tara", "0");
             dados.put("peso_liq", "0");
+            dados.put("tara", "0");
+            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setMensagem("Erro de formatação, verifique se selecionou o equipamento correto.");
         }
-
+        System.out.println("Peso Bruto: " + dados.get("peso_bru") + "/  Peso Liquido : " + dados.get("peso_liq") + "/  Tara : " + dados.get("tara"));
         return dados;
     }
 

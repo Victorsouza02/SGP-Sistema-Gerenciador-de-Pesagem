@@ -28,7 +28,7 @@ public class Principal extends Application {
     public static Stage secondStage;
     public static Stage errorStage;
 
-    // **** Variaveis de uso geral
+    // **** Variaveis de uso global
     //INFORMAÇÕES DA SERIAL
     private static String peso_bru = "0";
     private static String peso_liq = "0";

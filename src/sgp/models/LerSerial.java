@@ -13,6 +13,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import sgp.config.VariaveisGlobais;
 import sgp.utils.Formatacao;
 
 /**
@@ -37,16 +38,17 @@ public class LerSerial {
     public LerSerial(String porta, String equipamento) {
         // AO INICIAR A CLASSE
         try {
+            listaPortas(); //ADICIONA PORTAS DISPONIVEIS NA LISTA
+            listaEquipamentos(); //ADICIONA EQUIPAMENTOS COMPATIVEIS NA LISTA
             setPort(porta); //PEGAR PORTA
             setEquipamento(equipamento); //PEGAR EQUIPAMENTO
             serialPort = new SerialPort(getPort());
             selecionarConfigEquipamento(); //SELECIONA CONFIGURACAO DE ACORDO COM EQUIPAMENTO
             conSerial(); // CONEXÃO SERIAL
             serialPort.addEventListener(new SerialPortReader()); //ESCUTANDO EVENTOS DA PORTA SERIAL
-            listaPortas(); //ADICIONA PORTAS DISPONIVEIS NA LISTA
-            listaEquipamentos(); //ADICIONA EQUIPAMENTOS COMPATIVEIS NA LISTA
         } catch (SerialPortException ex) {
-            ex.printStackTrace();
+            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setMensagem("Houve um erro de conexão serial, verifique a porta.");
         }
     }
 
@@ -56,8 +58,8 @@ public class LerSerial {
             serialPort.openPort();
             serialPort.setParams(baud, databits, stopbit, parity, false, false);
         } catch (SerialPortException ex) {
-            JOptionPane.showMessageDialog(null, ex.getPortName() + " - " + ex.getExceptionType(), "Erro", 0);
-            System.exit(0);
+            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setMensagem("Houve um erro de conexão serial, verifique a porta.");
         }
     }
 
