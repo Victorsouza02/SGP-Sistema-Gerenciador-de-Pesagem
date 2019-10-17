@@ -205,6 +205,77 @@ public class Formatacao {
         return dados;
     }
 
+     //Formatação e tratamento dos dados do indicador WT1000N
+    public static Map<String, String> formatarDadosWT27(String dado) {
+        Map<String, String> dados = new HashMap<String, String>();
+        boolean sobrecarga = dado.contains("OL");
+
+        try {
+            if (!sobrecarga) {
+                String peso_bru = dado.substring(5, 12);
+                String peso_liq = dado.substring(24, 31);
+                String tara = dado.substring(15, 21);
+                List<String> pesos = new ArrayList<String>();
+                pesos.add(peso_bru);
+                pesos.add(peso_liq);
+                pesos.add(tara);
+                int cnt = 0;
+                for (String peso : pesos) {
+                    if (peso.equals(" 000000") || peso.equals("000000")) {
+                        peso = "0";
+                    } else {
+                        if (peso.contains("-")) {
+                            if (peso.contains(".")) {
+                                int pos = peso.indexOf(".");
+                                peso = "-" + peso.replace(peso.substring(0, (pos - 1)), peso.substring(1, (pos - 1)).replaceFirst("0*", ""));
+                            } else {
+                                peso = "-" + peso.substring(1, 7).replaceFirst("0*", "");
+                            }
+                        } else {
+                            peso = peso.trim();
+                            if (peso.contains(".")) {
+                                int pos = peso.indexOf(".");
+                                peso = (pos <= 3) ? peso.replaceFirst(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", "")) : peso.replace(peso.substring(0, (pos - 1)), peso.substring(0, (pos - 1)).replaceFirst("0*", ""));
+                            } else {
+                                peso = peso.replaceFirst("0*", "");
+                            }
+                        }
+                    }
+                    pesos.set(cnt, peso);
+                    switch (cnt) {
+                        case 0:
+                            peso_bru = peso;
+                            break;
+                        case 1:
+                            peso_liq = peso;
+                            break;
+                        case 2:
+                            tara = peso;
+                            break;
+                    }
+                    cnt++;
+                }
+                dados.put("estavel", dado.substring(0, 1).equals("E") ? "E" : "O");
+                dados.put("peso_bru", peso_bru);
+                dados.put("tara", tara);
+                dados.put("peso_liq", peso_liq);
+            } else {
+                dados.put("estavel", "SOB");
+                dados.put("peso_bru", "0");
+                dados.put("tara", "0");
+                dados.put("peso_liq", "0");
+            }
+        } catch (Exception e) {
+            dados.put("estavel", "ERR");
+            dados.put("peso_bru", "0");
+            dados.put("peso_liq", "0");
+            dados.put("tara", "0");
+            e.printStackTrace();
+        }
+        System.out.println("Peso Bruto: " + dados.get("peso_bru") + "/  Peso Liquido : " + dados.get("peso_liq") + "/  Tara : " + dados.get("tara"));
+        return dados;
+    }
+    
     //Formatação e tratamento dos dados do indicador WT1000N
     public static Map<String, String> formatarDadosWT1000N(String dado) {
         Map<String, String> dados = new HashMap<String, String>();

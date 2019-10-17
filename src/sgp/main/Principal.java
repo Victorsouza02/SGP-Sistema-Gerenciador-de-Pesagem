@@ -174,7 +174,7 @@ public class Principal extends Application {
         Scene scene = null;
         try {
             root = FXMLLoader.load(Principal.class.getResource("/sgp/views/config.fxml"));
-            scene = new Scene(root, 329, 374);
+            scene = new Scene(root, 382, 359);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

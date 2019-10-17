@@ -7,7 +7,6 @@ package sgp.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JOptionPane;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -111,6 +110,8 @@ public class LerSerial {
     public void listaEquipamentos() {
         equipamentos.add("WT1000N"); //INDICADOR WEIGHTECH WT1000N
         equipamentos.add("3101C"); // INDICADOR ALFA LINHA 3100
+        equipamentos.add("WT27"); // INDICADOR WEIGHTECH WT27
+
     }
 
     //SELEÇÃO DE CONFIGURAÇÃO DE EQUIPAMENTO
@@ -121,6 +122,9 @@ public class LerSerial {
                 break;
             case "3101C":
                 config3101C();
+                break;
+            case "WT27":
+                configWT27();
                 break;
         }
     }
@@ -135,6 +139,9 @@ public class LerSerial {
             case "3101C":
                 padrao = "PB: 00000 T: 00000";
                 break;
+            case "WT27":
+                padrao = "EB,B: 000000,T:000000,L: 000000";
+                break;
         }
         return padrao;
     }
@@ -146,6 +153,8 @@ public class LerSerial {
                 return Formatacao.formatarDadosWT1000N(receberDadosSerial());
             case "3101C":
                 return Formatacao.formatarDados3101C(receberDadosSerial());
+            case "WT27":
+                return Formatacao.formatarDadosWT27(receberDadosSerial());
         }
         return null;
     }
@@ -168,6 +177,15 @@ public class LerSerial {
         setParity(0);
     }
     /**********************************************/
+    
+     /**********CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT27*******/
+    public void configWT27() {
+        setBaud(9600);
+        setDatabits(8);
+        setStopbit(1);
+        setParity(0);
+    }
+    /***********************************************/
 
     //OUVINDO PORTA SERIAL E RETIRANDO DADOS DESNECESSÁRIOS
     static class SerialPortReader implements SerialPortEventListener {
