@@ -50,7 +50,7 @@ public class Formatacao {
         switch (codEstabilidade) {
             case "E":
                 labelEstabilizacao.setText("Estável");
-                labelEstabilizacao.setStyle("-fx-text-fill: green;");
+                labelEstabilizacao.setStyle("-fx-text-fill: #4d64e8;");
                 break;
             case "O":
                 labelEstabilizacao.setText("Oscilando");

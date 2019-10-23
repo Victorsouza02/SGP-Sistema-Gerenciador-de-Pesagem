@@ -10,12 +10,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: #d3d3d3;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.TelaInicialController">
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" style="-fx-background-color: #4d64e8;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.TelaInicialController">
     <stylesheets>
         <URL value="@telainicial.css" />
     </stylesheets>
     <children>
-        <Pane layoutX="13.0" layoutY="7.0" prefHeight="286.0" prefWidth="737.0" styleClass="form" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="30.0">
+        <Pane layoutX="13.0" layoutY="7.0" prefHeight="286.0" prefWidth="737.0" style="-fx-background-color: #e8e8e8;" styleClass="form" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="30.0">
             <children>
                 <Label layoutX="25.0" layoutY="22.0" text="Placa :">
                     <font>
@@ -97,7 +97,7 @@
                 <Insets bottom="20.0" />
             </padding>
         </Pane>
-        <TableView fx:id="tabela" layoutX="12.0" layoutY="341.0" prefHeight="219.0" prefWidth="1177.0" style="-fx-background-color: #f3f3f3;" styleClass="tabela" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="331.0">
+        <TableView fx:id="tabela" layoutX="12.0" layoutY="341.0" prefHeight="219.0" prefWidth="1177.0" style="-fx-background-color: #e8e8e8;" styleClass="tabela" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="331.0">
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
@@ -116,41 +116,41 @@
                 <TableColumn fx:id="plcol" text="Peso Liquido(Kg)" />
             </columns>
         </TableView>
-        <Pane layoutX="791.0" layoutY="20.0" prefHeight="308.0" prefWidth="490.0" AnchorPane.rightAnchor="-65.0" AnchorPane.topAnchor="20.0">
+        <Pane layoutX="791.0" layoutY="31.0" prefHeight="286.0" prefWidth="418.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="31.0">
             <children>
-                <ImageView fx:id="imagem" fitHeight="310.0" fitWidth="463.0" layoutX="-2.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="imagem" fitHeight="178.0" fitWidth="396.0" layoutX="44.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../imgs/pe-display.jpg" />
+                        <Image url="@../imgs/Display.png" />
                     </image>
                 </ImageView>
-                <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="24.0" layoutY="157.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="86.0" prefWidth="198.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
+                <Label fx:id="peso_bru_id" alignment="CENTER_RIGHT" layoutX="77.0" layoutY="61.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="88.0" prefWidth="248.0" text="000000" textAlignment="CENTER" textFill="#d3d3d3">
                     <font>
-                        <Font name="Segoe UI Black" size="49.0" />
+                        <Font name="Segoe UI Black" size="50.0" />
                     </font>
                 </Label>
-                <Label fx:id="kg" layoutX="227.0" layoutY="173.0" prefHeight="62.0" prefWidth="65.0" text="kg" textAlignment="CENTER" textFill="LIGHTGRAY">
+                <Label fx:id="kg" layoutX="325.0" layoutY="78.0" prefHeight="62.0" prefWidth="53.0" text="kg" textAlignment="CENTER" textFill="LIGHTGRAY">
                     <font>
-                        <Font name="Segoe UI Black" size="38.0" />
+                        <Font name="Segoe UI Black" size="35.0" />
                     </font>
                 </Label>
-            <Label fx:id="status" alignment="CENTER_RIGHT" layoutX="159.0" layoutY="141.0" prefHeight="21.0" prefWidth="117.0" text="Estável" textAlignment="CENTER" textFill="LIGHTGRAY">
+            <Label fx:id="status" alignment="CENTER_RIGHT" layoutX="185.0" layoutY="34.0" prefHeight="35.0" prefWidth="184.0" text="Estável" textAlignment="CENTER" textFill="LIGHTGRAY">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                  <Font name="System Bold" size="21.0" />
                </font>
             </Label>
             </children>
         </Pane>
-        <Button fx:id="confirma" alignment="BOTTOM_RIGHT" layoutX="1112.0" layoutY="561.0" mnemonicParsing="false" style="-fx-background-color: green;" text="Confirmar" textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
+        <Button fx:id="confirma" alignment="BOTTOM_RIGHT" layoutX="1112.0" layoutY="561.0" mnemonicParsing="false" text="Confirmar" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
             <font>
                 <Font name="System Bold" size="15.0" />
             </font>
         </Button>
-        <Button fx:id="cancela" alignment="BOTTOM_RIGHT" layoutX="999.0" layoutY="561.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Cancelar" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="120.0">
+        <Button fx:id="cancela" alignment="BOTTOM_RIGHT" layoutX="999.0" layoutY="561.0" mnemonicParsing="false" text="Cancelar" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="120.0">
             <font>
                 <Font name="System Bold" size="15.0" />
             </font>
         </Button>
-      <Button fx:id="relatorio" alignment="BOTTOM_RIGHT" layoutX="14.0" layoutY="555.0" mnemonicParsing="false" style="-fx-background-color: gray;" text="Relatório" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0">
+      <Button fx:id="relatorio" alignment="BOTTOM_RIGHT" layoutX="14.0" layoutY="555.0" mnemonicParsing="false" text="Relatório" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

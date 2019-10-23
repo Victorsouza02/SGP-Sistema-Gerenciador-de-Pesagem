@@ -20,4 +20,3 @@ PESO : $PS_SAIDA
 PESO LIQ.: $PS_LIQ
 **********************************************
 SGP - Sistema Gerenciador de Pesagem
-EBM Metrologia

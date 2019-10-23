@@ -8,21 +8,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="230.0" prefWidth="400.0" style="-fx-background-color: #d3d3d3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.SobreController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="213.0" prefWidth="400.0" style="-fx-background-color: #4d64e8;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.SobreController">
    <children>
-      <Pane layoutX="24.0" layoutY="15.0" prefHeight="200.0" prefWidth="353.0" style="-fx-background-color: #f3f3f3; -fx-background-radius: 9 10 10 10;">
+      <Pane layoutX="24.0" layoutY="15.0" prefHeight="181.0" prefWidth="353.0" style="-fx-background-color: #f3f3f3; -fx-background-radius: 9 10 10 10;">
          <children>
-            <ImageView fx:id="imagem" fitHeight="89.0" fitWidth="90.0" layoutX="6.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="imagem" fitHeight="77.0" fitWidth="70.0" layoutX="28.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../Downloads/logoEBM_III.png" />
+                  <Image url="@../imgs/empresaicone.png" />
                </image>
             </ImageView>
-            <Label fx:id="lb_nomeempresa" alignment="CENTER" layoutX="98.0" layoutY="37.0" prefHeight="19.0" prefWidth="232.0" text="EBM Metrologia">
-               <font>
-                  <Font name="System Bold Italic" size="13.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="-3.0" layoutY="111.0" prefHeight="17.0" prefWidth="360.0" text="Todos os direitos reservados - 2019">
+            <Label fx:id="lb_nomeempresa" alignment="CENTER" layoutX="107.0" layoutY="53.0" prefHeight="19.0" prefWidth="232.0" text="VictorSouza02">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
@@ -32,17 +27,17 @@
                   <Font name="System Bold Italic" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="lb_telefone" alignment="CENTER" layoutY="151.0" prefHeight="19.0" prefWidth="353.0" text="Contato  : (21) 2472 - 5858">
+            <Label fx:id="lb_telefone" alignment="CENTER" layoutY="129.0" prefHeight="19.0" prefWidth="353.0" text="Contato  : (21) 0000-0000">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
             </Label>
-            <Label fx:id="lb_site" alignment="CENTER" layoutY="167.0" prefHeight="19.0" prefWidth="353.0" text="ebmmetrologia.com.br">
+            <Label fx:id="lb_site" alignment="CENTER" layoutY="145.0" prefHeight="19.0" prefWidth="353.0" text="pudim.com.br">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" layoutX="107.0" layoutY="18.0" prefHeight="19.0" prefWidth="222.0" text="Desenvolvido por :">
+            <Label alignment="CENTER" layoutX="116.0" layoutY="34.0" prefHeight="19.0" prefWidth="222.0" text="Desenvolvido por :">
                <font>
                   <Font name="System Bold Italic" size="13.0" />
                </font>

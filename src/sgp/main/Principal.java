@@ -146,7 +146,7 @@ public class Principal extends Application {
         Scene scene = null;
         try {
             root = FXMLLoader.load(Principal.class.getResource("/sgp/views/sobre.fxml"));
-            scene = new Scene(root, 400, 230);
+            scene = new Scene(root, 395, 209);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

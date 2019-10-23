@@ -356,7 +356,6 @@ public class TelaInicialController implements Initializable {
         } else if (tipo.equals("S")) { //SE FOR SAIDA 
             Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSAO DA ETIQUETA
         }
-
     }
 
     //PREENCHE A TABELA COM OS DADOS DO BANCO
