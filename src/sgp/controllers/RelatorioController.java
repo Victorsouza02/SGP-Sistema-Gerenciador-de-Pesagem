@@ -33,9 +33,8 @@ public class RelatorioController implements Initializable {
     private DatePicker data2;
     @FXML
     private Label msg;
-    /**
-     * Initializes the controller class.
-     */
+
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         eventosElementos();

@@ -15,11 +15,7 @@ import javafx.scene.image.ImageView;
 import sgp.config.ConfiguracaoGlobal;
 import sgp.main.Principal;
 
-/**
- * FXML Controller class
- *
- * @author Desenvolvimento
- */
+
 public class SobreController implements Initializable {
     @FXML
     private ImageView imagem;
@@ -32,9 +28,7 @@ public class SobreController implements Initializable {
     @FXML
     private Label lb_site;
     
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/"+ConfiguracaoGlobal.getLOGO_EMPRESA()));

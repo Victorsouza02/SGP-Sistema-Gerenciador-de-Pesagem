@@ -43,7 +43,7 @@ public class ConfigImpressaoController implements Initializable {
     public void eventos(){
         Formatacao.onlyNumber(tamfonte); //SOMENTE NUMEROS NO CAMPO FONTE
         Formatacao.addTextLimiter(tamfonte, 2); //NO MAXIMO 2 DIGITOS NO CAMPO FONTE
-        Formatacao.onlyNumber(altura); //SOMENTE NUMEROS NO CAMPO ALTURA
+        Formatacao.onlyNumber(altura); //SOMENTE NUMEROS NO CAMPO ALTURA 
         Formatacao.addTextLimiter(altura, 2); //NO MAXIMO 2 DIGITOS NO CAMPO ALTURA
         salvar.setOnMouseClicked((event) ->{ //Ao clicar em salvar
             Propriedades prop = new Propriedades();

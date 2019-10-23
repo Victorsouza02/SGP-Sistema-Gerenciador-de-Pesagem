@@ -17,18 +17,17 @@ public class ConfiguracaoGlobal {
     //IMAGEM DO DISPLAY
     private static final String DISPLAY_PRINCIPAL_IMG = "pe-display.jpg";
     //TITULO DA TELA INICIAL
-    private static final String TITULO_INICIAL = "Sistema Gerenciador de Peso - EBM Metrologia";
+    private static final String TITULO_INICIAL = "Sistema Gerenciador de Pesagem - EBM Metrologia";
     
     //******************* TELA SOBRE
-    //IMAGEM COM A LOGO DA EMPRESA
     private static final String LOGO_EMPRESA = "logoebm.png";
-    private static final String NOME_EMPRESA = "EBM";
-    private static final String VERSAO = "1.01";
+    private static final String NOME_EMPRESA = "EBM Metrologia";
+    private static final String VERSAO = "1.00";
     private static final String TELEFONE = "(21) 2472-5858";
-    private static final String SITE = "ebm.com.br";
+    private static final String SITE = "ebmmetrologia.com.br";
     
     //***********************************************************
-   
+    //Ativa a proteção de pen drive
     private static final boolean PROTECAO = true;
 
 

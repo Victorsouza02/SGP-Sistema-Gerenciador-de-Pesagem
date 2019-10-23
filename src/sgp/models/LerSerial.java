@@ -46,7 +46,7 @@ public class LerSerial {
             conSerial(); // CONEXÃO SERIAL
             serialPort.addEventListener(new SerialPortReader()); //ESCUTANDO EVENTOS DA PORTA SERIAL
         } catch (SerialPortException ex) {
-            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setErroSerialDetectado(true);
             VariaveisGlobais.setMensagem("Houve um erro de conexão serial, verifique a porta.");
         }
     }
@@ -57,7 +57,7 @@ public class LerSerial {
             serialPort.openPort();
             serialPort.setParams(baud, databits, stopbit, parity, false, false);
         } catch (SerialPortException ex) {
-            VariaveisGlobais.setErroDetectado(true);
+            VariaveisGlobais.setErroSerialDetectado(true);
             VariaveisGlobais.setMensagem("Houve um erro de conexão serial, verifique a porta.");
         }
     }

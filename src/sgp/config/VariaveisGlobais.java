@@ -4,16 +4,11 @@ package sgp.config;
 
 public class VariaveisGlobais {
     
-    private static boolean erroDetectado = false;
+    private static boolean erroSerialDetectado = false;
+    private static boolean erroFormatDetectado = false;
+
     private static String mensagem = "";
 
-    public static boolean isErroDetectado() {
-        return erroDetectado;
-    }
-
-    public static void setErroDetectado(boolean erroDetectado) {
-        VariaveisGlobais.erroDetectado = erroDetectado;
-    }
 
     public static String getMensagem() {
         return mensagem;
@@ -22,6 +17,24 @@ public class VariaveisGlobais {
     public static void setMensagem(String mensagem) {
         VariaveisGlobais.mensagem = mensagem;
     }
+
+    public static boolean isErroSerialDetectado() {
+        return erroSerialDetectado;
+    }
+
+    public static void setErroSerialDetectado(boolean erroSerialDetectado) {
+        VariaveisGlobais.erroSerialDetectado = erroSerialDetectado;
+    }
+
+    public static boolean isErroFormatDetectado() {
+        return erroFormatDetectado;
+    }
+
+    public static void setErroFormatDetectado(boolean erroFormatDetectado) {
+        VariaveisGlobais.erroFormatDetectado = erroFormatDetectado;
+    }
+    
+    
     
     
     

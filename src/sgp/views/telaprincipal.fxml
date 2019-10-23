@@ -157,12 +157,6 @@
       </Button>
       <MenuBar fx:id="menu" prefHeight="25.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Geral">
-            <items>
-              <MenuItem fx:id="menu_relatorio" mnemonicParsing="false" text="Relatório" />
-                  <MenuItem mnemonicParsing="false" text="Fechar" />
-            </items>
-          </Menu>
             <Menu mnemonicParsing="false" text="Configurar">
                <items>
                   <MenuItem fx:id="menu_config" mnemonicParsing="false" text="Configurações Gerais" />
@@ -171,6 +165,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Pesquisar">
                <items>
+              <MenuItem fx:id="menu_relatorio" mnemonicParsing="false" text="Relatório" />
                   <MenuItem fx:id="menu_pesquisa" mnemonicParsing="false" text="Pesquisar Placa" />
                </items>
             </Menu>

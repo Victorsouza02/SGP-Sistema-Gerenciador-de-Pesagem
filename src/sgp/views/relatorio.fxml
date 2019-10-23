@@ -13,12 +13,12 @@
          <children>
             <DatePicker fx:id="data1" layoutX="122.0" layoutY="40.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="26.0" prefWidth="179.0" />
             <DatePicker fx:id="data2" layoutX="122.0" layoutY="91.0" prefHeight="26.0" prefWidth="179.0" />
-            <Label layoutX="85.0" layoutY="95.0" prefHeight="19.0" prefWidth="37.0" text="De :">
+            <Label layoutX="82.0" layoutY="44.0" prefHeight="19.0" prefWidth="37.0" text="De :">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Label>
-            <Label layoutX="85.0" layoutY="43.0" prefHeight="19.0" prefWidth="37.0" text="Ate:">
+            <Label layoutX="82.0" layoutY="95.0" prefHeight="19.0" prefWidth="37.0" text="Ate:">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

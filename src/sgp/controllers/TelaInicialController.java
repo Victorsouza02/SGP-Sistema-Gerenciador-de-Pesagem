@@ -132,7 +132,7 @@ public class TelaInicialController implements Initializable {
         //Inicia Thread de atualização no display
         displayThread = new Thread(this::DisplayThread);
         displayThread.start();
-        //
+        //Inicia Thread de verificação de erros
         verificarErrosThread = new Thread(this::verificarErrosThread);
         verificarErrosThread.start();
         
@@ -434,7 +434,7 @@ public class TelaInicialController implements Initializable {
     private void verificarErrosThread() {
         boolean exibiuPainel = false;
         while (true) {
-            if(VariaveisGlobais.isErroDetectado()){
+            if(VariaveisGlobais.isErroSerialDetectado() || VariaveisGlobais.isErroFormatDetectado()){
                 if(!exibiuPainel){
                     painel_erro.setVisible(true);
                     FadeTransition ft = new FadeTransition(Duration.millis(2000), painel_erro);
