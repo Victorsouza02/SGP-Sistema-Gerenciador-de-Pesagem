@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import sgp.config.VariaveisGlobais;
 
 
 
@@ -34,6 +35,9 @@ public class Propriedades {
             prop = new Properties();
             prop.load(new FileInputStream(PROP_URL));
             carregarPropriedades();
+            if(getEquipamento().equals("MANUAL")){
+                VariaveisGlobais.setModoManual(true);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }

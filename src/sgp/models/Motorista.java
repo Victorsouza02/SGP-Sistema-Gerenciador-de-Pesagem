@@ -44,9 +44,9 @@ public class Motorista {
         return mot;
     }
 
-    public void cadastrar() { //CADASTRO
+    public void cadastrar(boolean isManual) { //CADASTRO
         AcoesSQL acao = new AcoesSQL();
-        acao.CadastrarMotorista(this);
+        acao.cadastrarMotorista(this,isManual);
     }
     
     public void editar(){ //EDIÇÃO

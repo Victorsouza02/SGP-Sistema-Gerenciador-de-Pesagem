@@ -7,9 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="489.0" prefWidth="432.0" style="-fx-background-color: #4d64e8;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.ConfigImpressaoController">
+<AnchorPane id="AnchorPane" prefHeight="489.0" prefWidth="432.0" style="-fx-background-color: #f3f3f3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sgp.controllers.ConfigImpressaoController">
    <children>
-      <Label alignment="CENTER" layoutX="8.0" layoutY="14.0" prefHeight="41.0" prefWidth="412.0" text="Configurações de Impressão" textFill="WHITE">
+      <Label alignment="CENTER" layoutX="8.0" layoutY="14.0" prefHeight="41.0" prefWidth="412.0" text="Configurações de Impressão">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -25,12 +25,12 @@
             <TextField fx:id="telempresa" layoutX="75.0" layoutY="120.0" prefHeight="25.0" prefWidth="286.0" />
          </children>
       </Pane>
-      <Label alignment="CENTER" layoutX="85.0" layoutY="55.0" prefHeight="41.0" prefWidth="263.0" text="Dados da Empresa" textFill="WHITE">
+      <Label alignment="CENTER" layoutX="85.0" layoutY="55.0" prefHeight="41.0" prefWidth="263.0" text="Cabeçalho do Cupom">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutX="92.0" layoutY="278.0" prefHeight="41.0" prefWidth="263.0" text="Aparência da Impressão" textFill="WHITE">
+      <Label alignment="CENTER" layoutX="92.0" layoutY="278.0" prefHeight="41.0" prefWidth="263.0" text="Aparência da Impressão">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
@@ -43,7 +43,7 @@
             <Label layoutX="58.0" layoutY="59.0" prefHeight="17.0" prefWidth="149.0" text="Altura/Espaçamento Final :" />
          </children>
       </Pane>
-      <Button fx:id="salvar" layoutX="152.0" layoutY="417.0" mnemonicParsing="false" style="-fx-background-color: #e8e8e8;" text="Salvar Alterações">
+      <Button fx:id="salvar" layoutX="152.0" layoutY="417.0" mnemonicParsing="false" text="Salvar Alterações">
          <font>
             <Font size="14.0" />
          </font>

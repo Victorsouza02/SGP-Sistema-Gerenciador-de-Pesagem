@@ -1,3 +1,4 @@
+
 /*
  * CLASSE : Impressao
  * Função : Gerenciar tudo relacionado a impressão de cupom/relatórios.
@@ -19,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.List;
-import sgp.main.Principal;
 import sgp.persistence.AcoesSQL;
 import sgp.utils.BrowserLaunch;
 
@@ -52,6 +52,45 @@ public class Impressao {
                         //VERIFICA SE A LINHA TEM A VARIAVEL DE SUBSTITUIÇÃO E COLOCA UM VALOR NO LOCAL
                         if (linha.contains(str)) {
                             linha = colocarValores(linha, str, reg);
+                        }
+                    }
+                    buffWrite.append(linha + "<br>");
+                } else {
+                    break;
+                }
+                linha = buffRead.readLine();
+            }
+            for(int i = 1; i <= Integer.parseInt(Propriedades.getAltura()); i++){
+                        buffWrite.append("&nbsp"+"<br>");
+            }
+            buffWrite.append("</pre><script>print()</script></body></html>");
+            buffRead.close();
+            buffWrite.close();
+            BrowserLaunch.openURL(PATH_HTML);
+        } catch (IOException iEx) {
+            System.out.println(iEx.getMessage());
+        }
+    }
+    
+    public static void fazerEtiquetaHtmlManual(String placa) { //FAZER O ETIQUETA/CUPOM EM HTML PARA IMPRESSÃO EM MODO MANUAL
+        try {
+            AcoesSQL acao = new AcoesSQL();
+            //PEGA O ULTIMO REGISTRO DA PLACA NO BANCO DE DADOS
+            Registro reg = acao.getUltimoRegistroManual(placa);
+            //ARQUIVO DE LEITURA
+            BufferedReader buffRead = new BufferedReader(new InputStreamReader(new FileInputStream(PATH_TXT), StandardCharsets.ISO_8859_1));
+            String linha = "";
+            //ARQUIVO DE ESCRITA
+            OutputStreamWriter buffWrite = new OutputStreamWriter(new FileOutputStream(PATH_HTML), StandardCharsets.UTF_8);
+
+            buffWrite.write("");
+            buffWrite.append("<!DOCTYPE html><html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body><pre style='font-size:"+FONTE+"px'><center>");
+            while (true) {
+                if (linha != null) {
+                    for (String str : substituir) {
+                        //VERIFICA SE A LINHA TEM A VARIAVEL DE SUBSTITUIÇÃO E COLOCA UM VALOR NO LOCAL
+                        if (linha.contains(str)) {
+                            linha = colocarValoresManual(linha, str, reg);
                         }
                     }
                     buffWrite.append(linha + "<br>");
@@ -206,6 +245,74 @@ public class Impressao {
                     break;
                 case "$ID":
                     linha = linha.replace(var, Integer.toString(reg.getId()));
+                    break;
+                case "$PRODUTO":
+                    linha = linha.replace(var, reg.getProduto());
+                    break;
+                case "$FORNECEDOR":
+                    linha = linha.replace(var, reg.getFornecedor());
+                    break;
+                case "$MOTORISTA":
+                    linha = linha.replace(var, reg.getNome());
+                    break;
+                case "$PLACA":
+                    linha = linha.replace(var, reg.getPlaca());
+                    break;
+                case "$DT_ENTRADA":
+                    data = dateFormatSql.parse(reg.getDt_entrada());
+                    String data_entrada = dateFormatView.format(data);
+                    linha = linha.replace(var, data_entrada);
+                    break;
+                case "$HH_ENTRADA":
+                    linha = linha.replace(var, reg.getH_entrada());
+                    break;
+                case "$PS_ENTRADA":
+                    linha = linha.replace(var, reg.getPs_entrada() + "kg");
+                    break;
+                case "$DT_SAIDA":
+                    if (reg.getDt_saida() != null) {
+                        data = dateFormatSql.parse(reg.getDt_entrada());
+                        String data_saida = dateFormatView.format(data);
+                        linha = linha.replace(var, data_saida);
+                    } else {
+                        linha = linha.replace(var, "---");
+                    }
+                    break;
+                case "$HH_SAIDA":
+                    linha = linha.replace(var, (reg.getH_saida() == null) ? "---" : reg.getH_saida());
+                    break;
+                case "$PS_SAIDA":
+                    linha = linha.replace(var, (reg.getPs_saida() == null) ? "---" : reg.getPs_saida() + "kg");
+                    break;
+                case "$PS_LIQ":
+                    linha = linha.replace(var, (reg.getPs_liquido() == null) ? "---" : reg.getPs_liquido() + "kg");
+                    break;
+            }
+        } catch (ParseException ex){
+            System.out.println(ex.getMessage());
+        }
+        return linha;
+    }
+    
+     public static String colocarValoresManual(String linha, String var, Registro reg) {
+        SimpleDateFormat dateFormatSql = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormatView = new SimpleDateFormat("dd/MM/yyyy");
+        Date data = new Date();       
+        try {
+            switch (var) {
+                case "$NOMEEMPRESA":
+                    linha = linha.replace(var, "****** MODO MANUAL ******");
+                    break;
+                    
+                case "$ENDERECOEMPRESA":
+                    linha = linha.replace(var, "****** MODO MANUAL ******");
+                    break;
+                    
+                case "$TELEMPRESA":
+                    linha = linha.replace(var, "****** MODO MANUAL ******");
+                    break;
+                case "$ID":
+                    linha = linha.replace(var, "MODO MANUAL");
                     break;
                 case "$PRODUTO":
                     linha = linha.replace(var, reg.getProduto());

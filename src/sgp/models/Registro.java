@@ -29,6 +29,8 @@ public class Registro {
     private String h_entrada;
     private String dt_saida;
     private String h_saida;
+    private String tipo;
+
     private static int num_registros;
     
     public Registro(){
@@ -89,11 +91,56 @@ public class Registro {
         return acao.saidaRegistro(reg);
     }
     
+    //REGISTRA ENTRADA DOS MOTORISTAS
+    public boolean registrarEntradaManual(String placa, String ps_entrada){
+        AcoesSQL acao = new AcoesSQL();
+        Motorista mot = acao.procurarPlaca(placa);
+        SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
+        Date data = new Date();
+        this.setPlaca(placa);
+        this.setNome(mot.getNome());
+        this.setProduto(mot.getProduto());
+        this.setFornecedor(mot.getFornecedor());
+        this.setDt_entrada(fmtDate.format(data));
+        this.setH_entrada(fmtTime.format(data));
+        this.setPs_entrada(ps_entrada);
+        return acao.entradaRegistroManual(this);
+    }
+    
+    //REGISTRA SAIDA DO MOTORISTA
+    public boolean registrarSaidaManual(String placa, String ps_entrada, String ps_saida){
+        AcoesSQL acao = new AcoesSQL();
+        SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm:ss");
+        Date data = new Date();
+        Registro reg = new Registro();
+        reg.setPlaca(placa);
+        reg.setDt_saida(fmtDate.format(data));
+        reg.setH_saida(fmtTime.format(data));
+        reg.setPs_saida(ps_saida);
+        String peso_liq = "";
+        if(ps_saida.contains(".") || ps_entrada.contains(".")){
+            BigDecimal b = new BigDecimal(ps_saida).subtract(new BigDecimal(ps_entrada));
+            peso_liq = b.toString();
+        }else {
+            peso_liq = String.valueOf(Integer.parseInt(ps_saida) - Integer.parseInt(ps_entrada));
+        }
+        reg.setPs_liquido(peso_liq);
+        return acao.saidaRegistroManual(reg);
+    }
+    
     //RETORNA O ULTIMO REGISTRO DE UMA DETERMINADA PLACA
-    public Registro ultimoRegistro(String placa){
+       public Registro ultimoRegistro(String placa){
         AcoesSQL acao = new AcoesSQL();
         return acao.getUltimoRegistro(placa);
     }
+    
+    public Registro ultimoRegistroManual(String placa){
+        AcoesSQL acao = new AcoesSQL();
+        return acao.getUltimoRegistroManual(placa);
+    }
+    
     
     //RETORNA UMA OBSERVABLE LIST DE REGISTROS
     public ObservableList<Registro> listaDeRegistros() {
@@ -224,6 +271,16 @@ public class Registro {
     public static void setNum_registros(int num_registros) {
         Registro.num_registros = num_registros;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+    
+    
     
     
     

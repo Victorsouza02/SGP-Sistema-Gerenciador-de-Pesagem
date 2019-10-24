@@ -50,7 +50,7 @@ public class Formatacao {
         switch (codEstabilidade) {
             case "E":
                 labelEstabilizacao.setText("Estável");
-                labelEstabilizacao.setStyle("-fx-text-fill: #4d64e8;");
+                labelEstabilizacao.setStyle("-fx-text-fill: green;");
                 break;
             case "O":
                 labelEstabilizacao.setText("Oscilando");
@@ -67,7 +67,7 @@ public class Formatacao {
             case "ERR":
                 labelEstabilizacao.setText("Erro - Format");
                 labelEstabilizacao.setStyle("-fx-text-fill: #8434e0;");
-                break;    
+                break;
         }
     }
 
@@ -205,7 +205,7 @@ public class Formatacao {
         return dados;
     }
 
-     //Formatação e tratamento dos dados do indicador WT1000N
+    //Formatação e tratamento dos dados do indicador WT1000N
     public static Map<String, String> formatarDadosWT27(String dado) {
         Map<String, String> dados = new HashMap<String, String>();
         boolean sobrecarga = dado.contains("OL");
@@ -271,13 +271,25 @@ public class Formatacao {
             dados.put("peso_bru", "0");
             dados.put("peso_liq", "0");
             dados.put("tara", "0");
-            VariaveisGlobais.setErroFormatDetectado(true);  
+            VariaveisGlobais.setErroFormatDetectado(true);
             VariaveisGlobais.setMensagem("Erro de formatação, verifique se selecionou o equipamento correto.");
         }
         System.out.println("Peso Bruto: " + dados.get("peso_bru") + "/  Peso Liquido : " + dados.get("peso_liq") + "/  Tara : " + dados.get("tara"));
         return dados;
     }
-    
+
+    //Formatação e tratamento dos dados manuais
+    public static Map<String, String> formatarDadosManuais() {
+        Map<String, String> dados = new HashMap<String, String>();
+
+        dados.put("estavel", "E");
+        dados.put("peso_bru", VariaveisGlobais.getPesoManual());
+        dados.put("tara", "0");
+        dados.put("peso_liq", VariaveisGlobais.getPesoManual());
+
+        return dados;
+    }
+
     //Formatação e tratamento dos dados do indicador WT1000N
     public static Map<String, String> formatarDadosWT1000N(String dado) {
         Map<String, String> dados = new HashMap<String, String>();
@@ -323,7 +335,7 @@ public class Formatacao {
                             break;
                         case 2:
                             tara = peso;
-                            break;    
+                            break;
                     }
                     cnt++;
                 }
@@ -338,7 +350,7 @@ public class Formatacao {
                 dados.put("peso_liq", "0");
             }
             VariaveisGlobais.setErroFormatDetectado(false);
-        } catch (Exception e){
+        } catch (Exception e) {
             dados.put("estavel", "ERR");
             dados.put("peso_bru", "0");
             dados.put("peso_liq", "0");

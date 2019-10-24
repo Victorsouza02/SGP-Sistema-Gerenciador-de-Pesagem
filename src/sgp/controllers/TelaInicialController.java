@@ -1,8 +1,7 @@
 /*
     * CLASSE : TelaInicialController
     * FUNÇÃO : Controlar os eventos da Tela Inicial e usar os metodos necessários.
-*/
-
+ */
 package sgp.controllers;
 
 import java.net.URL;
@@ -55,6 +54,10 @@ public class TelaInicialController implements Initializable {
 
     @FXML
     private Pane painel_erro;
+    @FXML
+    private Pane painel_manual;
+    @FXML
+    private TextField peso_manual;
     @FXML
     private Label msg_erro;
     @FXML
@@ -114,14 +117,13 @@ public class TelaInicialController implements Initializable {
     public LerSerial serial;
     public byte[] buffer;
     Thread displayThread;
-    Thread verificarErrosThread;   
+    Thread verificarErrosThread;
     boolean isReading = true;
     private String peso;
     private String codEstabilidade;
     boolean mostrarEntrada = false;
     boolean mostrarSaida = false;
 
-    
     //INICIALIZA O CONTROLLER
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -135,15 +137,16 @@ public class TelaInicialController implements Initializable {
         //Inicia Thread de verificação de erros
         verificarErrosThread = new Thread(this::verificarErrosThread);
         verificarErrosThread.start();
-        
+
     }
-    
+
     //ATRIBUIÇÃO DE VALORES
-    private void atribuirValores(){
+    private void atribuirValores() {
         painel_erro.setVisible(false);
         //Carrega imagem do display
-        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/"+ConfiguracaoGlobal.getDISPLAY_PRINCIPAL_IMG()));
+        Image img = new Image(Principal.class.getResourceAsStream("/sgp/imgs/" + ConfiguracaoGlobal.getDISPLAY_PRINCIPAL_IMG()));
         imagem.setImage(img);
+        painel_manual.setVisible(false);
     }
 
     //FORMATAÇÃO DOS CAMPOS
@@ -163,6 +166,8 @@ public class TelaInicialController implements Initializable {
         Formatacao.addTextLimiter(text_placa, 7);
         text_peso_ent.setStyle("-fx-opacity: 1.0;");
         text_peso_sai.setStyle("-fx-opacity: 1.0;");
+        Formatacao.addTextLimiter(peso_manual, 5);
+        Formatacao.onlyNumber(peso_manual);
 
     }
 
@@ -180,15 +185,29 @@ public class TelaInicialController implements Initializable {
                     text_motorista.setText(mot.getNome());
                     text_fornecedor.setText(mot.getFornecedor());
                     text_produto.setText(mot.getProduto());
-                    if (mot.getStatus().equals("E")) { //SE FOR ENTRADA
-                        entradaSaida.setText("ENTRADA");
-                        mostrarEntrada = true; //MOSTRA O PESO NO CAMPO DE ENTRADA
-                    }
-                    if (mot.getStatus().equals("S")) { //SE FOR SAÍDA
-                        entradaSaida.setText("SAÍDA");
-                        mostrarSaida = true; //MOSTRA O PESO NO CAMPO DE SAÍDA
-                        reg = reg.ultimoRegistro(mot.getPlaca()); //PEGA O ULTIMO REGISTRO DA PLACA
-                        text_peso_ent.setText(reg.getPs_entrada()); //MOSTRA ULTIMO PESO DE ENTRDA NO CAMPO DE ENTRADA
+                    if (!VariaveisGlobais.isModoManual()) { //SE NÃO ESTIVER NO MODO MANUAL
+                        if (mot.getStatus().equals("E")) { //SE FOR ENTRADA
+                            entradaSaida.setText("ENTRADA");
+                            mostrarEntrada = true; //MOSTRA O PESO NO CAMPO DE ENTRADA
+                        }
+                        if (mot.getStatus().equals("S")) { //SE FOR SAÍDA
+                            entradaSaida.setText("SAÍDA");
+                            mostrarSaida = true; //MOSTRA O PESO NO CAMPO DE SAÍDA
+                            reg = reg.ultimoRegistro(mot.getPlaca()); //PEGA O ULTIMO REGISTRO DA PLACA
+                            text_peso_ent.setText(reg.getPs_entrada()); //MOSTRA ULTIMO PESO DE ENTRDA NO CAMPO DE ENTRADA
+                        }
+                    } else { //SE ESTIVER NO MODO MANUAL
+                        reg = reg.ultimoRegistroManual(text_placa.getText());
+                        if (reg.getTipo().equals("ENTRADA")) { //SE O ULTIMO REGISTRO FOR ENTRADA
+                            entradaSaida.setText("SAÍDA");
+                            mostrarSaida = true; //MOSTRA O PESO NO CAMPO DE SAÍDA
+                            reg = reg.ultimoRegistroManual(mot.getPlaca()); //PEGA O ULTIMO REGISTRO DA PLACA
+                            text_peso_ent.setText(reg.getPs_entrada()); //MOSTRA ULTIMO PESO DE ENTRDA NO CAMPO DE ENTRADA
+                        }
+                        if (reg.getTipo().equals("SAIDA")) { //SE O ULTIMO REGISTRO FOR SAÍDA
+                            entradaSaida.setText("ENTRADA");
+                            mostrarEntrada = true; //MOSTRA O PESO NO CAMPO DE ENTRADA
+                        }
                     }
                 } else { //SE NÃO HOUVER MOTORISTA CADASTRADO COM A PLACA
                     entradaSaida.setText("ENTRADA");
@@ -216,7 +235,6 @@ public class TelaInicialController implements Initializable {
                 mot = mot.procurarPlaca(text_placa.getText());
                 boolean registrado = mot.getNome() != null;
                 String tipo = (registrado == true) ? mot.getStatus() : "S";
-
                 mot = new Motorista();
                 mot.setNome(text_motorista.getText());
                 mot.setPlaca(text_placa.getText());
@@ -224,23 +242,52 @@ public class TelaInicialController implements Initializable {
                 mot.setProduto(text_produto.getText());
                 mot.setStatus(tipo);
 
-                if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
-                    mot.editar();
-                    if (tipo.equals("S")) { //SE FOR SAIDA
-                        reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
-                        fazerEtiqueta("S", mot.getPlaca());
-                    } else if (tipo.equals("E")) { //SE FOR ENTRADA
+                if (!VariaveisGlobais.isModoManual()) { //SE NÃO ESTIVER NO MODO MANUAL
+                    if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
+                        mot.editar();
+                        if (tipo.equals("S")) { //SE FOR SAIDA
+                            reg.registrarSaida(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
+                            fazerEtiqueta("S", mot.getPlaca());
+                        } else if (tipo.equals("E")) { //SE FOR ENTRADA
+                            reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
+                            fazerEtiqueta("E", mot.getPlaca());
+                        }
+                        atualizarTabela(); //ATUALIZA TABELA
+                        limparCampos(); // LIMPA TODOS OS CAMPOS
+                    } else {// SE O MOTORISTA NÃO ESTÁ REGISTRADO
+                        mot.cadastrar(false);
                         reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
                         fazerEtiqueta("E", mot.getPlaca());
+                        atualizarTabela();
+                        limparCampos();
                     }
-                    atualizarTabela(); //ATUALIZA TABELA
-                    limparCampos(); // LIMPA TODOS OS CAMPOS
-                } else {// SE O MOTORISTA NÃO ESTÁ REGISTRADO
-                    mot.cadastrar();
-                    reg.registrarEntrada(mot.getPlaca(), text_peso_ent.getText());
-                    fazerEtiqueta("E", mot.getPlaca());
-                    atualizarTabela();
-                    limparCampos();
+                } else { //SE ESTIVER NO MODO MANUAL
+                    if (registrado) { //SE O MOTORISTA JÁ ESTIVER REGISTRADO
+                        reg = reg.ultimoRegistroManual(mot.getPlaca());
+                        if (reg.getTipo() != null) {
+                            if (reg.getTipo().equals("ENTRADA")) { //SE FOR SAIDA
+                                reg.registrarSaidaManual(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
+                                fazerEtiqueta("S", mot.getPlaca());
+                                System.out.println("SAINDO");
+                            } else if (reg.getTipo().equals("SAIDA")) { //SE FOR ENTRADA
+                                reg.registrarEntradaManual(mot.getPlaca(), text_peso_ent.getText());
+                                fazerEtiqueta("E", mot.getPlaca());
+                                System.out.println("ENTRANDO");
+                            }
+                        } else {
+                            reg.registrarEntradaManual(mot.getPlaca(), text_peso_ent.getText());
+                            fazerEtiqueta("E", mot.getPlaca());
+                            System.out.println("ENTRANDODFDFD");
+                        }
+                        atualizarTabela(); //ATUALIZA TABELA
+                        limparCampos(); // LIMPA TODOS OS CAMPOS
+                    } else {// SE O MOTORISTA NÃO ESTÁ REGISTRADO
+                        mot.cadastrar(true);
+                        reg.registrarEntradaManual(mot.getPlaca(), text_peso_ent.getText());
+                        fazerEtiqueta("E", mot.getPlaca());
+                        atualizarTabela();
+                        limparCampos();
+                    }
                 }
                 confirma.setDisable(false);
             }
@@ -252,9 +299,8 @@ public class TelaInicialController implements Initializable {
         });
 
         relatorio.setOnMouseClicked((event) -> { //AO CLICAR NO BOTÃO RELATÓRIO
-            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório", false);
         });
-        
 
         //EVENTO NA TABELA
         tabela.setRowFactory(tv -> {
@@ -280,35 +326,35 @@ public class TelaInicialController implements Initializable {
             });
             return row;
         });
-        
+
         //AO CLICAR NO MENU DE RELATÓRIO
         menu_relatorio.setOnAction((event) -> {
             //Carrega modal de relatório
-            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório",false);
+            Principal.loadScene(Principal.relatorioScene(), "Busca de Relatório", false);
         });
-        
+
         //AO CLICAR NO MENU SOBRE
         menu_sobre.setOnAction((event) -> {
             //Carrega modal de sobre o programa
-            Principal.loadScene(Principal.sobreScene(), "Sobre o programa",false);
+            Principal.loadScene(Principal.sobreScene(), "Sobre o programa", false);
         });
-        
+
         //AO CLICAR NO MENU CONFIGURAÇÕES GERAIS
         menu_config.setOnAction((event) -> {
             //Carrega modal de configurações gerais
-            Principal.loadScene(Principal.configScene(), "Configurações Gerais",false);
+            Principal.loadScene(Principal.configScene(), "Configurações Gerais", false);
         });
-        
+
         //AO CLICAR NO MENU CONFIGURAÇÕES DE IMPRESSÃO
-        menu_impressao.setOnAction((event) ->{
+        menu_impressao.setOnAction((event) -> {
             //Carrega modal de configurações de impressão
-            Principal.loadScene(Principal.impressaoScene(), "Configurações de Impressão",false);
+            Principal.loadScene(Principal.impressaoScene(), "Configurações de Impressão", false);
         });
-        
+
         //AO CLICAR NO MENU DE PESQUISAR PLACA
         menu_pesquisa.setOnAction((event) -> {
             //Carrega modal de pesquisa de placas
-            Principal.loadScene(Principal.pesquisaScene(), "Pesquisar Placa",false);
+            Principal.loadScene(Principal.pesquisaScene(), "Pesquisar Placa", false);
         });
 
     }
@@ -351,10 +397,18 @@ public class TelaInicialController implements Initializable {
             aviso.getButtonTypes().setAll(botaoSim, botaoNao);
             Optional<ButtonType> result = aviso.showAndWait();
             if (result.get() == botaoSim) {//SE APERTAR EM SIM
-                Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSÃO DA ETIQUETA
+                if (!VariaveisGlobais.isModoManual()) {
+                    Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSÃO DA ETIQUETA
+                } else {
+                    Impressao.fazerEtiquetaHtmlManual(placa);
+                }
             }
         } else if (tipo.equals("S")) { //SE FOR SAIDA 
-            Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSAO DA ETIQUETA
+            if (!VariaveisGlobais.isModoManual()) {
+                Impressao.fazerEtiquetaHtml(placa); //FAZ IMPRESSÃO DA ETIQUETA
+            } else {
+                Impressao.fazerEtiquetaHtmlManual(placa);
+            }
         }
     }
 
@@ -411,6 +465,10 @@ public class TelaInicialController implements Initializable {
     private void DisplayThread() {
         //THREAD PARA LEITURA DE SERIAL CONTINUA
         while (isReading) {
+            if (VariaveisGlobais.isModoManual()) {
+                VariaveisGlobais.setPesoManual(peso_manual.getText());
+                painel_manual.setVisible(true);
+            }
             Platform.runLater(() -> {
                 peso = Principal.getPeso_bru();
                 codEstabilidade = Principal.getCodEstabilidade();
@@ -429,12 +487,12 @@ public class TelaInicialController implements Initializable {
             }
         }
     }
-    
+
     private void verificarErrosThread() {
         boolean exibiuPainel = false;
         while (true) {
-            if(VariaveisGlobais.isErroSerialDetectado() || VariaveisGlobais.isErroFormatDetectado()){
-                if(!exibiuPainel){
+            if (VariaveisGlobais.isErroSerialDetectado() || VariaveisGlobais.isErroFormatDetectado()) {
+                if (!exibiuPainel) {
                     painel_erro.setVisible(true);
                     FadeTransition ft = new FadeTransition(Duration.millis(2000), painel_erro);
                     ft.setFromValue(0);
@@ -456,7 +514,7 @@ public class TelaInicialController implements Initializable {
                 exibiuPainel = false;
             }
             try {
-                if(exibiuPainel){
+                if (exibiuPainel) {
                     Thread.sleep(1000);
                 } else {
                     Thread.sleep(20);
@@ -466,6 +524,5 @@ public class TelaInicialController implements Initializable {
             }
         }
     }
-
 
 }

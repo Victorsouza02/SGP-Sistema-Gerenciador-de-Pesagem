@@ -41,10 +41,12 @@ public class LerSerial {
             listaEquipamentos(); //ADICIONA EQUIPAMENTOS COMPATIVEIS NA LISTA
             setPort(porta); //PEGAR PORTA
             setEquipamento(equipamento); //PEGAR EQUIPAMENTO
-            serialPort = new SerialPort(getPort());
-            selecionarConfigEquipamento(); //SELECIONA CONFIGURACAO DE ACORDO COM EQUIPAMENTO
-            conSerial(); // CONEXÃO SERIAL
-            serialPort.addEventListener(new SerialPortReader()); //ESCUTANDO EVENTOS DA PORTA SERIAL
+            if (!VariaveisGlobais.isModoManual()) {
+                serialPort = new SerialPort(getPort());
+                selecionarConfigEquipamento(); //SELECIONA CONFIGURACAO DE ACORDO COM EQUIPAMENTO
+                conSerial(); // CONEXÃO SERIAL
+                serialPort.addEventListener(new SerialPortReader()); //ESCUTANDO EVENTOS DA PORTA SERIAL
+            }
         } catch (SerialPortException ex) {
             VariaveisGlobais.setErroSerialDetectado(true);
             VariaveisGlobais.setMensagem("Houve um erro de conexão serial, verifique a porta.");
@@ -111,7 +113,7 @@ public class LerSerial {
         equipamentos.add("WT1000N"); //INDICADOR WEIGHTECH WT1000N
         equipamentos.add("3101C"); // INDICADOR ALFA LINHA 3100
         equipamentos.add("WT27"); // INDICADOR WEIGHTECH WT27
-
+        equipamentos.add("MANUAL"); // INDICADOR WEIGHTECH WT27
     }
 
     //SELEÇÃO DE CONFIGURAÇÃO DE EQUIPAMENTO
@@ -155,40 +157,57 @@ public class LerSerial {
                 return Formatacao.formatarDados3101C(receberDadosSerial());
             case "WT27":
                 return Formatacao.formatarDadosWT27(receberDadosSerial());
+            case "MANUAL":
+                return Formatacao.formatarDadosManuais();
         }
         return null;
     }
 
-    
-    /*********CONFIGURAÇÃO DE COMUNICAÇÃO ALFA 3101C*****/
+    /**
+     * *******CONFIGURAÇÃO DE COMUNICAÇÃO ALFA 3101C****
+     */
     public void config3101C() {
         setBaud(9600);
         setDatabits(8);
         setStopbit(1);
         setParity(0);
     }
-    /********************************************/
-    
-    /*********CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT1000N*******/
+
+    /**
+     * *****************************************
+     */
+
+    /**
+     * *******CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT1000N******
+     */
     public void configWT1000N() {
         setBaud(9600);
         setDatabits(8);
         setStopbit(1);
         setParity(0);
     }
-    /**********************************************/
-    
-     /**********CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT27*******/
+
+    /**
+     * *******************************************
+     */
+
+    /**
+     * ********CONFIGURAÇÃO DE COMUNICAÇÃO WEIGHTECH WT27******
+     */
     public void configWT27() {
         setBaud(9600);
         setDatabits(8);
         setStopbit(1);
         setParity(0);
     }
-    /***********************************************/
+
+    /**
+     * ********************************************
+     */
 
     //OUVINDO PORTA SERIAL E RETIRANDO DADOS DESNECESSÁRIOS
     static class SerialPortReader implements SerialPortEventListener {
+
         @Override
         public void serialEvent(SerialPortEvent event) {
             if (event.getEventType() > 0) {
@@ -207,7 +226,7 @@ public class LerSerial {
             }
         }
     }
-    
+
     // GETTERS/SETTERS
     public static boolean isOk() {
         return ok;

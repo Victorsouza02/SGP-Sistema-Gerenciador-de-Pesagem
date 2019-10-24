@@ -6,6 +6,10 @@ public class VariaveisGlobais {
     
     private static boolean erroSerialDetectado = false;
     private static boolean erroFormatDetectado = false;
+    
+    private static boolean modoManual = false;
+    
+    private static String pesoManual = "0";
 
     private static String mensagem = "";
 
@@ -33,6 +37,26 @@ public class VariaveisGlobais {
     public static void setErroFormatDetectado(boolean erroFormatDetectado) {
         VariaveisGlobais.erroFormatDetectado = erroFormatDetectado;
     }
+
+    public static boolean isModoManual() {
+        return modoManual;
+    }
+
+    public static void setModoManual(boolean isModoManual) {
+        VariaveisGlobais.modoManual = isModoManual;
+    }
+
+    public static String getPesoManual() {
+        return pesoManual;
+    }
+
+    public static void setPesoManual(String pesoManual) {
+        VariaveisGlobais.pesoManual = pesoManual;
+    }
+    
+    
+    
+    
     
     
     

@@ -21,6 +21,8 @@ import sgp.models.Registro;
  */
 public class AcoesSQL {
     
+    /* ################## AÇÕES DE MOTORISTA ################# */
+    
     //Retorna um Motorista de uma determinada placa
     public Motorista procurarPlaca (String placa){
         Conexao conexao = new Conexao();
@@ -67,14 +69,14 @@ public class AcoesSQL {
     }
     
     //Cadastra motorista no banco de dados
-    public boolean CadastrarMotorista(Motorista mot){
+    public boolean cadastrarMotorista(Motorista mot , boolean isManual){
         Conexao conexao = new Conexao();
         try {
             PreparedStatement sql = conexao.getConexao().prepareStatement("INSERT INTO motorista (placa, nome, status, fornecedor, produto)"
                     + "VALUES (?, ?, ?, ?, ?)");
             sql.setString(1, mot.getPlaca());
             sql.setString(2, mot.getNome());
-            sql.setString(3, "S");
+            sql.setString(3, (isManual) ? "E" : "S");
             sql.setString(4, mot.getFornecedor());
             sql.setString(5, mot.getProduto());  
             int registros = sql.executeUpdate();
@@ -123,6 +125,10 @@ public class AcoesSQL {
         return motoristas;
     }
     
+    /* ########################################################## */
+    
+    /* ################## AÇÕES DE REGISTRO ################# */
+    
     //Faz uma entrada de registro no banco
     public boolean entradaRegistro(Registro reg){
         Conexao conexao = new Conexao();
@@ -135,7 +141,8 @@ public class AcoesSQL {
             sql.setString(4, reg.getFornecedor());
             sql.setString(5, reg.getDt_entrada());
             sql.setString(6, reg.getH_entrada());
-            sql.setString(7, reg.getPs_entrada());  
+            sql.setString(7, reg.getPs_entrada());
+           
             int registros = sql.executeUpdate();
             sql.close();
             return (registros == 1);
@@ -155,6 +162,49 @@ public class AcoesSQL {
             sql.setString(3, reg.getPs_saida());
             sql.setString(4, reg.getPs_liquido());
             sql.setString(5, reg.getPlaca());
+            int registros = sql.executeUpdate();
+            sql.close();
+            return (registros == 1);
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    //Faz uma entrada de registro MANUAL no banco
+    public boolean entradaRegistroManual(Registro reg){
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("INSERT INTO registro_manual (placa, nome, produto, fornecedor, data_entrada, hora_entrada, peso_entrada, tipo)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            sql.setString(1, reg.getPlaca());
+            sql.setString(2, reg.getNome());
+            sql.setString(3, reg.getProduto());
+            sql.setString(4, reg.getFornecedor());
+            sql.setString(5, reg.getDt_entrada());
+            sql.setString(6, reg.getH_entrada());
+            sql.setString(7, reg.getPs_entrada());
+            sql.setString(8, "ENTRADA");  
+            int registros = sql.executeUpdate();
+            sql.close();
+            return (registros == 1);
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        } 
+        return false;
+    }
+    
+    //Faz uma saída de registro MANUAL no banco(Atualiza o ultimo registro de entrada)
+    public boolean saidaRegistroManual(Registro reg){
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("UPDATE registro_manual SET data_saida = ?, hora_saida = ?, peso_saida = ?, peso_liquido = ? , tipo = ? where id = (SELECT id FROM registro_manual where placa = ? order by id desc limit 1)");
+            sql.setString(1, reg.getDt_saida());
+            sql.setString(2, reg.getH_saida());
+            sql.setString(3, reg.getPs_saida());
+            sql.setString(4, reg.getPs_liquido());
+            sql.setString(5, "SAIDA");
+            sql.setString(6, reg.getPlaca());
             int registros = sql.executeUpdate();
             sql.close();
             return (registros == 1);
@@ -191,6 +241,42 @@ public class AcoesSQL {
                 reg.setH_saida(result.getString("hora_saida"));
                 reg.setPs_saida(result.getString("peso_saida"));
                 reg.setPs_liquido(pl);
+            }
+            return reg;
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return reg;
+    }
+    
+    //Retorna o ultimo registro de uma determinada placa - MANUAL
+    public Registro getUltimoRegistroManual(String placa){
+        Conexao conexao = new Conexao();
+        Registro reg = new Registro();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM registro_manual where id = (SELECT id FROM registro_manual where placa = ? order by id desc limit 1)");
+            sql.setString(1, placa);
+            ResultSet result = sql.executeQuery();
+            while(result.next()){
+                String pl = null;
+                if(result.getString("peso_liquido") != null){
+                    pl = result.getString("peso_liquido").contains(",") ? result.getString("peso_liquido").replace(",", ".") : result.getString("peso_liquido");
+                } else {
+                    pl = null;
+                }
+                reg.setId(result.getInt("id"));
+                reg.setPlaca(result.getString("placa"));
+                reg.setNome(result.getString("nome"));
+                reg.setProduto(result.getString("produto"));
+                reg.setFornecedor(result.getString("fornecedor"));
+                reg.setDt_entrada(result.getString("data_entrada"));
+                reg.setH_entrada(result.getString("hora_entrada"));
+                reg.setPs_entrada(result.getString("peso_entrada"));
+                reg.setDt_saida(result.getString("data_saida"));
+                reg.setH_saida(result.getString("hora_saida"));
+                reg.setPs_saida(result.getString("peso_saida"));
+                reg.setPs_liquido(pl);
+                reg.setTipo(result.getString("tipo"));
             }
             return reg;
         } catch (SQLException ex){
@@ -420,4 +506,6 @@ public class AcoesSQL {
         } 
         return registros;
     }
+    
+    /* ############################################################### */
 }

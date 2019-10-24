@@ -40,5 +40,15 @@
             </Label>
          </children>
       </StackPane>
+      <Label alignment="CENTER" layoutX="7.0" layoutY="312.0" prefHeight="25.0" prefWidth="600.0" text="Contato : (21) 2472-5858" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
+         <font>
+            <Font name="System Bold Italic" size="16.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="10.0" layoutY="337.0" prefHeight="25.0" prefWidth="600.0" text="ebmmetrologia.com.br" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="4.0">
+         <font>
+            <Font name="System Bold Italic" size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
