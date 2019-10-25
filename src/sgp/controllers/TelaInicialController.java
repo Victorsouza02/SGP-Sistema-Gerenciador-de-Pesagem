@@ -166,8 +166,8 @@ public class TelaInicialController implements Initializable {
         Formatacao.addTextLimiter(text_placa, 7);
         text_peso_ent.setStyle("-fx-opacity: 1.0;");
         text_peso_sai.setStyle("-fx-opacity: 1.0;");
-        Formatacao.addTextLimiter(peso_manual, 5);
-        Formatacao.onlyNumber(peso_manual);
+        Formatacao.addTextLimiter(peso_manual, 7);
+        Formatacao.semLetras(peso_manual);
 
     }
 
@@ -268,16 +268,13 @@ public class TelaInicialController implements Initializable {
                             if (reg.getTipo().equals("ENTRADA")) { //SE FOR SAIDA
                                 reg.registrarSaidaManual(mot.getPlaca(), text_peso_ent.getText(), text_peso_sai.getText());
                                 fazerEtiqueta("S", mot.getPlaca());
-                                System.out.println("SAINDO");
                             } else if (reg.getTipo().equals("SAIDA")) { //SE FOR ENTRADA
                                 reg.registrarEntradaManual(mot.getPlaca(), text_peso_ent.getText());
                                 fazerEtiqueta("E", mot.getPlaca());
-                                System.out.println("ENTRANDO");
                             }
                         } else {
                             reg.registrarEntradaManual(mot.getPlaca(), text_peso_ent.getText());
                             fazerEtiqueta("E", mot.getPlaca());
-                            System.out.println("ENTRANDODFDFD");
                         }
                         atualizarTabela(); //ATUALIZA TABELA
                         limparCampos(); // LIMPA TODOS OS CAMPOS

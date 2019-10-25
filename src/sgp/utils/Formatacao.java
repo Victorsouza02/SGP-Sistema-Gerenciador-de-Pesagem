@@ -44,6 +44,23 @@ public class Formatacao {
             }
         });
     }
+    
+    public static void semLetras(final TextField tf) {
+        tf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+                if (!newValue.matches("-?\\d*\\.{0,1}\\d+$")) {
+                    tf.setText(oldValue);
+                }
+            }
+        });
+    }
+    
+    
+    
+    
+    
+    
 
     //MUDA O STATUS DE ESTABILIDADE DO DISPLAY DE ACORDO COM O CODIGO DE ESTABILIDADE
     public static void estabilizacaoDisplay(Label labelEstabilizacao, String codEstabilidade) {
