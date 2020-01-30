@@ -26,7 +26,6 @@ public class Propriedades {
     private static String nomeempresa;
     private static String enderecoempresa;
     private static String telempresa;
-    private static String autorizacao;
     private static String altura;
     private static boolean somente_estavel;
     
@@ -52,7 +51,6 @@ public class Propriedades {
             setNomeempresa(new String(prop.getProperty("nomeempresa").getBytes("ISO-8859-1"), "UTF-8"));
             setEnderecoempresa(new String(prop.getProperty("enderecoempresa").getBytes("ISO-8859-1"), "UTF-8"));
             setTelempresa(prop.getProperty("telempresa"));
-            setAutorizacao(prop.getProperty("chave"));
             setAltura(prop.getProperty("altura"));
             setSomente_estavel(prop.getProperty("somenteestavel").equals("S"));
         } catch (UnsupportedEncodingException ex) {
@@ -140,13 +138,6 @@ public class Propriedades {
         telempresa = tel;
     }
 
-    public static String getAutorizacao() {
-        return autorizacao;
-    }
-
-    public static void setAutorizacao(String autorizacao) {
-        Propriedades.autorizacao = autorizacao;
-    }
 
     public static String getAltura() {
         return altura;

@@ -16,7 +16,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import sgp.config.ConfiguracaoGlobal;
-import sgp.models.Autorizacao;
 import sgp.models.LerSerial;
 import sgp.models.Propriedades;
 import sgp.models.Threads;
@@ -46,32 +45,13 @@ public class Principal extends Application {
     @Override
     public void start(Stage stage) {
         new Propriedades();
-        if (ConfiguracaoGlobal.isPROTECAO()) { //SE A PROTEÇÃO ESTIVER ATIVA
-            Autorizacao pd = new Autorizacao();
-            if (pd.isAutorizado()) { //SE O USUARIO ESTIVER AUTORIZADO
-                //Inicia Stage Principal e as Threads
-                this.primaryStage = stage;
-                this.errorStage = stage;
-                iniciarTelaPrincipal();
-                serial = new LerSerial(Propriedades.getPorta(), Propriedades.getEquipamento());
-                securityThread = new Thread(protecaoPendrive);
-                securityThread.start();
-                serialThread = new Thread(lerSerial);
-                serialThread.start();
-            } else { //SE NÃO ESTIVER AUTORIZADO
-                //Inicia Stage de Erro
-                this.errorStage = stage;
-                iniciarTelaErro();
-            }
-        } else { //SE A PROTEÇÃO ESTIVER DESATIVADA
-            //Inicia Stage Principal e as Threads
-                this.primaryStage = stage;
-                this.errorStage = stage;
-                iniciarTelaPrincipal();
-                serial = new LerSerial(Propriedades.getPorta(), Propriedades.getEquipamento());
-                serialThread = new Thread(lerSerial);
-                serialThread.start();
-        }
+        //Inicia Stage Principal e as Threads
+        this.primaryStage = stage;
+        this.errorStage = stage;
+        iniciarTelaPrincipal();
+        serial = new LerSerial(Propriedades.getPorta(), Propriedades.getEquipamento());
+        serialThread = new Thread(lerSerial);
+        serialThread.start();
     }
 
     public static void iniciarTelaPrincipal() { //INICIA TELA PRINCIPAL
@@ -83,25 +63,6 @@ public class Principal extends Application {
             primaryStage.setResizable(true);
             primaryStage.show();
             primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                @Override
-                public void handle(WindowEvent arg0) {
-                    System.exit(0);
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void iniciarTelaErro() { //INICIA TELA DE ERRO
-        try {
-            Parent root = FXMLLoader.load(Principal.class.getResource("/sgp/views/erro.fxml"));
-            errorStage.setTitle(ConfiguracaoGlobal.getTITULO_INICIAL());
-            errorStage.getIcons().addAll(new Image(Principal.class.getResourceAsStream("/sgp/imgs/" + ConfiguracaoGlobal.getICONE_IMG())));
-            errorStage.setScene(new Scene(root));
-            errorStage.setResizable(true);
-            errorStage.show();
-            errorStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 @Override
                 public void handle(WindowEvent arg0) {
                     System.exit(0);
@@ -215,13 +176,6 @@ public class Principal extends Application {
         public void run() {
             Threads th = new Threads();
             th.ReadSerialThread(serial);
-        }
-    };
-
-    private static Runnable protecaoPendrive = new Runnable() { //INICIA THREAD SEGURANÇA
-        public void run() {
-            Threads th = new Threads();
-            th.SecurityThread();
         }
     };
 

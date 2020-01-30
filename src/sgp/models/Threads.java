@@ -49,37 +49,4 @@ public class Threads {
         }
     }
 
-    //Metodo para verificar se o usuario tem autorizacao de rodar o programa
-    public void SecurityThread() {
-        boolean jaParou = false;
-        boolean status = true;
-        while (true) {
-            Autorizacao aut = new Autorizacao();
-            aut.pegarSeriais();
-            aut.verificarSerial();
-            //Se o usuário não for autorizado muda para o Stage de Erro
-            if (aut.isAutorizado() == false && jaParou == false) {
-                jaParou = true;
-                status = false;
-                Platform.runLater(() -> {
-                    Principal.closePrimaryStage();
-                    Principal.iniciarTelaErro();
-                });
-                //Se o usuario agora estiver autorizado volta para o Stage Principal
-            } else if (aut.isAutorizado() == true && status == false) {
-                jaParou = false;
-                status = true;
-                Platform.runLater(() -> {
-                    Principal.closeErrorStage();
-                    Principal.iniciarTelaPrincipal();
-                });
-            }
-            try {
-                Thread.sleep(1000); //Execute a cada 1 segundo
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
 }

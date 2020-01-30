@@ -13,22 +13,19 @@ public class ConfiguracaoGlobal {
     
     //********************* TELA PRINCIPAL0
     //ICONE DO APLICATIVO
-    private static final String ICONE_IMG= "ebmico.jpg";
+    private static final String ICONE_IMG= "empresaicone.png";
     //IMAGEM DO DISPLAY
     private static final String DISPLAY_PRINCIPAL_IMG = "Display.png";
     //TITULO DA TELA INICIAL
-    private static final String TITULO_INICIAL = "Sistema Gerenciador de Pesagem - EBM Metrologia";
+    private static final String TITULO_INICIAL = "Sistema Gerenciador de Pesagem";
     
     //******************* TELA SOBRE
-    private static final String LOGO_EMPRESA = "logoebm.png";
-    private static final String NOME_EMPRESA = "EBM Metrologia";
+    private static final String LOGO_EMPRESA = "empresaicone.png";
+    private static final String NOME_EMPRESA = "Leal";
     private static final String VERSAO = "1.00";
-    private static final String TELEFONE = "(21) 2472-5858";
-    private static final String SITE = "ebmmetrologia.com.br";
+    private static final String TELEFONE = "(21) 96966-3517";
+    private static final String SITE = "Github: Victorsouza02";
     
-    //***********************************************************
-    //Ativa a proteção de pen drive
-    private static final boolean PROTECAO = false;
 
 
     public static String getTITULO_INICIAL() {
@@ -63,9 +60,6 @@ public class ConfiguracaoGlobal {
         return LOGO_EMPRESA;
     }
 
-    public static boolean isPROTECAO() {
-        return PROTECAO;
-    }
     
     
     
